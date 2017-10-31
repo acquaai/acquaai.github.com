@@ -153,11 +153,12 @@ public/
 ```
 
 ``` bash
+➜  acquaai.github.com git:(hexo) hexo clean
+➜  acquaai.github.com git:(hexo) hexo g
+➜  acquaai.github.com git:(hexo) hexo s
 ➜  acquaai.github.com git:(hexo) git add .
 ➜  acquaai.github.com git:(hexo) git commit -m "hexo configured"
 ➜  acquaai.github.com git:(hexo) git push origin hexo
-➜  acquaai.github.com git:(hexo) hexo g
-➜  acquaai.github.com git:(hexo) hexo s
 
 ## master分支提交网站静态文件
 ``` bash
