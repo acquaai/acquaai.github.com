@@ -138,9 +138,8 @@ theme: even
 注意：此插件使用命令python2，推荐定义别名alias python2="python"
 ```
 
-## hexo分支上提交不必要的文件
+## hexo分支提交源码文件
 ``` bash
-
 ➜  acquaai.github.com git:(hexo) cat .npmignore > .gitignore
 ➜  acquaai.github.com git:(hexo) ✗ cat .gitignore
 .DS_Store
@@ -159,6 +158,7 @@ public/
 ➜  acquaai.github.com git:(hexo) git add .
 ➜  acquaai.github.com git:(hexo) git commit -m "hexo configured"
 ➜  acquaai.github.com git:(hexo) git push origin hexo
+```
 
 ## master分支提交网站静态文件
 ``` bash
