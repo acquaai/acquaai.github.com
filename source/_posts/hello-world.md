@@ -19,6 +19,8 @@ so，keep moving forward!
 测试：
 ➜  ~ ssh -T git@github.com
 ```
+<!-- more -->
+
 ## GitHub上创建仓库
 ``` bash
 ➜  ~ git clone https://github.com/acquaai/acquaai.github.com.git
@@ -47,7 +49,7 @@ Total 0 (delta 0), reused 0 (delta 0)
 To https://github.com/acquaai/acquaai.github.com.git
  * [new branch]      hexo -> hexo
 ```
-## 设置默认分支hexo
+
 ## 安装nvm
 ``` bash
 ➜  ~ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.36.6/install.sh | bash
@@ -55,15 +57,14 @@ or
 ➜  ~ wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
 ```
 ### 配置环境变量
-nvm默认安装在~/.nvm，自动在shell配置文件（oh-my-zsh -> ~/.zshrc）尾增加如下内容：
 ``` bash
+nvm默认安装在~/.nvm，自动在shell配置文件（oh-my-zsh -> ~/.zshrc）尾增加如下内容：
 ➜  ~ cat .zshrc
 ...
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 ```
-<!-- more -->
 
 ### 查看nvm信息
 ``` bash
@@ -136,3 +137,40 @@ theme: even
 ➜  acquaai.github.com git:(hexo) ✗ npm install hexo-generator-feed --save
 注意：此插件使用命令python2，推荐定义别名alias python2="python"
 ```
+
+## hexo分支上提交不必要的文件
+``` bash
+
+➜  acquaai.github.com git:(hexo) cat .npmignore > .gitignore
+➜  acquaai.github.com git:(hexo) ✗ cat .gitignore
+.DS_Store
+Thumbs.db
+db.json
+*.log
+node_modules/
+public/
+.deploy*/%
+```
+
+``` bash
+➜  acquaai.github.com git:(hexo) git add .
+➜  acquaai.github.com git:(hexo) git commit -m "hexo configured"
+➜  acquaai.github.com git:(hexo) git push origin hexo
+➜  acquaai.github.com git:(hexo) hexo g
+➜  acquaai.github.com git:(hexo) hexo s
+
+## master分支提交网站静态文件
+``` bash
+➜  acquaai.github.com git:(hexo) hexo d
+```
+
+
+## 多台电脑上编辑、发布文章
++ 安装、配置git
++ clone网站仓库
++ 安装nvm、Node
++ 安装hexo
++ npm install
++ 安装所需插件
++ 提交hexo、master分支
+
