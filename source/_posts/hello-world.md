@@ -2,7 +2,6 @@
 title: Hello World
 date: 2017-10-24 23:45:01
 categories: Hexo
-comments: false
 ---
 >7年前使用[WordPress](https://wordpress.com)记录了学习Oracle、IBM的不少文章，后来慢慢变懒了，再后来就只有一个.sql文件静静躺在移动硬盘里。为了加深对知识的理解，
 so，keep moving forward!
@@ -21,7 +20,7 @@ so，keep moving forward!
 ```
 <!-- more -->
 
-## GitHub上创建仓库
+## GitHub上创建仓库并clone到本地
 ``` bash
 ➜  ~ git clone https://github.com/acquaai/acquaai.github.com.git
 ➜  ~ cd acquaai.github.com
@@ -40,7 +39,7 @@ Switched to a new branch 'hexo'
   remotes/origin/HEAD -> origin/master
   remotes/origin/master
   
-  ➜  acquaai.github.com git:(hexo) git add .
+➜  acquaai.github.com git:(hexo) git add .
 ➜  acquaai.github.com git:(hexo) git commit -m "hexo first commit"
 On branch hexo
 nothing to commit, working tree clean
@@ -173,5 +172,6 @@ public/
 + 安装hexo
 + npm install
 + 安装所需插件
++ git pull origin hexo
++ 编写博客
 + 提交hexo、master分支
-

@@ -2,7 +2,6 @@
 title: SQLAdvisor
 date: 2017-10-28 19:21:38
 categories: MySQL
-comments: false
 ---
 > 感谢美团点评DBA团队开源了[SQLAdvisor](https://github.com/meituan-dianping/sqladvisor)。SQLAdvisor是基于MySQL原生态词法解析，结合分析SQL中的where条件、聚合条件、多表Join关系给出索引优化建议的调优工具。
 

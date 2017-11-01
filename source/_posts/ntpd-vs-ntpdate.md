@@ -2,7 +2,6 @@
 title: ntpd vs ntpdate
 date: 2017-10-28 18:40:48
 categories: DevOps
-comments: false
 ---
 >10月16日[PingCAP](https://pingcap.com)正式发布了TiDB 1.0版本，作为数据库的爱好者第一时间感受一下。在部署8节点的TiDB时，TiDB会precheck所有节点的时钟同步，而precheck的方式是**only ntpd**，由于OS来源于克隆模板，模板中采用了crontab的ntpdate & hwclock -w方式来同步时间，so the question is coming, which one and why?
 
