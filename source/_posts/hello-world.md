@@ -108,7 +108,7 @@ localhost:4000	#在浏览器中查看效果
 ```
 ### 网站发布
 ``` bash
-➜  acquaai.github.com git:(hexo) ✗ vi _config.yml
+➜  acquaai.github.com git:(hexo) vi _config.yml
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
@@ -122,9 +122,9 @@ deploy:
 ```
 ## 安装主题
 ```bash
-➜  acquaai.github.com git:(hexo) ✗ npm install hexo-renderer-scss --save    #安装主题插件
-➜  acquaai.github.com git:(hexo) ✗ git clone https://github.com/ahonn/hexo-theme-even themes/even
-➜  acquaai.github.com git:(hexo) ✗ vi _config.yml	#修改网站配置文件theme
+➜  acquaai.github.com git:(hexo) npm install hexo-renderer-scss --save    #安装主题插件
+➜  acquaai.github.com git:(hexo) git clone https://github.com/ahonn/hexo-theme-even themes/even
+➜  acquaai.github.com git:(hexo) vi _config.yml	#修改网站配置文件theme
 
 # Extensions
 ## Plugins: https://hexo.io/plugins/
@@ -133,14 +133,14 @@ theme: even
 ```
 如果需要配置RSS，安装插件：
 ``` bash
-➜  acquaai.github.com git:(hexo) ✗ npm install hexo-generator-feed --save
+➜  acquaai.github.com git:(hexo) npm install hexo-generator-feed --save
 注意：此插件使用命令python2，推荐定义别名alias python2="python"
 ```
 
 ## hexo分支提交源码文件
 ``` bash
 ➜  acquaai.github.com git:(hexo) cat .npmignore > .gitignore
-➜  acquaai.github.com git:(hexo) ✗ cat .gitignore
+➜  acquaai.github.com git:(hexo) cat .gitignore
 .DS_Store
 Thumbs.db
 db.json
