@@ -32,6 +32,7 @@ include_directories("/usr/include/glib-2.0")
 
 ### 编译sqlparser
 ``` bash
+$ cd /root/sqladvisor
 $ sudo cmake -DBUILD_CONFIG=mysql_release -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=/usr/local/sqlparser ./
 $ sudo make
 $ sudo make install
