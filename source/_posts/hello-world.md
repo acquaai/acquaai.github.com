@@ -172,6 +172,7 @@ public/
 + 安装hexo
 + npm install
 + 安装所需插件
++ git stash
 + git pull origin hexo
 + 编写博客
 + 提交hexo、master分支

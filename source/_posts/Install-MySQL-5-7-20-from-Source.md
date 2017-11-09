@@ -1,5 +1,5 @@
 ---
-title: Install MySQL 5.7.20 by Source Code
+title: Install MySQL 5.7.20 from Source
 date: 2017-11-07 11:44:33
 categories: MySQL
 ---
@@ -14,7 +14,7 @@ categories: MySQL
 ### Create group & user
 ``` bash
 [root@MySQL ~]# groupadd mysql
-[root@MySQL ~]# useradd -r -g mysql -s /sbin/nologin -M mysql
+[root@MySQL ~]# useradd -r -g mysql -s /sbin/nologin mysql
 ```
 <!-- more -->
 
@@ -89,7 +89,7 @@ drwxr-xr-x.  2 root root    90 Nov  7 15:09 support-files
 
 ### 创建MySQL PID默认目录
 > **systemd**
-> mysql-5.7.20/debug/scripts/mysqld.service文件中, 把默认的pid文件指定到了/var/run/mysqld/目录, 而并没有事先建立该目录，因此要手动建立该目录并把权限赋给 mysql用户。
+> mysql-5.7.20/debug/scripts/mysqld.service文件中, 把默认的pid文件指定到了/var/run/mysqld/目录, 而并没有事先建立该目录，因此要手动建立该目录并把权限赋给mysql用户。
 
 ``` bash
 [root@MySQL ~]# mkdir -p /var/run/mysqld
@@ -115,6 +115,7 @@ drwxr-xr-x.  2 root root    90 Nov  7 15:09 support-files
 ### Initialize MySQL
 ``` bash
 [root@MySQL ~]# /var/mysql/bin/mysqld --defaults-file=/etc/my.cnf --initialize --user=mysql
+[root@MySQL ~]# /var/mysql/bin/mysql_ssl_rsa_setup
 ```
 在/var/mysql/data_3306目录中默认数据库生成, 所有的库文件及目录都是通过文件组mysql及用户mysql创建的。
 
