@@ -119,6 +119,30 @@ ARP默认值：
            SSLVerifyClient="optional" SSLProtocol="TLSv1+TLSv1.1+TLSv1.2"/>
 ```
 
+## Access with `https`
+
+``` bash
+$ vi $TOMCAT_HOME/conf/web.xml
+```
+
+Add lines:
+
+``` xml
+<login-config>
+        <auth-method>CLIENT-CERT</auth-method>
+        <realm-name>Client Cert Users-only Area</realm-name>
+</login-config>
+<security-constraint>
+    <web-resource-collection >  
+        <web-resource-name >SSL</web-resource-name>  
+        <url-pattern>/*</url-pattern>  
+    </web-resource-collection>  
+        <user-data-constraint>  
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>  
+        </user-data-constraint>
+</security-constraint>
+```
+
 **Reference**
 [HTTP connector](https://tomcat.apache.org/tomcat-7.0-doc/config/http.html#SSL%20Support)
 [Apache HOW-TO](https://tomcat.apache.org/tomcat-7.0-doc/ssl-howto.html)
