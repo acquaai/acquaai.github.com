@@ -7,7 +7,7 @@ categories: DevOps
 
 ### HAProxy特性
 
-+ 支持两种代理模式：TCP（OSI四层）和HTTP（OSI七层），且HAProxy支持虚拟主机。
++ 支持两种代理模式：**TCP（OSI四层）**和**HTTP（OSI七层）**，且HAProxy支持虚拟主机。
 + HAProxy做七层代理的话，一般需要和stunnel结合起来使用，stunnel把接收的HTTPS请求转发到HAProxy，然后再由HAProxy转发到后端服务器。
 + HAProxy可以隐藏后端服务器信息。
 + 支持url检测后端的服务器是否故障。
@@ -37,7 +37,7 @@ HAProxy是一个单线程、事件驱动，给予优先级调度非阻塞的I/O�
 
 ### LVS(Linux Virtual Server)特性
 
-+ 抗负载能力强、是工作在OSI4层(传输层)之上仅作分发之用，没有流量的产生，此特点也决定了它在负载均衡软件里的性能最强的。
++ 抗负载能力强、是工作在**OSI4层(传输层)**之上仅作分发之用，没有流量的产生，此特点也决定了它在负载均衡软件里的性能最强的。
 + 配置性比较低，是缺点同时也是一个优点，因为没有可太多配置的东西，所以并不需要太多接触，大大减少了人为出错的几率。
 + 工作稳定，自身有完整的双机热备方案，如LVS+Keepalived和LVS+Heartbeat，目前使用比较多的还是LVS/DR+Keepalived。
 + 无流量，保证了均衡器IO的性能不会收到大流量的影响。
@@ -58,7 +58,7 @@ HAProxy是一个单线程、事件驱动，给予优先级调度非阻塞的I/O�
 
 ## 负载均衡高可用 - **Keepalived**
 
-Keepalived是基于VRRP协议的高级应用，作用于**网络层、传输层和应用层交换机制**的处理高可用的软件。主要根据TCP/IP五层模型中的3, 4, 5层交换机制检查RealServer的健康状态检查以及LoadBalance主机和BackUP主机之间failover的实现。后来又加入了VRRP的功能，VRRP是Virtual Router Redundancy Protocol（虚拟路由器冗余协议）的缩写，目的是为了解决静态路由出现的单点故障问题，通过VRRP可以实现网络不间断地、稳定地运行。因此，Keepalived一方面具有服务器状态检测和故障隔离功能，另一方面也具有HA cluster功能。keepalived可以实现轻量级的高可用，一般用于前端高可用，且不需要共享存储，一般常用于两个节点的高可用（常见的前端高可用组合有LVS+Keepalived、Nginx+Keepalived、HAproxy+Keepalived）。
+Keepalived是基于VRRP协议的高级应用，作用于**网络层、传输层和应用层**交换机制的处理高可用的软件。主要根据TCP/IP五层模型中的3, 4, 5层交换机制检查RealServer的健康状态检查以及LoadBalance主机和BackUP主机之间failover的实现。后来又加入了VRRP的功能，VRRP是Virtual Router Redundancy Protocol（虚拟路由器冗余协议）的缩写，目的是为了解决静态路由出现的单点故障问题，通过VRRP可以实现网络不间断地、稳定地运行。因此，Keepalived一方面具有服务器状态检测和故障隔离功能，另一方面也具有HA cluster功能。keepalived可以实现轻量级的高可用，一般用于前端高可用，且不需要共享存储，一般常用于两个节点的高可用（常见的前端高可用组合有LVS+Keepalived、Nginx+Keepalived、HAproxy+Keepalived）。
 
 ### 工作原理
 
