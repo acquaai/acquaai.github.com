@@ -18,7 +18,7 @@ CentOS Linux release 7.2.1511 (Core)
 $ uname -r
 3.10.0-327.el7.x86_64
 
-$ yum install -y make cmake gcc gcc-c++ patch git wget
+$ yum install -y make cmake gcc gcc-c++ patch git wget pciutils
 $ git clone https://github.com/iqiyi/dpvs.git
 $ cd dpvs
 ```
@@ -50,10 +50,11 @@ make[4]: *** [igb_uio] Error 2
 make[4]: *** Waiting for unfinished jobs....
 
 ``` bash
-
 $ cd
 $ wget https://buildlogs.centos.org/c7.1511.00/kernel/20151119220809/3.10.0-327.el7.x86_64/kernel-devel-3.10.0-327.el7.x86_64.rpm
 $ yum install local kernel-devel-3.10.0-327.el7.x86_64.rpm
+
+maybe you need recreate soft link
 $ ln -fs /usr/src/kernels/3.10.0-327.36.1.el7.x86_64/ /lib/modules/3.10.0-327.el7.x86_64/build
 
 logout & login
