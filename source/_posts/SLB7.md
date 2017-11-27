@@ -121,15 +121,20 @@ Network devices using DPDK-compatible driver
 
 Network devices using kernel driver
 ===================================
-0000:03:00.0 'VMXNET3 Ethernet Controller' if=eno16777984 drv=vmxnet3 unused=igb_uio *Active*
+0000:02:00.0 'NetXtreme BCM5719 Gigabit Ethernet PCIe' if=eno1 drv=tg3 unused=igb_uio *Active*
+0000:02:00.1 'NetXtreme BCM5719 Gigabit Ethernet PCIe' if=eno2 drv=tg3 unused=igb_uio 
+0000:02:00.2 'NetXtreme BCM5719 Gigabit Ethernet PCIe' if=eno3 drv=tg3 unused=igb_uio 
+0000:02:00.3 'NetXtreme BCM5719 Gigabit Ethernet PCIe' if=eno4 drv=tg3 unused=igb_uio 
 
 Other network devices
 =====================
 <none>
 
-$ ifconfig eno16777984 down
-$ ./tools/dpdk-devbind.py --bind=igb_uio eno16777984
+$ ifconfig eno1 down
+$ ./tools/dpdk-devbind.py --bind=igb_uio 0000:02:00.0
 ```
+
+> The BCM5719 device is not supported by the current DPDK driver.Only the 10G Broadcom NetExtreme II devices are supported.
 
 `dpdk-devbind.py -u` can be used to unbind driver and switch it back to Linux driver like `ixgbe`. You can also use `lspci` or `ethtool -i eth0` to check the NIC PCI bus-id. Pls see [DPDK site](http://www.dpdk.org/) for details.
 
