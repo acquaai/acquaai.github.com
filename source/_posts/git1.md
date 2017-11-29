@@ -16,8 +16,9 @@ git rm xxx                                                # 删除index中的文
 git rm -r *                                               # 递归删除
 git log                                                   # 显示提交日志
 git log -1                                                # 显示1行日志 -n为n行
-
 git log --stat                                            # 显示提交日志及相关变动文件
+
+<!-- more -->
 
 git show HEAD                                             # 显示HEAD提交日志
 git show HEAD^                                            # 显示HEAD的父（上一个版本）的提交日志 ^^为上两个版本 ^5为上5个版本
@@ -25,6 +26,7 @@ git tag                                                   # 显示已存在的ta
 git tag -a v2.0 -m 'xxx'                                  # 增加v2.0的tag
 git show v2.0                                             # 显示v2.0的日志及详细内容
 git log v2.0                                              # 显示v2.0的日志
+
 git diff                                                  # 显示所有未添加至index的变更
 git diff --cached                                         # 显示所有已添加index但还未commit的变更
 git diff HEAD^                                            # 比较与上一个版本的差异

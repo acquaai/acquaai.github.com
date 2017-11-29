@@ -184,13 +184,36 @@ $ ./dpip link show
 [Tutorial Document](https://github.com/iqiyi/dpvs/blob/master/doc/tutorial.md)
 
 ## [Quagga](http://www.nongnu.org/quagga/)
-> 先启动zebra再启动ospf，不然LB会学习不到路由信息。
+> 先启动zebra再启动ospfd，不然LB会学习不到路由信息。
 
 ``` bash
-$ wget http://download.savannah.gnu.org/releases/quagga/quagga-1.2.2.tar.gz
+$ yum install -y readline-devel 
+```
+
+> 需要安装、配置CARES，否则编译时会报错:
+checking for CARES... no
+configure: error: Package requirements (libcares) were not met:
+
+``` bash
+$ wget https://c-ares.haxx.se/download/c-ares-1.12.0.tar.gz
+$ tar xzvf c-ares-1.12.0.tar.gz 
+$ cd c-ares-1.12.0
+$ ./configure 
+$ make
+$ make install
+
+设置环境变量：
+PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+```
+
+``` bash
+$ wget http://download-mirror.savannah.gnu.org/releases/quagga/quagga-1.2.2.tar.gz
 $ tar xzvf quagga-1.2.2.tar.gz
 $ cd quagga-1.2.2
 $ ./configure --disable-ripd --disable-ripngd --disable-bgpd --disable-watchquagga --disable-doc  --enable-user=root --enable-vty-group=root --enable-group=root --enable-zebra --localstatedir=/var/run/quagga
 $ make
 $ make install
+
+$ ls /usr/local/sbin/
+isisd  nhrpd  ospf6d  ospfclient  ospfd  pimd  zebra
 ```
