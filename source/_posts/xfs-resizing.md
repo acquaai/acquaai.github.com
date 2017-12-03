@@ -18,7 +18,7 @@ categories: DevOps
   `lvreduce -L 40G /dev/cl/home`
    
 * Recreate xfs filesystem
-  `$ mkfs.xfs -f /dev/centos/home`
+  `$ mkfs.xfs -f /dev/cl/home`
   
 * mount home
   `$ mount /dev/mapper/cl-home /home`
