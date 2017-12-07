@@ -6,6 +6,19 @@ categories: MySQL
 ## MySQL GTIDs
 MySQL `5.6.6`开始支持GTIDs的新特性，但是需要离线配置，从`5.7.6`开始支持在线。
 
+### Enable GTID conditions
+* MySQL 5.6
+ * gtid_mode = ON (required)
+ * enforce_gtid_consistency = ON (required)
+ * log_bin = ON (required)
+ * log_slave_updates = ON (required)
+ 
+* MySQL 5.7.13 or higher
+ * gtid_mode = ON (required)
+ * enforce_gtid_consistency = ON (required)
+ * log_bin = ON (option -- 高可用切换)
+ * log_slave_updates = ON (option -- 高可用切换) 
+
 ### Offline procedure
 
 1. 停止业务访问（disable all write）
@@ -86,3 +99,5 @@ MySQL `5.6.6`开始支持GTIDs的新特性，但是需要离线配置，从`5.7.
   
   Reference
   [Official Manual](http://dev.mysql.com/doc/refman/5.7/en/replication-mode-change-online-enable-gtids.html)
+
+
