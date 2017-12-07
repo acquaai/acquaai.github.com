@@ -19,6 +19,8 @@ MySQL `5.6.6`开始支持GTIDs的新特性，但是需要离线配置，从`5.7.
  * log_bin = ON (option -- 高可用切换)
  * log_slave_updates = ON (option -- 高可用切换) 
 
+<!-- more -->
+
 ### Offline procedure
 
 1. 停止业务访问（disable all write）
@@ -29,7 +31,6 @@ MySQL `5.6.6`开始支持GTIDs的新特性，但是需要离线配置，从`5.7.
 6. 开启业务访问
 
 ### Online procedure to enable GTIDs
-<!-- more -->
 
 1. 所有Server上执行，`不能返回有任何警告`
 
