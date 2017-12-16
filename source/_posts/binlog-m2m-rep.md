@@ -4,11 +4,14 @@ date: 2017-12-02 09:45:24
 categories: MySQL
 ---
 ## Install MySQL
+[Download MySQL Yum Repository](https://dev.mysql.com/downloads/repo/yum/)
 
 ``` bash
 $ yum update
-$ wget https://dev.mysql.com/downloads/repo/yum/XXX.rpm
-$ rpm -ivh mysql57-community-release-el7-11.noarch.rpm
+$ yum install local mysql57-community-release-el7-11.noarch.rpm
+$ yum install -y yum-utils
+$ yum repolist all|grep mysql
+$ yum-cofnig-manager -h	可能需要重配置Repository
 
 $ yum install mysql-server mysql-client
 $ systemctl start mysqld
