@@ -74,21 +74,21 @@ transaction_write_set_extraction = XXHASH64
 ## Group Replication插件的使用
 ### 加载插件
 
-```sql
+``` sql
 mysql> install plugin group_replication soname 'group_replication.so';
 ```
 
 ### 启用插件
 命令将本MySQL服务器加入到一个存在的GR组内，或者将它初始化为组内的第一个成员。
 
-```sql
+``` sql
 mysql> start group_replication;
 ```
 
 ### 停用插件
 命令将本MySQL服务器从一个GR组内移除出去。
 
-```sql
+``` sql
 mysql> start group_replication;
 ```
 
@@ -158,30 +158,3 @@ group_replication_bootstrap_group = OFF
 
 **Reference**
 [MySQL 运维内参](https://item.jd.com/12195430.html)
-
-
-```
-log_bin=binlog
-server_id=1
-log_slave_updates = ON
-relay_log=relay-log
-gtid_mode=ON
-enforce_gtid_consistency=ON
-binlog_format=ROW
-binlog_checksum = NONE
-master_info_repository=TABLE
-relay_log_info_repository=TABLE
-
-slave_parallel_type= "LOGICAL_CLOCK"
-slave_parallel_workers=8
-slave_preserve_commit_order=ON
-
-transaction_write_set_extraction = XXHASH64
-
-loose-group_replication_group_name = "38aa1dd3-dffe-4c8d-b517-9ebdd6fae70e"
-loose-group_replication_local_address = "10.0.88.171:24901"
-loose-group_replication_group_seeds = "10.0.88.171:24901,10.0.88.172:24902"
-```
-
-
-
