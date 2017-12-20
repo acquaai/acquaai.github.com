@@ -207,3 +207,6 @@ group_replication_group_name = a7b884ed-5d97-466a-b676-8ca0466063fd
 group_replication_local_address = '10.0.88.171:24901'	# need change for other nodes
 group_replication_group_seeds = '10.0.88.171:24901,10.0.88.172:24902'	# need change for other nodes
 ```
+
+**Reference**
+[MySQL Group Replication: A Quick Start Guide](https://mysqlhighavailability.com/mysql-group-replication-a-quick-start-guide/)
