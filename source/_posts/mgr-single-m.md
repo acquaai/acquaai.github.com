@@ -152,8 +152,18 @@ group_replication_local_address = <ip:port>
 
 ```
 group_replication_bootstrap_group = ON
-start group_replication
+start group replication
 group_replication_bootstrap_group = OFF
+```
+
+## 成员加入组步骤
+```
+install plugin group_replication soname 'group_replication.so';
+group_replication_group_name = <uuid>
+group_replication_local_address = <ip:port>
+group_replication_group_seeds = <ip:port>,<ip:port>...
+change master to master_user = 'rpl_user',master_password = 'rpl_password' for channel 'group_replication_recovery';
+start group_replication;
 ```
 
 **Reference**
