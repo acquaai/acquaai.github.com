@@ -137,6 +137,39 @@ $ nohup ./node_exporter > /tmp/node_exporter.log 2>&1 &
                 labels: instance: node1
 ```
 
+## blackbox_exporter监控http服务
+
+### prometheus.yml文件中配置信息
+
+``` yaml
+- job_name: 'HttpCheck'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # Look for a HTTP 200 response.
+    metrics_path: /probe
+    scrape_interval: 2m
+    scrape_timeout: 10s
+    scheme: http
+    static_configs:
+      - targets:
+        - http://www.xxx.com
+        - https://xxx.cn
+        - http://www.xxx.cn
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: (.*)
+        target_label: __param_target
+        replacement: ${1}
+      - source_labels: [__param_target]
+        regex: (.*)
+        target_label: instance
+        replacement: ${1}
+      - source_labels: []
+        regex: .*
+        target_label: __address__
+        replacement: 127.0.0.1:9115  # Blackbox exporter.
+```
+
 ## 监控SQL Server数据库
 
 SQL Server指标采集使用telegraf，而telegraf采用另一个时序数据库[InfluxDB](https://www.influxdata.com/)，它的采集精度更高，为 ms 级，Prometheus为 s 级。InfluxDB安装方法与Prometheus相同，不再赘述。
