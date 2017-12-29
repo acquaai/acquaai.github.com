@@ -84,15 +84,15 @@ ALERT LowRootDisk
     DESCRIPTION = "{{$labels.instance}}: Root disk usage is above 75% (current value is: {{ $value }})."
   }
 
-ALERT HttpCheck
-  IF probe_duration_seconds{job="HttpCheck"} > 10
+ALERT HttpCheckDown
+  IF probe_success{job="HttpCheck"} == 0
   FOR 2m
   LABELS {
     severity="critical"
   }
   ANNOTATIONS {
     SUMMARY = "{{$labels.instance}}: Http service is down",
-    DESCRIPTION = "{{$labels.instance}}: Http request no response in 10 Seconds. (current value is: {{ $value }})."
+    DESCRIPTION = "{{$labels.instance}}: Http request no response in 2 minutes. (current value is: {{ $value }})."
   }
 ```
 

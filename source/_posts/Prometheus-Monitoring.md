@@ -147,27 +147,19 @@ $ nohup ./node_exporter > /tmp/node_exporter.log 2>&1 &
     params:
       module: [http_2xx]  # Look for a HTTP 200 response.
     metrics_path: /probe
-    scrape_interval: 2m
-    scrape_timeout: 10s
-    scheme: http
     static_configs:
       - targets:
-        - http://www.xxx.com
-        - https://xxx.cn
-        - http://www.xxx.cn
+        - http://www.hnyongxiong.com
+        - http://wcf.yubang168.cn
+        - http://www.yubang168.cn
+        - http://email.yubang168.cn:8080/ybemail/security/login.do
     relabel_configs:
       - source_labels: [__address__]
-        regex: (.*)
         target_label: __param_target
-        replacement: ${1}
       - source_labels: [__param_target]
-        regex: (.*)
         target_label: instance
-        replacement: ${1}
-      - source_labels: []
-        regex: .*
-        target_label: __address__
-        replacement: 127.0.0.1:9115  # Blackbox exporter.
+      - target_label: __address__
+        replacement: x.x.x.x:9115
 ```
 
 ## 监控SQL Server数据库
