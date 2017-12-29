@@ -137,7 +137,53 @@ $ nohup ./node_exporter > /tmp/node_exporter.log 2>&1 &
                 labels: instance: node1
 ```
 
-## blackbox_exporter监控http服务
+## blackbox_exporter监控http、DNS等服务
+
+### 配置blackbox.yml
+
+```yaml
+modules:
+  http_2xx:
+    prober: http
+    http:
+  http_post_2xx:
+    prober: http
+    http:
+      method: POST
+  tcp_connect:
+    prober: tcp
+  pop3s_banner:
+    prober: tcp
+    tcp:
+      query_response:
+      - expect: "^+OK"
+      tls: true
+      tls_config:
+        insecure_skip_verify: false
+  ssh_banner:
+    prober: tcp
+    tcp:
+      query_response:
+      - expect: "^SSH-2.0-"
+  irc_banner:
+    prober: tcp
+    tcp:
+      query_response:
+      - send: "NICK prober"
+      - send: "USER prober prober prober :prober"
+      - expect: "PING :([^ ]+)"
+        send: "PONG ${1}"
+      - expect: "^:[^ ]+ 001"
+  icmp:
+    prober: icmp
+  dns_tcp:
+    prober: dns
+    dns:
+      transport_protocol: "tcp" # defaults to "udp"
+      preferred_ip_protocol: "ip4" #  defaults to "ip6"
+      query_name: "www.domain.com"
+      query_type: "A"
+```
 
 ### prometheus.yml文件中配置信息
 
@@ -149,17 +195,32 @@ $ nohup ./node_exporter > /tmp/node_exporter.log 2>&1 &
     metrics_path: /probe
     static_configs:
       - targets:
-        - http://www.hnyongxiong.com
-        - http://wcf.yubang168.cn
-        - http://www.yubang168.cn
-        - http://email.yubang168.cn:8080/ybemail/security/login.do
+        - http://www.xxx.com
+        - https://www.xxx.cn
+        - http://www.xxx.cn:8080
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: x.x.x.x:9115
+        replacement: prometheus:9115
+
+  - job_name: 'DNSCheck'
+    metrics_path: /probe
+    params:
+      module: [dns_tcp]
+    static_configs:
+      - targets:
+        - x.x.x.x:53
+        - x.x.x.x:53
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: prometheus:9115
 ```
 
 ## 监控SQL Server数据库

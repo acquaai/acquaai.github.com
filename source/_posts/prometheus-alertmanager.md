@@ -22,11 +22,11 @@ rule_files:
 ```yaml
 ALERT PingDown
   IF up == 0
-  FOR 30s
+  FOR 2m
   LABELS { severity = "warning" }
   ANNOTATIONS {
     summary = "Instance {{ $labels.instance }} down",
-    description = "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 30 seconds."
+    description = "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 2 minutes"
   }
 
 ALERT CPUUsage #Windows
@@ -37,7 +37,7 @@ ALERT CPUUsage #Windows
   }
   ANNOTATIONS {
     SUMMARY = "{{$labels.instance}}: High CPU usage detected",
-    DESCRIPTION = "{{$labels.instance}}: CPU usage is above 80% (current value is: {{ $value }})."
+    DESCRIPTION = "{{$labels.instance}}: CPU usage is above 80% (current value is: {{ $value }})"
   }
 
 ALERT LoadAverage #Linux
@@ -48,7 +48,7 @@ ALERT LoadAverage #Linux
   }
   ANNOTATIONS {
     SUMMARY = "{{$labels.instance}}: High LoadAverage detected",
-    DESCRIPTION = "{{$labels.instance}}: LoadAverage is high."
+    DESCRIPTION = "{{$labels.instance}}: LoadAverage is high"
   }
 
 ALERT SwapUsage
@@ -59,7 +59,7 @@ ALERT SwapUsage
   }
   ANNOTATIONS {
     SUMMARY = "{{$labels.instance}}: Swap usage detected",
-    DESCRIPTION = "{{$labels.instance}}: Swap usage usage is above 75% (current value is: {{ $value }})."
+    DESCRIPTION = "{{$labels.instance}}: Swap usage usage is above 75% (current value is: {{ $value }})"
   }
 
 ALERT MemoryUsage
@@ -70,7 +70,7 @@ ALERT MemoryUsage
   }
   ANNOTATIONS {
     SUMMARY = "{{$labels.instance}}: High memory usage detected",
-    DESCRIPTION = "{{$labels.instance}}: Memory usage is above 75% (current value is: {{ $value }})."
+    DESCRIPTION = "{{$labels.instance}}: Memory usage is above 75% (current value is: {{ $value }})"
   }
 
 ALERT LowRootDisk
@@ -81,18 +81,30 @@ ALERT LowRootDisk
   }
   ANNOTATIONS {
     SUMMARY = "{{$labels.instance}}: Low root disk space",
-    DESCRIPTION = "{{$labels.instance}}: Root disk usage is above 75% (current value is: {{ $value }})."
+    DESCRIPTION = "{{$labels.instance}}: Root disk usage is above 75% (current value is: {{ $value }})"
   }
 
 ALERT HttpCheckDown
   IF probe_success{job="HttpCheck"} == 0
-  FOR 2m
+  FOR 3m
   LABELS {
     severity="critical"
   }
   ANNOTATIONS {
     SUMMARY = "{{$labels.instance}}: Http service is down",
-    DESCRIPTION = "{{$labels.instance}}: Http request no response in 2 minutes. (current value is: {{ $value }})."
+    DESCRIPTION = "{{$labels.instance}}: Http request no response in 3 minutes"
+  }
+
+
+ALERT DNSCheck
+  IF probe_success{job="DNSCheck"} == 0
+  FOR 1m
+  LABELS {
+    severity="warning"
+  }
+  ANNOTATIONS {
+    SUMMARY = "{{$labels.instance}}: DNS service is down",
+    DESCRIPTION = "{{$labels.instance}}: DNS resolution failed in 1 minutes"
   }
 ```
 
