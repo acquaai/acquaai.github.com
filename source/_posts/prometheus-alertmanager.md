@@ -29,6 +29,17 @@ ALERT PingDown
     description = "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 2 minutes"
   }
 
+ALERT PingCheck
+  IF probe_success{job="PingCheck"} == 0
+  FOR 1m
+  LABELS {
+    severity="warning"
+  }
+  ANNOTATIONS {
+    SUMMARY = "{{ $labels.instance }} down",
+    DESCRIPTION = "{{ $labels.instance }}: Node has been down for more than 1 minutes"
+  }
+
 ALERT CPUUsage #Windows
   IF (100 - (avg by (instance) (irate(node_cpu{name="node-exporter",mode="idle"}[5m])) * 100)) > 80
   FOR 2m

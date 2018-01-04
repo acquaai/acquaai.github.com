@@ -183,6 +183,12 @@ modules:
       preferred_ip_protocol: "ip4" #  defaults to "ip6"
       query_name: "www.domain.com"
       query_type: "A"
+  ping:
+    prober: icmp
+    timeout: 30s
+    icmp:
+      preferred_ip_protocol: "ip4"
+     #payload_size: 
 ```
 
 ### prometheus.yml文件中配置信息
@@ -220,6 +226,31 @@ modules:
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
+        replacement: prometheus:9115
+
+  - job_name: 'PingCheck'
+    metrics_path: /probe
+    params: 
+      module: [ping]
+    static_configs:
+      - targets:
+        - x.x.x.x
+        - x.x.x.x
+    relabel_configs:
+      # Set the target's address as the target-GET-parameter for the blackbox exporter
+      - source_labels: [__address__]
+        regex: (.*)
+        target_label: __param_target
+        replacement: ${1}
+      # Set the target's address as the instance name
+      - source_labels: [__address__]
+        regex: (.*)
+        target_label: instance
+        replacement: ${1}
+      # Set the scrape address to the blackbox exporter
+      - source_labels: []
+        regex: .*
+        target_label: __address__
         replacement: prometheus:9115
 ```
 
