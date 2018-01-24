@@ -51,9 +51,9 @@ To https://github.com/acquaai/acquaai.github.com.git
 
 ## 安装nvm
 ``` bash
-➜  ~ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.36.6/install.sh | bash
+➜  ~ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
 or
-➜  ~ wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
+➜  ~ wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
 ```
 ### 配置环境变量
 ``` bash
@@ -74,11 +74,11 @@ export NVM_DIR="$HOME/.nvm"
 ## 安装Node
 ``` bash
 ➜  ~ nvm ls-remote         #查看Node的版本信息
-➜  ~ nvm install v6.11.4
+➜  ~ nvm install v6.12.3
 ```
 如果身在墙内，可以使用国内镜像资源
 ``` bash
-➜  ~ NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node nvm install 6 
+➜  ~ NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node nvm install v6.12.3
 ```
 
 
@@ -134,7 +134,6 @@ theme: even
 如果需要配置RSS，安装插件：
 ``` bash
 ➜  acquaai.github.com git:(hexo) npm install hexo-generator-feed --save
-注意：此插件使用命令python2，推荐定义别名alias python2="python"
 ```
 
 ## hexo分支提交源码文件

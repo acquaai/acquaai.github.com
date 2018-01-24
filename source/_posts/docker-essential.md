@@ -14,10 +14,13 @@ $ ls -l /sys/class/misc/device-mapper/
 $ sudo yum install -y device-mapper
 $ sudo modprobe dm_mod
 ```
+
 ### Install
+
 ```bash
 $ sudo yum install -y docker
 ```
+
 ## Commonly Commands
 
 `$ docker run -ti --name  ubuntu /bin/bash`
@@ -104,6 +107,7 @@ $ docker commit -m="custom image" --author="acqua" eb4a97d5a48c acqua/apache2:we
 + Dockerfile 创建镜像
 
 ```bash
+
 $ mkdir test_web && cd test_web
 $ vi Dockerfile
 
@@ -119,6 +123,7 @@ $ docker build -t="acqua/test_web" .
 ```
 
 ```bash
+
 $ docker build -t="acqua/test_web:v1" .
 如果没有制定任何标签，Docker自动为镜像设置一个latest标签。. 当前目录查找Dockerfile，
 也可以用Git仓库源地址git@github.com:acqua/docker_test_web
@@ -128,6 +133,7 @@ $ docker history new_C
 ```
 
 ### 从镜像启动容器
+
 ```bash
 $ docker run -d -p 80 --name test_web acqua/test_web nginx -g "daemon off;"
 
@@ -166,9 +172,9 @@ $ curl localhost:32769
   与CMD指令非常相似，而ENTRYPOINT指令提供的命令则不容易在启动容器时被覆盖。实际上，docker run命令行中指定的任何参数都会被当做参数再次传递给ENTRYPOINT指令中指定的命令。
   `ENTRYPOINT ["/usr/sbin/nginx", "-g", "daemon off;"]`
   通过以数组的方式指定 ENTRYPOINT 在想运行的命令前加入 /bin/sh -c 避免各种问题。
-`ENTRYPOINT ["/usr/sbin/nginx"]`
-`CMD ["-h"]`
-此时当我们启动一个容器时，任何在命令行中指定的参数都会被传递给Ngnix守护进程。
+  `ENTRYPOINT ["/usr/sbin/nginx"]`
+  `CMD ["-h"]`
+  此时当我们启动一个容器时，任何在命令行中指定的参数都会被传递给Ngnix守护进程。
 
   `docker run --entrypoint`来覆盖ENTRYPOINT指令。
 
@@ -245,5 +251,5 @@ $ curl localhost:32769
   
   不能用在ONBUILD指令中，FROM、MAINTAINER和ONBUILD本身，也防止递归调用。
   
-  **Reference**
-  [The Docker Book](https://dockerbook.com)
+**Reference**
+[The Docker Book](https://dockerbook.com)
