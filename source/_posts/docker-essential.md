@@ -37,16 +37,20 @@ $ sudo yum install -y docker
 `$ docker ps -n 2`
 显示最后2个容器，无论这些容器运行还是停止。
 
-`$ docker run --restart=always --name new_C -d ubuntu /bin/sh -c "while true; \`
-    `do echo Hello World; sleep 1; done"`
+```bash
+$ docker run --restart=always --name new_C -d ubuntu /bin/sh -c "while true; \
+    do echo Hello World; sleep 1; done"
 容器自动重；--restart=on-failure:3 尝试重启3次。
+```
 
 `$ docker inspect new_C`
 查看容器信息。
 
-`$ docker inspect --format='{{ .NetworkSettings.IPAddress }}' new_C`
+```bash
+$ docker inspect --format='{{ .NetworkSettings.IPAddress }}' new_C
 172.17.0.2
 --format 查看指定信息
+```
 
 `$ docker rm new_C`
 删除容器，-f 强制删除活动容器。
@@ -89,10 +93,10 @@ $ docker pull ubuntu
 $ docker pull ubuntu:16.04
 
 $ docker search mysql
-INDEX       NAME                                                             DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
-docker.io   docker.io/mysql                                                  MySQL is a widely used, open-source relati...   5545      [OK]       
-docker.io   docker.io/mariadb                                                MariaDB is a community-developed fork of M...   1718      [OK]       
-docker.io   docker.io/mysql/mysql-server                                     Optimized MySQL Server Docker images. Crea...   381                  [OK]
+INDEX       NAME                             DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+docker.io   docker.io/mysql                  MySQL is a widely used, open-source relati...   5545      [OK]       
+docker.io   docker.io/mariadb                MariaDB is a community-developed fork of M...   1718      [OK]       
+docker.io   docker.io/mysql/mysql-server     Optimized MySQL Server Docker images. Crea...   381                  [OK]
 
 $ docker pull docker.io/mysql
 ```
@@ -136,7 +140,6 @@ $ docker history new_C
 
 ```bash
 $ docker run -d -p 80 --name test_web acqua/test_web nginx -g "daemon off;"
-
 Docker可以在宿主机上随机选择一个介于 49000~49900 中一个比较大的端口号来映射到容器中的80端口上。
 
 $ docker run -d -p 127.0.0.1:80:80 --name test_web acqua/test_web nginx -g "daemon off;"
