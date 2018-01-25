@@ -74,18 +74,18 @@ export NVM_DIR="$HOME/.nvm"
 ## 安装[Node](https://github.com/creationix/nvm)
 ``` bash
 ➜  ~ nvm ls-remote         #查看Node的版本信息
-➜  ~ nvm install node   #the latest release
+➜  ~ nvm install 8.9.4
 ```
 如果身在墙内，可以使用国内镜像资源
 ``` bash
-➜  ~ NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node nvm install 6.12.3
+➜  ~ NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node nvm install 8.9.4
 ```
 
 
 ## 安装hexo
 ``` bash
 ➜  ~ cd acquaai.github.com
-➜  acquaai.github.com sudo npm install hexo-cli -g
+➜  acquaai.github.com sudo npm install -g hexo-cli
 ```
 ### 部署网站
 ``` bash
