@@ -71,14 +71,14 @@ export NVM_DIR="$HOME/.nvm"
 ➜  ~ nvm --version
 ```
 
-## 安装Node
+## 安装[Node](https://github.com/creationix/nvm)
 ``` bash
 ➜  ~ nvm ls-remote         #查看Node的版本信息
-➜  ~ nvm install v6.12.3
+➜  ~ nvm install node   #the latest release
 ```
 如果身在墙内，可以使用国内镜像资源
 ``` bash
-➜  ~ NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node nvm install v6.12.3
+➜  ~ NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node nvm install 6.12.3
 ```
 
 
@@ -166,12 +166,11 @@ public/
 
 ## 多台电脑上编辑、发布文章
 + 安装、配置git
-+ clone网站仓库
++ clone网站仓库，并切换到hexo分支
 + 安装nvm、Node
 + 安装hexo
 + npm install
 + 安装所需插件
-+ git stash
-+ git pull origin hexo
 + 编写博客
-+ 提交hexo、master分支
++ 部署hexo d
++ git push origin hexo

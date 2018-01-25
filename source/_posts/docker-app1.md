@@ -110,5 +110,64 @@ Docker在连接webapp和redis容器时，自动创建了以DB开头的环境变�
 + 使用环境变量  （发现服务的方法）
 + 使用DNS和/etc/hosts信息
 
+## Jekyll & Apache应用
+
+[Dockerfiles](https://github.com/acquaai/dockerjenkins/tree/master/Jekyll_Apache)
+
+```bash
+$ docker run -v /root/jekyll/acqua_blog:/data/ --name acqua_blog acqua/jekll
+
+Configuration file: /data/_config.yml
+            Source: /data
+       Destination: /var/www/html
+      Generating... 
+                    done.
+ Auto-regeneration: disabled. Use --watch to enable.
+
+$ docker run -d -P --volumes-from acqua_blog acqua/apache
+$ docker port 15a03f8210c8 80
+0.0.0.0:32775
+
+$ docker start acqua_blog
+$ docker logs acqua_blog
+
+因为共享卷会自动更新，不需要更新或重启Apache容器。
+```
+
+### 备份Jekyll卷
+
+```bash
+$ docker run --rm --volumes-from acqua_blog \
+  -v $(pwd):/backup ubuntu \
+  tar cvf /backup/acqua_blog.tar /var/www/html
+
+--rm参数会在容器（Ubuntu）的进程运行完毕后自动删除，适用容器用完即扔的场景。
+   
+$ ls
+acqua_blog  acqua_blog.tar  Dockerfile
+```
+
+## Java应用
+
+[Dockerfiles](https://github.com/acquaai/dockerjenkins/tree/master/Java)
+
+```bash
+$ docker build -t acqua/java .
+$ docker run  -t -i --name sample acqua/java \
+ https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
+
+$ docker inspect -f '{{ .Config.Volumes }}' sample
+map[/var/lib/tomcat7/webapps/:{}]
+
+$ docker build -t acqua/tomcat7 .
+$ docker run --name sample_app --volumes-from sample \
+ -d -P acqua/tomcat7
+ 
+$ docker port sample_app 8080
+0.0.0.0:32768
+
+http://x.x.x.x:32768/sample/
+```
+
 **Reference**
-[The Docker Book](https://dockerbook.com)
+[The Docker Book](https://github.com/turnbullpress/dockerbook-code)
