@@ -3,23 +3,9 @@ title: Docker基础学习
 date: 2018-01-24 18:53:41
 categories: DevOps
 ---
-## 安装
-### Conditions
+## Install
 
-+ `3.8+`kernel
-+ Device Mapper
-
-```bash
-$ ls -l /sys/class/misc/device-mapper/
-$ sudo yum install -y device-mapper
-$ sudo modprobe dm_mod
-```
-
-### Install
-
-```bash
-$ sudo yum install -y docker
-```
+[Docker CE](https://docs.docker.com/engine/installation/linux/docker-ce/centos/)
 
 ## Commonly Commands
 
