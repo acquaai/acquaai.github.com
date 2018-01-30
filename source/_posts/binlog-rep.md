@@ -3,6 +3,8 @@ title: Binlog - MySQL Classic Replication
 date: 2017-12-02 09:45:24
 categories: MySQL
 ---
+GTID replication is [here](https://acquaai.github.io/2017/12/03/gtid-rep/).
+
 ## Install MySQL
 
 [Download MySQL Yum Repository](https://dev.mysql.com/downloads/repo/yum/)
@@ -132,15 +134,6 @@ slavel> show slave status \G
 + To restrict all normal users from changing data on the slave - which might break the replication - the option "read-only" should be added in the slave's my.cnf file.
 + the server option "server-id" must be unique among all servers inside the replication (masters and slaves).
 + If your database size is big (100GB or so) Xtrabackup tool could be used instead of mysqldump - when preparing the master snapshot - for faster backup and restore operations. For more information on how to use Xtrabackup, check out this [link](http://fromdual.com/node/835).
-+ For more information on how to troubleshoot MySQL replication, check out the [Replication Troubleshooting - Classic VS GTID](http://fromdual.com/replication-troubleshooting-classic-vs-gtid) blog.
-
-> 配置`Master-Master`时，节点配置文件参数：
-  [mysqld]
-  server-id=N
-  log-bin=mysql-bin
-  binlog_format=ROW
-
-> 所有节点配置`Master info`。
 
 **Reference**
 http://www.fromdual.com/how_to_setup_mysql_master-slave_replication

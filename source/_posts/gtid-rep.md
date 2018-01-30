@@ -1,10 +1,12 @@
 ---
-title: GTIDs - MySQL M/M Replication
+title: GTID - MySQL Replication
 date: 2017-12-03 16:49:28
 categories: MySQL
 ---
-## MySQL GTIDs
-MySQL `5.6.6`开始支持GTIDs的新特性，但是需要离线配置，从`5.7.6`开始支持在线。
+Binlog replication is [here](https://acquaai.github.io/2017/12/02/binlog-rep/).
+
+## MySQL GTID
+MySQL `5.6.6`开始支持GTID的新特性，但是需要离线配置，从`5.7.6`开始支持在线。
 
 ### Enable GTID conditions
 * MySQL 5.6
@@ -30,7 +32,7 @@ MySQL `5.6.6`开始支持GTIDs的新特性，但是需要离线配置，从`5.7.
 5. 启动所有 MySQL 服务器
 6. 开启业务访问
 
-### Online procedure to enable GTIDs
+### Online procedure to enable GTID
 
 1. 所有Server上执行，`不能返回有任何警告`
 
@@ -85,7 +87,7 @@ MySQL `5.6.6`开始支持GTIDs的新特性，但是需要离线配置，从`5.7.
   $ echo "enforce_gtid_consistency=on" >> /etc/my.cnf
   ```
 
-8. 启用GTIDs的自动节点复制，如果使用了`multi-source`复制，可以为每一个源配置`channel`
+8. 启用GTID的自动节点复制，如果使用了`multi-source`复制，可以为每一个源配置`channel`
 
   ``` sql
   (root@localhost)[(none)]> stop slave [FOR CHANNEL 'channel1'];
@@ -100,5 +102,3 @@ MySQL `5.6.6`开始支持GTIDs的新特性，但是需要离线配置，从`5.7.
   
   Reference
   [Official Manual](http://dev.mysql.com/doc/refman/5.7/en/replication-mode-change-online-enable-gtids.html)
-
-
