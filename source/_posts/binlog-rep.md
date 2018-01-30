@@ -135,5 +135,36 @@ slavel> show slave status \G
 + the server option "server-id" must be unique among all servers inside the replication (masters and slaves).
 + If your database size is big (100GB or so) Xtrabackup tool could be used instead of mysqldump - when preparing the master snapshot - for faster backup and restore operations. For more information on how to use Xtrabackup, check out this [link](http://fromdual.com/node/835).
 
+## 配置半同步复制
+
+相比传统的binlog异步复制，半同步复制提高了数据完整性，防止 主/从 数据不一致。
+
++ 所有master、slave服务器需要安装半同步插件
+
+```sql
+master> install plugin rpl_semi_sync_master soname 'semisync_master.so';
+slave> install plugin rpl_semi_sync_slave soname 'semisync_slave.so';
+```
+
++ master开启半同步
+
+```sql
+master> set global rpl_semi_sync_master_enabled = 1;
+master> set global rpl_semi_sync_master_timeout = 100;
+```
+
++ slave开启半同步
+
+```sql
+slave> set global rpl_semi_sync_slave_enabled = on;
+```
+
++ slave重启IO线程
+
+```sql
+slave> stop slave io_thread;
+slave> start slave io_thread;
+```
+
 **Reference**
 http://www.fromdual.com/how_to_setup_mysql_master-slave_replication

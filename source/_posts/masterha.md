@@ -53,7 +53,33 @@ table th:nth-of-type(3) {
 8. 重新将slave2指向App1的master。
 9. 再次配置slave1作为master的slave。
 
-执行以上任务需要`master、slave1、slave2`已正确配置复制。MHA 0.57开始支持GTID，推荐配置[GTID](https://acquaai.github.io/2017/12/03/gtid-m2m-rep/)复制。[Binlog VS GTID Replication](https://acquaai.github.io/2018/01/30/binlog-vs-gtid/)
+执行以上任务需要`master、slave1、slave2`已正确配置复制。MHA 0.57开始支持GTID，MHA在failover时会自动判断是否是`GTID based failover`，它需要满足3个条件：
+
++ all nodes: gtid_mode =1
++ all nodes: Executed_Gtid_Set `non empty`
++ at least one: Auto_Position = 1
+
+**基于 binlog 和 GTID 复制在 MHA 故障切换时的区别：**
+
++ Binlog Based
+  + 在master宕机后会尝试从自身拷贝binlog并应用。
+  + 若`candidate_master`上没有最新的relay log时，它会从拥有最新relay log的`slave`上生成差异的binlog拷贝到candidate_master并应用。
+  + 新master追平的日志后（拥有最新日志），继续采用同样的方法将其它slave追平，最后做change master的操作。
+
+`后面的测试过程中manager上的日志完整记录了这一过程。`
+
++ GTID Based
+  + 若`candidate_master`上没有最新的relay log，candidate_master直接连上拥有最新relay log的slave获取并应用。
+  + 新maste尝试从`binlog server`上获取缺少的binlog并应用。
+  + 新master的数据同步到最新后，其它的slave连上新master并等待数据完成同步。为了加快切换速度，还可以给`masterha_master_switch`传递 `–wait_until_gtid_in_sync = 1`参数，不用等其它slave完成数据同步。
+  
+当配置的复制是GTID模式时，如果数据库没有执行过一条事务，show slave status \G命令输出中没有Executed_Gtid_Set:信息，那么MHA会认为是非GTID模式。此外，还需要在app1.cnf中配置binlog server。如果不配置，即使在old master SSH可达的情况下，它也不会去save binlog。这里的binlog1既可以设置master为binlog server，也可以设置其他专用的binlog server。
+[binlog1]
+hostname=10.0.77.17
+hostname=10.0.77.18
+hostname=10.0.77.19
+
+推荐配置[GTID](https://acquaai.github.io/2017/12/03/gtid-rep/)复制来实施MHA的高可用。
 
 ## Implementation of MHA
 ### Installation
@@ -123,12 +149,6 @@ no_master=1
 > candidate_master和no_master选项只在故障切换中需要，在线切换master时将指定新master主机。
 
 [MHA参数列表详解](http://wubx.net/mha-parameters/)
-
-`注意`：当配置的复制是GTID模式时，如果数据库没有执行过一条事务，`show slave status \G`命令输出中没有`Executed_Gtid_Set:`信息，那么MHA会认为是非GTID模式。此外，还需要在app1.cnf中配置binlog server。如果不配置，即使在old master SSH可达的情况下，它也不会去save binlog。这里的binlog1既可以设置master为binlog server，也可以设置其他专用的binlog server。
-[binlog1]
-hostname=10.0.77.17
-hostname=10.0.77.18
-hostname=10.0.77.19
 
 #### Copy scripts
 
