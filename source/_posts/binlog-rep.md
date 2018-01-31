@@ -133,7 +133,7 @@ slavel> show slave status \G
 + If you know that error and you want to ignore it, you can execute "SET GLOBAL sql_slave_skip_counter = 1;" on the slave and then start the slave again "START SLAVE;".
 + To restrict all normal users from changing data on the slave - which might break the replication - the option "read-only" should be added in the slave's my.cnf file.
 + the server option "server-id" must be unique among all servers inside the replication (masters and slaves).
-+ If your database size is big (100GB or so) Xtrabackup tool could be used instead of mysqldump - when preparing the master snapshot - for faster backup and restore operations. For more information on how to use Xtrabackup, check out this [link](http://fromdual.com/node/835).
++ If your database size is big (100GB or so) [Xtrabackup](https://acquaai.github.io/2018/01/31/xtrabackup/) tool could be used instead of mysqldump - when preparing the master snapshot - for faster backup and restore operations.
 
 ## 配置半同步复制
 
