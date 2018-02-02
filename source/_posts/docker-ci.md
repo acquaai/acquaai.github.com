@@ -3,14 +3,12 @@ title: Docker CI
 date: 2018-01-25 11:20:43
 categories: DevOps
 ---
-> [Continuous integration](https://en.wikipedia.org/wiki/Continuous_integration) - `CI` is the practice of merging all developer working copies to a shared mainline several times a day.
-频繁的将代码合并到主干，或者说是对代码的提交、构建、测试的过程。
-
->持续集成的目的，就是让产品可以快速迭代，同时还能保持高质量。它的核心措施是，代码集成到主干之前，必须通过自动化测试。只要有一个测试用例失败，就不能集成。能快速发现错误，防止分支大幅偏离主干。   [- - -阮一峰老师日志](http://www.ruanyifeng.com/blog/2015/09/continuous-integration.html)
-
-## 构建Jenkins和Docker服务器
+![](/images/j_CI.png)
+图片来源Google
 
 <!-- more -->
+
+## 构建Jenkins和Docker服务器
 
 ### Create Image
 
