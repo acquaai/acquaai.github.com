@@ -13,7 +13,7 @@ categories: DevOps
 
 <!-- more -->
 
-[K8S集群部署完整文档]()
+[K8S集群部署完整文档](https://github.com/acquaai/K8S/blob/master/docs/K8S-Cluster-Deployment.md)
 
 **Reference**
 [Jimmy Song的博客](https://jimmysong.io)
