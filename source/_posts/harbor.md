@@ -47,6 +47,7 @@ Re-login:
 ```
 $ sudo systemctl start docker
 $ docker run hello-world
+$ sudo systemctl enable docker
 ```
 
 ## 安装Docker Compose
@@ -99,13 +100,124 @@ registry             /entrypoint.sh serve /etc/ ...   Up      5000/tcp
 
 使用admin/`harbor_admin_password =`登录：http://10.0.77.16/harbor/sign-in
 
-[Configure https access](https://github.com/vmware/harbor/blob/master/docs/configure_https.md)
+## 配置[https](https://github.com/vmware/harbor/blob/master/docs/configure_https.md)访问
 
-### Managing Harbor's lifecycle
-
-使用docker-compose[管理Harbor]((https://github.com/vmware/harbor/blob/master/docs/installation_guide.md))时必须在`docker-compose.yml`文件目录运行。
+### 安装CFSSL
 
 ```bash
+$ sudo yum install -y git gcc
+$ wget https://dl.google.com/go/go1.9.4.linux-amd64.tar.gz
+$ sudo tar xzvf go1.9.4.linux-amd64.tar.gz -C /usr/local/
+
+$ sudo vi /etc/profile
+
+export GOPATH=/usr/local
+export PATH=$PATH:/usr/local/go/bin
+```
+
+```bash
+$ sudo go get -u github.com/cloudflare/cfssl/cmd/...
+$ sudo ls /usr/local/bin
+cfssl  cfssl-bundle  cfssl-certinfo  cfssljson  cfssl-newkey  cfssl-scan  mkbundle  multirootca
+```
+
+### 创建CA证书
+
+**创建ca-config.json文件**
+
+```json
+$ sudo mkdir /root/cfssl && cd /root/cfssl
+$ sudo vi ca-config.json
+{
+    "signing": {
+        "default": {
+            "expiry": "8760h"
+        }, 
+        "profiles": {
+            "kubernetes": {
+                "usages": [
+                    "signing", 
+                    "key encipherment", 
+                    "server auth", 
+                    "client auth"
+                ], 
+                "expiry": "8760h"
+            }
+        }
+    }
+}
+```
+
+**创建文件ca-csr.json文件**
+
+```json
+$ sudo vi ca-csr.json
+{
+    "CN": "kubernetes", 
+    "key": {
+        "algo": "rsa", 
+        "size": 2048
+    }, 
+    "names": [
+        {
+            "C": "CN", 
+            "ST": "Shenzhen", 
+            "L": "Shenzhen", 
+            "O": "k8s", 
+            "OU": "System"
+        }
+    ]
+}
+```
+
+**生成CA证书和私钥**
+
+```bash
+$ sudo cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+$ sudo ls ca*
+ca-config.json  ca.csr  ca-csr.json  ca-key.pem  ca.pem
+```
+
+**创建harbor-csr.json**
+
+```json
+$ sudo vi harbor-csr.json
+{
+    "CN": "kubernetes", 
+    "hosts": [
+        "127.0.0.1", 
+        "10.0.77.16"
+    ], 
+    "key": {
+        "algo": "rsa", 
+        "size": 2048
+    }, 
+    "names": [
+        {
+            "L": "Shenzhen", 
+            "O": "k8s", 
+            "OU": "System"
+        }
+    ]
+}
+```
+
+```bash
+$ sudo cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes harbor-csr.json | cfssljson -bare harbor
+$ sudo ls harbor*
+harbor.csr  harbor-csr.json  harbor-key.pem  harbor.pem
+```
+
+**参考**
+
++ [配置Harbor启用https和外部数据库](https://blog.frognew.com/2017/06/config-harbor-with-https-and-external-db.html)
+
+## 管理Harbor
+
+使用docker-compose[管理Harbor](https://github.com/vmware/harbor/blob/master/docs/installation_guide.md)时必须在`docker-compose.yml`文件目录运行。
+
+```bash
+$ cd /harbor/
 $ docker-compose stop
 $ docker-compose start
 ```
@@ -130,4 +242,16 @@ $ docker-compose down -v
 ```bash
 $ sudo rm -r /data/database
 $ sudo rm -r /data/registry
+```
+
+### 创建私有仓库
+
+新建私有仓库`acquaai`
+
+Push Image到该仓库的的命令：
+
+```bash
+docker tag SOURCE_IMAGE[:TAG] 10.0.77.16/acquaai/IMAGE[:TAG]
+
+docker push 10.0.77.16/acquaai/IMAGE[:TAG]
 ```
