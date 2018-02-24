@@ -62,45 +62,14 @@ $ docker-compose --version
 docker-compose version 1.19.0, build 9e633ef
 ```
 
-## 安装Harbor
+## 安装Harbor启用https
 
 [Prerequisites for the Harbor](http://github.com/vmware/harbor)
 
 ```bash
 $ wget https://storage.googleapis.com/harbor-releases/release-1.4.0/harbor-offline-installer-v1.4.0.tgz
 $ sudo tar xvf harbor-offline-installer-v1.4.0.tgz  -C /
-$ cd /harbor/
-$ sudo vi harbor.conf
-
-hostname = 
-db_password = 
-harbor_admin_password = 
-auth_mode = db_auth = 
-self_registration =
-project_creation_restriction = 
 ```
-
-```bash
-$ sudo ./install.sh
-
-May be:
-$ sudo -E env "PATH=$PATH" ./install.sh
-
-$ docker-compose ps
-       Name                     Command               State                                Ports                              
-------------------------------------------------------------------------------------------------------------------------------
-harbor-adminserver   /harbor/start.sh                 Up                                                                      
-harbor-db            /usr/local/bin/docker-entr ...   Up      3306/tcp                                                        
-harbor-jobservice    /harbor/start.sh                 Up                                                                      
-harbor-log           /bin/sh -c /usr/local/bin/ ...   Up      127.0.0.1:1514->10514/tcp                                       
-harbor-ui            /harbor/start.sh                 Up                                                                      
-nginx                nginx -g daemon off;             Up      0.0.0.0:443->443/tcp, 0.0.0.0:4443->4443/tcp, 0.0.0.0:80->80/tcp
-registry             /entrypoint.sh serve /etc/ ...   Up      5000/tcp                                                        
-```
-
-使用admin/`harbor_admin_password =`登录：http://10.0.77.16/harbor/sign-in
-
-## 配置[https](https://github.com/vmware/harbor/blob/master/docs/configure_https.md)访问
 
 ### 安装CFSSL
 
@@ -110,7 +79,6 @@ $ wget https://dl.google.com/go/go1.9.4.linux-amd64.tar.gz
 $ sudo tar xzvf go1.9.4.linux-amd64.tar.gz -C /usr/local/
 
 $ sudo vi /etc/profile
-
 export GOPATH=/usr/local
 export PATH=$PATH:/usr/local/go/bin
 ```
@@ -121,7 +89,7 @@ $ sudo ls /usr/local/bin
 cfssl  cfssl-bundle  cfssl-certinfo  cfssljson  cfssl-newkey  cfssl-scan  mkbundle  multirootca
 ```
 
-### 创建CA证书
+### 创建Harbor证书
 
 **创建ca-config.json文件**
 
@@ -206,10 +174,53 @@ $ sudo vi harbor-csr.json
 $ sudo cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes harbor-csr.json | cfssljson -bare harbor
 $ sudo ls harbor*
 harbor.csr  harbor-csr.json  harbor-key.pem  harbor.pem
+
+$ mkdir -p /data/cert
+$ sudo mv harbor*.pem /data/cert/
+```
+
+### 修改harbor.cfg文件
+
+```bash
+$ cd /harbor/
+$ sudo vi harbor.conf
+
+hostname = 
+db_password = 
+harbor_admin_password = 
+auth_mode = db_auth = 
+self_registration =
+project_creation_restriction =
+
+**https**
+ui_url_protocol = https
+ssl_cert = /data/cert/harbor.pem
+ssl_cert_key = /data/cert/harbor-key.pem
+```
+
+```bash
+$ sudo -E env "PATH=$PATH" ./install.sh --with-notary
+...
+✔ ----Harbor has been installed and started successfully.----
+
+Now you should be able to visit the admin portal at https://10.0.77.16. 
+For more details, please visit https://github.com/vmware/harbor.
+```
+
+将自签名的 CA 证书拷贝到需要访问 Harbor 仓库的 docker 主机的 /etc/docker/certs.d/`registry-hostname`/下。
+
+```bash
+shell> mkdir -p /etc/docker/certs.d/10.0.77.16:443
+shell> cp /etc/kubernetes/ssl/ca.pem /etc/docker/certs.d/10.0.77.16:443/ca.crt
+
+shell> docker login -u acqua -p Harbor12345 10.0.77.16:443
+WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+Login Succeeded
 ```
 
 **参考**
 
++ [configure_https](https://github.com/vmware/harbor/blob/master/docs/configure_https.md)
 + [配置Harbor启用https和外部数据库](https://blog.frognew.com/2017/06/config-harbor-with-https-and-external-db.html)
 
 ## 管理Harbor
@@ -227,7 +238,7 @@ Harbor修改配置流程：
 ```bash
 $ docker-compose down -v
 $ sudo vim harbor.cfg
-$ sudo prepare
+$ sudo ./prepare
 $ docker-compose up -d
 ```
 
@@ -244,14 +255,15 @@ $ sudo rm -r /data/database
 $ sudo rm -r /data/registry
 ```
 
-### 创建私有仓库
+### 创建私有项目
 
-新建私有仓库`acquaai`
+新建私有项目`acquaai`
 
-Push Image到该仓库的的命令：
+Push Image到该项目的命令：
 
 ```bash
-docker tag SOURCE_IMAGE[:TAG] 10.0.77.16/acquaai/IMAGE[:TAG]
-
-docker push 10.0.77.16/acquaai/IMAGE[:TAG]
+shell> docker tag SOURCE_IMAGE[:TAG] 10.0.77.16/acquaai/IMAGE[:TAG]
+shell> docker push 10.0.77.16/acquaai/IMAGE[:TAG]
 ```
+
+
