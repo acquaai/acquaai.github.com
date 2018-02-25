@@ -209,19 +209,41 @@ For more details, please visit https://github.com/vmware/harbor.
 
 将自签名的 CA 证书拷贝到需要访问 Harbor 仓库的 docker 主机的 /etc/docker/certs.d/`registry-hostname`/下。
 
-```bash
-shell> mkdir -p /etc/docker/certs.d/10.0.77.16:443
-shell> cp /etc/kubernetes/ssl/ca.pem /etc/docker/certs.d/10.0.77.16:443/ca.crt
+> If the Docker registry is accessed without a port number, do not add the port to the directory name. The following shows the configuration for a registry on default port 443 which is accessed with:
 
-shell> docker login -u acqua -p Harbor12345 10.0.77.16:443
-WARNING! Using --password via the CLI is insecure. Use --password-stdin.
-Login Succeeded
+```bash
+shell> mkdir -p /etc/docker/certs.d/10.0.77.16
+shell> cp /etc/kubernetes/ssl/ca.pem /etc/docker/certs.d/10.0.77.16/ca.crt
+```
+
+**Client Access 1/3 Ways**
+
+```bash
+shell> kubectl create secret docker-registry registrykey-acquaai --docker-server=10.0.77.16/acquaai --docker-username=acqua --docker-password=Harbor12345 --docker-email=acqua@acqua.ai
+secret "registrykey-acquaai" created
+
+shell> kubectl get secret
+NAME                  TYPE                                  DATA      AGE
+registrykey-acquaai   kubernetes.io/dockerconfigjson        1         33s
+
+shell> kubectl describe pods nginx-65486cc689-t6f7b
+...
+Events:
+  Type    Reason                 Age   From                 Message
+  ----    ------                 ----  ----                 -------
+  Normal  Scheduled              2m    default-scheduler    Successfully assigned nginx-65486cc689-t6f7b to 10.0.77.17
+  Normal  SuccessfulMountVolume  2m    kubelet, 10.0.77.17  MountVolume.SetUp succeeded for volume "default-token-ctbfl"
+  Normal  Pulling                2m    kubelet, 10.0.77.17  pulling image "10.0.77.16/acquaai/nginx:1.9"
+  Normal  Pulled                 2m    kubelet, 10.0.77.17  Successfully pulled image "10.0.77.16/acquaai/nginx:1.9"
+  Normal  Created                2m    kubelet, 10.0.77.17  Created container
+  Normal  Started                2m    kubelet, 10.0.77.17  Started container
 ```
 
 **参考**
 
 + [configure_https](https://github.com/vmware/harbor/blob/master/docs/configure_https.md)
 + [配置Harbor启用https和外部数据库](https://blog.frognew.com/2017/06/config-harbor-with-https-and-external-db.html)
++ [Kubernetes从Private Registry中拉取容器镜像的方法](https://tonybai.com/2016/11/16/how-to-pull-images-from-private-registry-on-kubernetes-cluster/)
 
 ## 管理Harbor
 
