@@ -76,7 +76,9 @@ export NVM_DIR="$HOME/.nvm"
 ➜  ~ nvm ls-remote         #查看Node的版本信息
 ➜  ~ nvm install 8.9.4
 ```
+
 如果身在墙内，可以使用国内镜像资源
+
 ``` bash
 ➜  ~ NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node nvm install 8.9.4
 ```
@@ -132,6 +134,7 @@ deploy:
 theme: even
 ```
 如果需要配置RSS，安装插件：
+
 ``` bash
 ➜  acquaai.github.com git:(hexo) npm install hexo-generator-feed --save
 ```
@@ -163,6 +166,64 @@ public/
 ➜  acquaai.github.com git:(hexo) hexo d
 ```
 
+## .gitignore
+
+设定 Git 提交时忽略的文件和目录。建义将 .gitignore 文件也提交到仓库中，以便其他人克隆仓库后共享此忽略规则。
+
+### local .gitignore
+
++ 在终端中进入到 /path/ git仓库目录
++ touch .gitignore
++ 增加**[忽略规则](https://github.com/github/gitignore)**到 .gitignore 文件中。
+
+在 .gitignore 文件创建之后增加新的忽略规则(file)，必须先从暂存区中删除此 file，再次使用`git add .`命令时，.gitignore中新增的忽略file才生效。
+
+```bash
+➜  git rm --cached FILENAME
+```
+
+### global .gitignore
+
+创建全局 .gitignore 文件，用于忽略本机中所有Git仓库的规则列表。在用户home目录中创建`.gitignore_global`文件，并添加规则。
+
+```bash
+➜  git config --global core.excludesfile ~/.gitignore_global
+
+➜  cat ~/.gitconfig
+...
+[core]
+	excludesfile = /Users/acqua/.gitignore_global
+...
+
+➜  cat ~/.gitignore_global
+
+###MacOS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+```
+
+### Explicit repository excludes
+
+如果不想创建.gitignore文件与他人共享，则可以创建不与仓库一同提交的规则。
+Git仓库根目录下`.git/info/exclude`文件中添加的任何规则都不会被提交，且仅忽略本地仓库中的文件。
+
+```bash
+➜  cd /git-repo-path/
+➜  cat .git/info/exclude
+
+# git ls-files --others --exclude-from=.git/info/exclude
+# Lines that start with '#' are comments.
+# For a project mostly in C, the following would be a good set of
+# exclude patterns (uncomment them if you want to use them):
+# *.[oa]
+# *~
+.DS_Store
+```
 
 ## 多台电脑上编辑、发布文章
 + 安装、配置git
@@ -174,3 +235,5 @@ public/
 + 编写博客
 + 部署hexo d
 + git push origin hexo
+
+
