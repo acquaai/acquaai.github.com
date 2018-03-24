@@ -183,7 +183,7 @@ $ sudo mv harbor*.pem /data/cert/
 
 ```bash
 $ cd /harbor/
-$ sudo vi harbor.conf
+$ sudo vi harbor.cfg
 
 hostname = 
 db_password = 
@@ -219,12 +219,12 @@ shell> cp /etc/kubernetes/ssl/ca.pem /etc/docker/certs.d/10.0.77.16/ca.crt
 **Client Access 1/3 Ways**
 
 ```bash
-shell> kubectl create secret docker-registry registrykey-acquaai --docker-server=10.0.77.16/acquaai --docker-username=acqua --docker-password=Harbor12345 --docker-email=acqua@acqua.ai
-secret "registrykey-acquaai" created
+shell> kubectl create secret docker-registry registrykey --docker-server=10.0.77.16 --docker-username=acqua --docker-password=Harbor12345 --docker-email=acqua@acqua.ai
+secret "registrykey" created
 
 shell> kubectl get secret
 NAME                  TYPE                                  DATA      AGE
-registrykey-acquaai   kubernetes.io/dockerconfigjson        1         33s
+registrykey           kubernetes.io/dockerconfigjson        1         33s
 
 shell> kubectl describe pods nginx-65486cc689-t6f7b
 ...

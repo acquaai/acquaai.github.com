@@ -96,30 +96,28 @@ K8S v1.9版本中，支持扩展持久化卷类型：
 ## 持久化卷类型
 
 PersistentVolume以插件的形式实现。Kubernetes目前支持的卷类型:
-GCEPersistentDisk
-AWSElasticBlockStore
-AzureFile
-AzureDisk
-FC (Fibre Channel)**
-FlexVolume
-Flocker
-NFS
-iSCSI
-RBD (Ceph Block Device)
-CephFS
-Cinder (OpenStack block storage)
-Glusterfs
-VsphereVolume
-Quobyte Volumes
-HostPath (Single node testing only – local storage is not supported in any way and WILL NOT WORK in a multi-node cluster)
-VMware Photon
-Portworx Volumes
-ScaleIO Volumes
-StorageOS
-Raw Block Support exists for these plugins only.
 
-https://kubernetes.io/docs/concepts/storage/persistent-volumes/
-volume plugin图
++ GCEPersistentDisk
++ AWSElasticBlockStore
++ AzureFile
++ AzureDisk
++ FC (Fibre Channel)**
++ FlexVolume
++ Flocker
++ NFS
++ iSCSI
++ RBD (Ceph Block Device)
++ CephFS
++ Cinder (OpenStack block storage)
++ Glusterfs
++ VsphereVolume
++ Quobyte Volumes
++ HostPath (Single node testing only – local storage is not supported in any way and WILL NOT WORK in a multi-node cluster)
++ VMware Photon
++ Portworx Volumes
++ ScaleIO Volumes
++ StorageOS
++ Raw Block Support exists for these plugins only.
 
 ### 持久化卷类型示例
 
@@ -244,7 +242,29 @@ PersistentVolume 以卷资源提供者支持的模式挂载到主机上，如下
 > **!!!** 一个卷一次只能使用一种访问模式挂载，即使它支持很多访问模式。例如，GCEPersistentDisk 可以由单个节点作为 ReadWriteOnce 模式挂载，或由多个节点以 ReadOnlyMany 模式挂载，但不能同时挂载。
 
 卷资源提供者支持的访问模式：
-img.png
+
+| Volume Plugin | ReadWriteOnce | ReadOnlyMany | ReadWriteMany |
+| :------------ | :-----------: | :-----------:| :------------:|
+| AWSElasticBlockStore | ✓ | - | - |
+| AzureFile | ✓ | ✓ | ✓ |
+| AzureDisk | ✓ | - | - |
+| CephFS    | ✓ | ✓ | ✓ |
+| Cinder    | ✓ | - | - |
+| FC        | ✓ | ✓ | - |
+| FlexVolume| ✓ | ✓ | - |
+| Flocker   | ✓ | - | - |
+| GCEPersistentDisk | ✓ | ✓ | - |
+| Glusterfs | ✓ | ✓ | ✓ |
+| HostPath  | ✓ | - | - |
+| iSCSI     | ✓ | ✓ | - |
+| PhotonPersistentDisk | ✓ | - | - |
+| Quobyte   | ✓ | ✓ | ✓ |
+| NFS       | ✓ | ✓ | ✓ |
+| RBD       | ✓ | ✓ | - |
+| VsphereVolume | ✓ | - | - (works when pods are collocated)|
+| PortworxVolume| ✓ | - | ✓ |
+| ScaleIO   | ✓ | ✓ | - |
+| StorageOS | ✓ | - | - |
 
 ### 类
 
@@ -388,7 +408,17 @@ spec:
 如果用户通过使用 PersistentVolumeClaim 规范中的 volumeMode 字段来请求原始块卷，则绑定规则与之前不识别该模式规范的版本略有不同。
 静态设置的卷的卷绑定矩阵：
 
-img.png
+| PV volumeMode | PVC volumeMode | Result |
+|:------------- | :------------- | ------:|
+| unspecified | unspecified | BIND |
+| unspecified | Block       | NO BIND|
+| unspecified | Filesystem  | BIND |
+| Block  | unspecified | NO BIND |
+| Block  | Block  | BIND |
+| Block  | Filesystem | NO BIND |
+| Filesystem | Filesystem | BIND |
+| Filesystem | Block | NO BIND |
+| Filesystem | unspecified | BIND |
 
 ## 编写可移植配置
 
