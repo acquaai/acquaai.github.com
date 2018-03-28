@@ -212,5 +212,5 @@ Bypass for now.
 
 **References**
 
-+ https://zhangchenchen.github.io/2017/12/17/achieve-cicd-in-kubernetes-with-jenkins/
-+ https://kevinguo.me/2017/12/27/jenkins-on-kubernetes-with-pipeline/
++ [Kuberbetes-- 利用Jenkins在Kubernetes中实践CI/CD](https://zhangchenchen.github.io/2017/12/17/achieve-cicd-in-kubernetes-with-jenkins/)
++ [jenkins with pipeline on kubernetes](https://kevinguo.me/2017/12/27/jenkins-on-kubernetes-with-pipeline/)
