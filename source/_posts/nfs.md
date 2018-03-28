@@ -17,7 +17,7 @@ $ cat /etc/expots
 /nfs/sonar/extensions 10.0.77.0/27(rw,sync,no_root_squash)
 /nfs/sonar/logs 10.0.77.0/27(rw,sync,no_root_squash)
 
-$ chmod -R 755 /nfs
+$ chmod -R 777 /nfs
 $ exportfs -r
 ```
 

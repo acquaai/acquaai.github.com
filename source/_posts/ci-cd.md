@@ -13,7 +13,3 @@ categories: DevOps
 
 持续部署与持续交付的区别如下图所示：[- - -摘自阮一峰老师日志](http://www.ruanyifeng.com/blog/2015/09/continuous-integration.html)
 ![](/images/k_CD.png)
-
-## 基于Jenkins的CI/CD流程
-
-![](/images/k_DevOps.png)

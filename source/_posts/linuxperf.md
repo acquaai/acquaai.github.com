@@ -5,13 +5,13 @@ categories: DevOps
 ---
 ![](http://p564fpez5.bkt.clouddn.com/image/linuxlinux_perf_tools_full.png)
 
+<!-- more -->
+
 [Brendan Gregg](http://brendangregg.com) (Netflix Senior Performance Architect), 的[文章](https://medium.com/netflix-techblog/netflix-at-velocity-2015-linux-performance-tools-51964ddb81cf)讲述了 NETFLIX 大规模应用在 EC2 上的 Linux 性能分析（Use Methods）**`in 60,000 Milliseconds（1分钟）`**。
 
 1分钟内如何做性能分析？
 
 这就不得不提到运维人员吃饭干活，居家旅行必备的10 个命令（**`sysstat package`**）。
-
-<!-- more -->
 
 ## 10 Commands
 
