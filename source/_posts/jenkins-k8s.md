@@ -1,5 +1,5 @@
 ---
-title: Jenkins on k8s 持续集成与发布
+title: Jenkins on Kubernetes
 date: 2018-03-28 17:00:11
 categories: DevOps
 ---
