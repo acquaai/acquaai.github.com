@@ -104,7 +104,7 @@ metadata:
   name: jenkins-service
   namespace: jenkins
 spec:
-  type: NodePort
+  type: NodePort   #attention
   ports:
     - port: 8080
       name: jenkins
@@ -112,22 +112,12 @@ spec:
       name: agent
   selector:
     app: jenkins-master
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: jenkins
-  namespace: jenkins
-spec:
-  rules:
-  - http:
-      paths:
-      - path: /
-        backend:
-          serviceName: jenkins-service
-          servicePort: 80
-    host: jenkins.k8s.com #Define your's.
 ```
+
+> Kubernetes Service Type 目前仅支持三种方式:
++ `ClusterIP`: k8s集群内访问
++ `LoadBalancer`: 依赖IaaS服务商（如Google Cloud、AWS）或自建负载均衡器
++ `NodePort`: 通过 nodeIP:nodePORT 来访问
 
 ```json
 $ cat jenkins-deployment.yaml
@@ -197,8 +187,6 @@ $ kubectl exec -n jenkins jenkins-5d659f6b99-nwpxk -it -- bash
 bash-4.4$ cat /var/jenkins_home/secrets/initialAdminPassword
 5ad866a38c674a66a2a2fd6adc9702cd
 ```
-
-修改本地hosts文件解析`jenkins.k8s.com:30514`到k8s集群节点IP，配置Jenkins。
 
 ## 配置 Kubernetes 插件
 

@@ -24,7 +24,7 @@ $ yum -y install ceph-common
 
 <!-- more -->
 
-## 配置 Ceph
+## 配置 PVC 
 
 
 ### 创建 Namespace
@@ -182,9 +182,9 @@ metadata:
    namespace: sonar
 ### 设置集群默认的StorageClass
    annotations:
-     storageclass.kubernetes.io/is-default-class=true
+     storageclass.kubernetes.io/is-default-class: "true"
    labels:
-    kubernetes.io/cluster-service: "true"
+     kubernetes.io/cluster-service: "true"
  ### 设置集群默认的StorageClass
 provisioner: kubernetes.io/rbd
 parameters:
