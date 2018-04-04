@@ -9,11 +9,11 @@ categories: DevOps
 
 [Helm on Kubernetes](https://acquaai.github.io/2018/04/02/helm/)
 
-<!-- more -->
-
 ## TiDB Chart
 
 > [TiDB](https://pingcap.com) 是新一代开源分布式 NewSQL 数据库，模型受 Google Spanner / F1 论文的启发，实现了自动的水平伸缩，强一致性的分布式事务，基于 Raft 算法的多副本复制等重要 NewSQL 特性。TiDB 结合了 RDBMS 和 NoSQL 的优点，部署简单，在线弹性扩容和异步表结构变更不影响业务， 真正的异地多活及自动故障恢复保障数据安全，同时兼容 MySQL 协议，使迁移使用成本降到极低。
+
+<!-- more -->
 
 ### Create [Chart](https://docs.helm.sh/developing_charts/#charts)
 
