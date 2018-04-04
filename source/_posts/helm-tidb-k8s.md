@@ -54,7 +54,7 @@ $ kubectl create secret generic ceph-secret --type="kubernetes.io/rbd" \
 $ kubectl create -f tikv-storageclass.yaml  
 ```
 
-Chart 的文件在[这里](https://github.com/acquaai/charts/tree/master/incubator/tidb)。
+Chart 的文件在[这里](https://github.com/acquaai/K8S/tree/master/charts/incubator/tidb)。
 
 ### Test TiDB Chart
 
