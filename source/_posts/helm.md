@@ -23,6 +23,10 @@ Helm Dictionary (概念):
 
 + Tiller: 是一个部署在Kubernetes集群内部的 Server，与 Helm client、Kubernetes APIServer 进行交互，管理这些应用的发布。
 
+[Alexei Ledenev's Helm - Application deployment management for Kubernetes](https://www.slideshare.net/alexLM/helm-application-deployment-management-for-kubernetes)
+
+![](/images/helm-arch.png)
+
 ### Install Helm
 
 **安装 Client:**
@@ -166,8 +170,7 @@ $ source <(helm completion bash)
  
 Artifactory 的虚拟 Helm Chart 仓库能够聚合公司本地和远程的仓库成为一个仓库，为开发者解析和安装 Charts 时提供唯一的 URL。如下图所示：
 
-
-
+![](/images/repo.png)
 
 JFrog Helm Client 目前支持2个版本：
 
@@ -175,6 +178,8 @@ JFrog Helm Client 目前支持2个版本：
 + [认证访问](https://github.com/JFrogDev/helm) Artifactory
 
 ## Artifactory on K8s
+
+![](/images/artifactory-k8s.png)
 
 [官方参考](https://github.com/JFrogDev/artifactory-docker-examples/tree/master/kubernetes)
 
@@ -276,16 +281,10 @@ Events:                   <none>
 
 `Local Repository`，`Remote Repository`，然后新建`Virtual Repository`。注意，`Virtual Repository` 包含`本地和远程仓库`
 
-![](/images/virtual.png)
-
-![](/images/vir-local-remote.png)
-
 ### Helm Client Registry Repository
 
-![](/images/resolving.png)
-
 ```bash
-$ helm repo add helm-virtual ...
+$ helm repo add helm-virtual http://10.0.77.17:30809/artifactory/helm-virtual admin AP412AQbN3DGPWuWXvrXvJrvzPX
 "helm-virtual" has been added to your repositories
 
 $ helm repo update
@@ -301,4 +300,7 @@ NAME            URL
 stable          https://kubernetes-charts.storage.googleapis.com
 local           http://127.0.0.1:8879/charts                    
 helm-virtual    http://10.0.77.18:30809/artifactory/helm-virtual
+
+#To deploy a Helm Chart into an Artifactory repository you need to use Artifactory's REST API.
+$ curl -uadmin:AP412AQbN3DGPWuWXvrXvJrvzPX -T <PATH_TO_FILE> "http://10.0.77.17:30809/artifactory/helm-virtual/<TARGET_FILE_PATH>"
 ```
