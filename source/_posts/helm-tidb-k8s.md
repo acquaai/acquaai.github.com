@@ -77,49 +77,114 @@ CHART: tidb-v2.0.0
 ### Install Chart
 
 ```bash
-$ helm install --name pingcap ./tidb
+$ helm install --name pingcap tidb
 NAME:   pingcap
-LAST DEPLOYED: Wed Apr  4 17:20:31 2018
+LAST DEPLOYED: Sat Apr  7 15:57:13 2018
 NAMESPACE: default
 STATUS: DEPLOYED
 
 RESOURCES:
+==> v1beta1/Deployment
+NAME                 DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
+pingcap-tidb-db      1        1        1           0          1s
+pingcap-tidb-vision  1        1        1           0          1s
+
+==> v1beta1/StatefulSet
+NAME             DESIRED  CURRENT  AGE
+pingcap-tidb-pd  3        1        1s
+pingcap-tidb-kv  3        1        1s
+
+==> v1/Pod(related)
+NAME                                  READY  STATUS             RESTARTS  AGE
+pingcap-tidb-db-846cdff8c6-frb22      0/1    ContainerCreating  0         1s
+pingcap-tidb-vision-76bd48b96f-pmqnl  0/1    ContainerCreating  0         1s
+pingcap-tidb-pd-0                     0/1    ContainerCreating  0         1s
+pingcap-tidb-kv-0                     0/1    Init:0/1           0         1s
+
 ==> v1/StorageClass
 NAME                 PROVISIONER        AGE
 ceph-tidb (default)  kubernetes.io/rbd  1s
 
 ==> v1/Service
-NAME             TYPE       CLUSTER-IP  EXTERNAL-IP  PORT(S)             AGE
-pingcap-tidb-pd  ClusterIP  None        <none>       2379/TCP,2380/TCP   1s
-pingcap-tidb-db  ClusterIP  None        <none>       4000/TCP,10080/TCP  1s
+NAME                 TYPE       CLUSTER-IP     EXTERNAL-IP  PORT(S)                         AGE
+pingcap-tidb-pd      ClusterIP  None           <none>       2379/TCP,2380/TCP               1s
+pingcap-tidb-db      NodePort   10.254.164.24  <none>       4000:31975/TCP,10080:30608/TCP  1s
+pingcap-tidb-vision  NodePort   10.254.30.87   <none>       8010:30895/TCP                  1s
+```
+
+```bash
+$ helm status pingcap
+LAST DEPLOYED: Sat Apr  7 15:57:13 2018
+NAMESPACE: default
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/Pod(related)
+NAME                                  READY  STATUS   RESTARTS  AGE
+pingcap-tidb-db-846cdff8c6-frb22      1/1    Running  0         5m
+pingcap-tidb-vision-76bd48b96f-pmqnl  1/1    Running  0         5m
+pingcap-tidb-pd-0                     1/1    Running  0         5m
+pingcap-tidb-pd-1                     1/1    Running  1         5m
+pingcap-tidb-pd-2                     1/1    Running  1         5m
+pingcap-tidb-kv-0                     1/1    Running  1         5m
+pingcap-tidb-kv-1                     1/1    Running  0         4m
+pingcap-tidb-kv-2                     1/1    Running  0         3m
+
+==> v1/StorageClass
+NAME                 PROVISIONER        AGE
+ceph-tidb (default)  kubernetes.io/rbd  5m
+
+==> v1/Service
+NAME                 TYPE       CLUSTER-IP     EXTERNAL-IP  PORT(S)                         AGE
+pingcap-tidb-pd      ClusterIP  None           <none>       2379/TCP,2380/TCP               5m
+pingcap-tidb-db      NodePort   10.254.164.24  <none>       4000:31975/TCP,10080:30608/TCP  5m
+pingcap-tidb-vision  NodePort   10.254.30.87   <none>       8010:30895/TCP                  5m
 
 ==> v1beta1/Deployment
-NAME             DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
-pingcap-tidb-db  1        1        1           0          0s
+NAME                 DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
+pingcap-tidb-db      1        1        1           1          5m
+pingcap-tidb-vision  1        1        1           1          5m
 
 ==> v1beta1/StatefulSet
 NAME             DESIRED  CURRENT  AGE
-pingcap-tidb-pd  3        1        0s
-pingcap-tidb-kv  3        1        0s
-
-==> v1/Pod(related)
-NAME                              READY  STATUS             RESTARTS  AGE
-pingcap-tidb-db-846cdff8c6-z879m  0/1    ContainerCreating  0         0s
-pingcap-tidb-pd-0                 0/1    ContainerCreating  0         0s
-pingcap-tidb-kv-0                 0/1    Init:0/1           0         0s
-
-$ helm status pingcap
+pingcap-tidb-pd  3        3        5m
+pingcap-tidb-kv  3        3        5m
 ```
 
 > 注意`Chart.yaml`文件中 **name 和 version** 的值及`--name` **release name**，否则会报错：
 > 
 > Error: release PingCAP failed: Service "PingCAP-TiDB-pd" is invalid: metadata.name: Invalid value: "PingCAP-TiDB-pd": a DNS-1035 label must consist of lower case alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character (e.g. 'my-name',  or 'abc-123', regex used for validation is '[a-z]([-a-z0-9]*[a-z0-9])?')
-> 
+
+```sql
+$ mysql -h 10.0.77.17 -P 31975 -u root -D test
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 2
+Server version: 5.7.10-TiDB-v2.0.0-rc.3 MySQL Community Server (Apache License 2.0)
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| INFORMATION_SCHEMA |
+| PERFORMANCE_SCHEMA |
+| mysql              |
+| test               |
++--------------------+
+4 rows in set (0.01 sec)
+```
 
 ```bash
 $ helm list
 NAME    REVISION        UPDATED                         STATUS          CHART           NAMESPACE
-pingcap 1               Wed Apr  4 17:20:31 2018        DEPLOYED        tidb-v2.0.0     default
+pingcap 1               Sat Apr  7 15:57:13 2018        DEPLOYED        tidb-v2.0.0     default  
 
 $ helm delete pingcap
 release "pingcap" deleted
@@ -133,7 +198,7 @@ Or run: helm del --purge pingcap; to delete it
 
 $ helm ls --all
 NAME                    REVISION        UPDATED                         STATUS  CHART                   NAMESPACE
-pingcap                 1               Tue Apr  4 17:20:31 2018        DELETED tidb-v2.0.0             default  
+pingcap                 1               Tue Apr  7 17:20:31 2018        DELETED tidb-v2.0.0             default  
 
 $ helm del --purge pingcap
 release "pingcap" deleted
@@ -142,7 +207,7 @@ release "pingcap" deleted
 ### Deploy Chart into Artifactory
 
 ```json
-$ helm package ./tidb
+$ helm package tidb
 Successfully packaged chart and saved it to: /root/tidb-v2.0.0.tgz
 
 $ curl -uadmin:AP412AQbN3DGPWuWXvrXvJrvzPX -T tidb-v2.0.0.tgz "http://10.0.77.17:30809/artifactory/helm-virtual/tidb-v2.0.0.tgz"
@@ -170,10 +235,15 @@ $ curl -uadmin:AP412AQbN3DGPWuWXvrXvJrvzPX -T tidb-v2.0.0.tgz "http://10.0.77.17
 
 > 2018/04/04 03:10:07.591 tikv-server.rs:135: [ERROR] Limit("the maximum number of open file descriptors is too small, got 65536, expect greater or equal to 82920")
 
-> --max-open-files=1000000: Number of files that can be opened by Kubelet process. [default=1000000]
+```bash
+$ cat /etc/security/limits.d/90-file.conf
+root     -     nofile     1000000
+```
 
-coming soon...
+> 检查以下服务，修改并重启服务：
+docker.service、etcd.service、kube-apiserver.service、kube-controller-manager.service、kube-scheduler.service、kubelet.service、kube-proxy.service
 
+**`DOCKER_NOFILE=1000000`**
 
 **References**
 
