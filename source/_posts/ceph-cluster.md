@@ -1,13 +1,55 @@
 ---
-title: 快速部署Ceph集群
+title: Ceph Distributed Storage System
 date: 2018-03-13 17:18:28
 categories: DevOps
 ---
-## 集群环境
+## Ceph 介绍
 
+Ceph 是一个符合 POSIX 的开源分布式存储系统，能提供 Ceph Object、Ceph RBD 和 Ceph FS 的存储能力。Ceph Cluster至少需要一个`Ceph Monitor` 和两个`OSD Daemon`，当运行 Ceph 文件系统客户端时，还必须要有元数据服务器（MDS）。
 
+Components:
+
++ Monitors: 基于 PAXOS 算法维护集群状态的各种图表，包括监视器图、OSD图、PG图、CRUSH图。Ceph 保存( `epoch` )发生在 Monitor、OSD 和 PG 上的每一次状态变更的历史信息。
++ OSDs: 存储数据，处理数据的复制、恢复、回填、再均衡，并通过检查其它 OSD 守护进程的心跳来向 Monitors 提供监控信息。当存储集群设定为 2个副本 时，至少需要 2个OSD守护进程，集群才能达到` active + clean `的状态，Ceph 默认为 3副本。
++ MDSs: 存储 Ceph FS 元数据。（针对 Object/RBD 存储不需要 MDS）MDS也可以在多节点部署实现冗余。MDS守护进程可以被配置为活跃或者被动状态，活跃的MDS为主MDS，其他的MDS处于备用状态，当主MDS节点故障时，备用MDS节点会接管其工作并被提升为主节点。
+
+<!-- more -->
+
+![](/images/cephstack.png)
+
+![](/images/cepharch.png)
+
+**RADOS**
+
+RADOS (Reliable Autonomic Distributed Object Store)自身就是一套完整的对象存储系统，包括 Ceph 的基础服务（Monitor、OSD、MDS），存储应用数据，同时提供 Ceph 的高可用性、高扩展性和高自动化特性。
+
+**LibRados**
+
+对 RADOS 进行抽象和封装，向上层提供不同的 API（RGW、RBD、FS）。提供 C/C++ 原生 API。
+
+**APP的接口**
+
+抽象 LibRados，便于应用和客户端使用。
+
++ RGW: 提供与 S3 和 Swift 兼容的 RESTful API 的 gateway。通过 RGW 可以将 RADOS 响应转化为 HTTP 响应，反之亦然。
++ RBD: 提供一个标准的块设备接口服务。
++ CephFS: 提供一个 POSIX 兼容的分布式文件系统。
+
+**Client**
+
+Ceph 应用接口的应用方式，如基于 LibRados 直接开发的对象存储应用，基于 RGW 开发的对象存储应用，基于RBD实现的云硬盘等。
+
+一个 Ceph Cluster 逻辑上可以划分为多个 Pool，一个 Pool 由若干个逻辑 PG 组成。
+
+一个文件会被切分为多个 Object，每个 Object 被映射到一个 PG，每个 PG 会根据 CRUSH 算法映射到一组 OSD（根据副本数），其中第一个 OSD（Primary OSD）为主，其它为备，OSD之间通过心跳来互相监控存活状态。一般来讲增加 PG 的数量能降低 OSD 负载，每个OSD大约分配 50～100 PG。
+
+CRUSH: 是 Ceph 使用的数据分布算法，类似一致性哈希，使数据分配到预期的地方。
+
+## 部署 Ceph 集群
+
+IP  | Hostname | Roles |
+--- | ---| ---: |
 10.0.77.16    |  repo.k8s.com  |  admin-node, deploy-node
---- | ---| ---
 10.0.77.17    |  n1.k8s.com  |   mon
 10.0.77.18    |  n2.k8s.com  |  osd.1
 10.0.77.19    |  n3.k8s.com  |  osd.2
@@ -25,8 +67,6 @@ priority=2
 gpgcheck=1
 gpgkey=https://download.ceph.com/keys/release.asc
 ```
-
-<!-- more -->
 
 ### 安装 ceph-deploy
 
@@ -91,7 +131,7 @@ synchronised to NTP server (192.168.0.118) at stratum 4
    polling server every 1024 s
 ```
 
-## 创建集群
+## 安装 Ceph
 
 ```bash
 [root@repo ceph-cluster]# mkdir ceph-cluster && cd ceph-cluster
@@ -110,8 +150,6 @@ ceph.conf  ceph-deploy-ceph.log  ceph.mon.keyring
 把Ceph 配置文件里的ceph.conf里的默认副本数从 3 改成 2， 这样只有两个 OSD 也可以达到 active + clean 状态。把下面这行加入 [global] 段：
 
 `osd pool default size = 2`
-
-### 安装 ceph
 
 从管理节点执行各节点安装ceph：
 
@@ -236,7 +274,7 @@ ceph-deploy purge {ceph-node} [{ceph-node}]
 
 ## 操作集群
 
-### 存入/检出对象数据
+### 对象存储测试
 
 要把对象存入 Ceph 存储集群，客户端必须做到：
 
@@ -253,7 +291,7 @@ ceph-deploy purge {ceph-node} [{ceph-node}]
 集群上只有rbd一个存储池，创建名为 k8s 的存储池: 
 
 ```bash
-[root@repo ceph-cluster]# ceph osd pool create k8s 100
+[root@repo ceph-cluster]# ceph osd pool create k8s 100   # 100个 PG
 pool 'k8s' created
 ```
 
@@ -277,7 +315,8 @@ test-object-1
 定位对象: 
 
 ```bash
-[root@repo ~]# ceph osd map {pool-name} {object-name}
+ceph osd map {pool-name} {object-name}
+
 [root@repo ~]# ceph osd map k8s test-object-1
 osdmap e12 pool 'k8s' (1) object 'test-object-1' -> pg 1.74dc35e2 (1.62) -> up ([0,1], p0) acting ([0,1], p0)
 ```
@@ -288,6 +327,103 @@ osdmap e12 pool 'k8s' (1) object 'test-object-1' -> pg 1.74dc35e2 (1.62) -> up (
 [root@repo ~]# rados rm test-object-1 --pool=k8s
 ```
 
+### 文件系统测试
+
+[**Important:**](http://docs.ceph.org.cn/rados/deployment/ceph-deploy-mds/) 必须部署至少一个元数据服务器才能使用 CephFS 文件系统，多个元数据服务器并行运行仍处于实验阶段，不要在生产环境下运行多个元数据服务器。
+
+在 Ceph 管理节点上执行如下命令为集群增加一个MDS:
+
+```bash
+ceph-deploy mds create {host-name}[:{daemon-name}] [{host-name}[:{daemon-name}] ...]
+```
+
+```bash
+$ ceph-deploy --overwrite-conf mds create n1.k8s.com
+```
+
+1.创建 CephFS
+
+CephFS需要使用两个Pool来分别存储数据和元数据，分别创建fs_data和fs_metadata两个Pool。
+
+> PG 数量指定一般遵循的公式：
+
+> + 集群 PG 总数 = ( OSD总数 * 100 ) / 数据最大副本数
+> + 单个存储池 PG 数 = ( OSD总数 * 100 ) / 数据最大副本数 / 存储池数
+
+PG 的最终结果以最接近上述公式的 $ 2^N $ 向上取值，如：
+PG = 2 * 100 / 2 / 2 = 50，向上取 $ 2^6 $ 为 64，最接近 50，故 `PG = 64`
+
+```bash
+$ ceph osd pool create fs_data 128
+pool 'fs_data' created
+
+$ ceph osd pool create fs_metadata 128
+pool 'fs_metadata' created
+
+$ ceph osd lspools
+0 rbd,1 k8s,2 fs_data,3 fs_metadata,
+```
+
+```bash
+$ ceph fs new cephfs fs_metadata fs_data
+new fs with metadata pool 3 and data pool 2
+
+$ ceph fs ls
+name: cephfs, metadata pool: fs_metadata, data pools: [fs_data ]
+```
+
+2.Mount CephFS
+
+客户端访问Ceph FS有两种方式：
+
++ Kernel内核驱动：Linux内核从2.6.34版本开始加入对CephFS的原声支持
++ Ceph FS FUSE： FUSE即Filesystem in Userspace
+
+3.用内核驱动挂载 Ceph 文件系统
+
+```bash
+[root@mysql01 ~]$ uname -r
+3.10.0-693.5.2.el7.x86_64
+
+[root@mysql01 ~]$ mkdir /mnt/cephfs
+[root@mysql01 ~]$ mkdir /etc/ceph
+
+[root@mysql01 ~]$ scp -P 8086 root@10.0.77.16:/root/ceph-cluster/ceph.client.admin.keyring /etc/ceph
+
+[root@mysql01 ceph]$ mv ceph.client.admin.keyring admin.secret
+[root@mysql01 ceph]$ cat admin.secret
+AQCwhKdaIbKRHxAAYfCmoj+VRsfQXSs0784Kow==
+
+[root@mysql01 ~]$ mount -t ceph 10.0.77.17:6789,10.0.77.18:6789,10.0.77.19:6789:/ /mnt/cephfs -o name=admin,secretfile=admin.secret
+
+Filesystem                                         Size  Used Avail Use% Mounted on
+10.0.77.17:6789,10.0.77.18:6789,10.0.77.19:6789:/  362G   30G  333G   9% /mnt/cephfs
+```
+
+> `secretfile= option`时，CentOS7.3 - 3.10.0-693.5.2.el7.x86_64有bug，CentOS7.4 - 3.10.0-514.el7.x86_64时正常，直接使用`secret= option`时都正常。
+
 **Reference**
 
 + [Ceph Documentation](http://docs.ceph.org.cn/start/)
++ [CEPH FS QUICK START](http://docs.ceph.com/docs/master/start/quick-cephfs/#)
+
+
+使用kubeadm安装Kubernetes 1.9
+https://blog.frognew.com/2017/12/kubeadm-install-kubernetes-1.9.html
+
+
+二进制安装kubernetes 1.9.1
+https://jicki.me/2018/01/23/kubernetes-1.9.1/
+
+
+
+https://www.anaconda.com/download/#macos
+
+
+
+
+➜  acquaai.github.com git:(hexo) ✗ npm install hexo-math --save
+
+_config.yml文件中添加：
+
+plugins: hexo-math
