@@ -7,8 +7,6 @@ categories: DevOps
  
 本文将使用 `Helm` 包管理器在 `Kubernetes` 集群上部署 `TiDB`。
 
-[Helm on Kubernetes](https://acquaai.github.io/2018/04/02/helm/)
-
 ## TiDB Chart
 
 > [TiDB](https://pingcap.com) 是新一代开源分布式 NewSQL 数据库，模型受 Google Spanner / F1 论文的启发，实现了自动的水平伸缩，强一致性的分布式事务，基于 Raft 算法的多副本复制等重要 NewSQL 特性。TiDB 结合了 RDBMS 和 NoSQL 的优点，部署简单，在线弹性扩容和异步表结构变更不影响业务， 真正的异地多活及自动故障恢复保障数据安全，同时兼容 MySQL 协议，使迁移使用成本降到极低。
@@ -191,7 +189,7 @@ release "pingcap" deleted
 ```
 
 ```bash
-$ helm install --name pingcap ./tidb
+$ helm install --name pingcap tidb
 Error: a release named pingcap already exists.
 Run: helm ls --all pingcap; to check the status of the release
 Or run: helm del --purge pingcap; to delete it
@@ -235,15 +233,55 @@ $ curl -uadmin:AP412AQbN3DGPWuWXvrXvJrvzPX -T tidb-v2.0.0.tgz "http://10.0.77.17
 
 > 2018/04/04 03:10:07.591 tikv-server.rs:135: [ERROR] Limit("the maximum number of open file descriptors is too small, got 65536, expect greater or equal to 82920")
 
+Linux 有文件句柄限制，默认1024，系统总限制可以查看：
+
 ```bash
-$ cat /etc/security/limits.d/90-file.conf
-root     -     nofile     1000000
+$ cat /proc/sys/fs/file-max
+807856
 ```
 
-> 检查以下服务，修改并重启服务：
-docker.service、etcd.service、kube-apiserver.service、kube-controller-manager.service、kube-scheduler.service、kubelet.service、kube-proxy.service
+系统当前使用的文件句柄数量：
 
-**`DOCKER_NOFILE=1000000`**
+```bash
+$ cat /proc/sys/fs/file-nr 
+3424    0       807856
+```
+
+查看进程开启的句柄：
+
+```bash
+$ lsof -n |awk '{print $2}'|sort|uniq -c |sort -nr|more
+```
+
+> 修改`Docker`(/usr/lib/systemd/system/docker.service)的服务并重启：
+
+~~LimitNOFILE=infinity~~
+
+```bash
+$ ps -ef|grep docker
+root      3400  3390  1 07:56 ?        00:00:00 docker-containerd --config /var/run/docker/containerd/containerd.toml
+...
+
+$ cat /proc/3400/limits |grep "Max open files"
+Max open files            65536                65536                files
+```
+
+**`LimitNOFILE=1000000`**
+
+```bash
+$ cat /proc/1393/limits |grep "Max open files"
+Max open files            1000000              1000000              files
+```
+
+~~DOCKER_NOFILE=1000000 在我的CentOS Linux release 7.3.1611 (Core)中未生效。~~
+
+**option**
+limits.conf 文件实际是 Linux PAM（插入式认证模块，Pluggable Authentication Modules）中 pam_limits.so 的配置文件，突破系统的默认限制，对系统访问资源有一定保护作用。limits.conf 和 sysctl.conf 区别在于 limits.conf 是针对用户，而 sysctl.conf 是针对整个系统参数配置。
+
+```bash
+$ cat /etc/security/limits.conf
+root     -     nofile     1000000
+```
 
 **References**
 
