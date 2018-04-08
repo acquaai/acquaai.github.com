@@ -73,10 +73,6 @@ pagination_dir: page
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 theme: even
-cdn:
-    mathjax: https://cdn.mathjax.org
-#math:
-#  engine: 'mathjax'
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html

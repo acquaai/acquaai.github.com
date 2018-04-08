@@ -2,7 +2,6 @@
 title: Ceph Distributed Storage System
 date: 2018-03-13 17:18:28
 categories: DevOps
-mathjax: true
 ---
 ## Ceph 介绍
 
@@ -351,8 +350,8 @@ CephFS需要使用两个Pool来分别存储数据和元数据，分别创建fs_d
 > + 集群 PG 总数 = ( OSD总数 * 100 ) / 数据最大副本数
 > + 单个存储池 PG 数 = ( OSD总数 * 100 ) / 数据最大副本数 / 存储池数
 
-PG 的最终结果以最接近上述公式的 $2^N$ 向上取值，如：
-PG = 2 * 100 / 2 / 2 = 50，向上取 $2^6$ 为 64，最接近 50，故 `PG = 64`
+PG 的最终结果以最接近上述公式的 2^N^ 向上取值，如：
+PG = 2 * 100 / 2 / 2 = 50，向上取 2^6^ 为 64，最接近 50，故 `PG = 64`
 
 ```bash
 $ ceph osd pool create fs_data 128
