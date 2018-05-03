@@ -108,6 +108,7 @@ localhost:4000	#在浏览器中查看效果
 ``` bash
 ➜  acquaai.github.com git:(hexo) npm install hexo-deployer-git --save
 ```
+
 ### 网站发布
 ``` bash
 ➜  acquaai.github.com git:(hexo) vi _config.yml
@@ -137,6 +138,12 @@ theme: even
 
 ``` bash
 ➜  acquaai.github.com git:(hexo) npm install hexo-generator-feed --save
+```
+
+## [hexo-renderer-markdown-it-plus](https://github.com/CHENXCHEN/HEXO-RENDERER-MARKDOWN-IT-PLUS)
+``` bash
+➜  acquaai.github.com git:(hexo) npm un hexo-renderer-marked --save
+➜  acquaai.github.com git:(hexo) npm i hexo-renderer-markdown-it-plus --save
 ```
 
 ## hexo分支提交源码文件
