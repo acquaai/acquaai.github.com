@@ -4,7 +4,7 @@ date: 2017-10-24 23:13:30
 layout: page
 comments: false
 ---
-The word **Acqua** is the Italian word for water. I'm a **DB~~A~~->Architect**, also **OpenSource** enthusiast and **DevOps**, **Cloud Native** and **Machine Learning** learner.
+The word **Acqua** is the Italian word for water. I currently focused on **DevOps**, also **Open Source** enthusiast, **Cloud Native** and **Machine Learning** learner.
 ## Familiar Skills:
 - ORACLE 9i/10g Administrator Certified Professional
 - IBM Certified Implementation Specialist
