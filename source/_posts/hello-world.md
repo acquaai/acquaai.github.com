@@ -243,4 +243,5 @@ Git仓库根目录下`.git/info/exclude`文件中添加的任何规则都不会�
 + 部署hexo d
 + git push origin hexo
 
-
+**Reference**
+[语法](http://whuhan2013.github.io/blog/2015/09/19/markdown-simple-grammar/)
