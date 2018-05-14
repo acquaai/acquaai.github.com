@@ -19,9 +19,9 @@ categories: MySQL
 $ cat /etc/redhat-release 
   CentOS Linux release 7.3.1611 (Core)
   
-$ yum install cmake gcc gcc-c++ bison libaio-devel ncurses-devel
+$ yum install cmake gcc gcc-c++ bison libaio-devel ncurses-devel openssl openssl-devel
 $ groupadd mysql
-$ useradd -r -g mysql -s /sbin/nologin mysql
+$ useradd -r -g mysql -s /bin/false mysql
 ```
 
 <!-- more -->
@@ -64,7 +64,7 @@ $ make install
 
 ### Configure MySQL System Environment variables
 ```
-export PATH=/usr/local/mysql/bin:$PATH:$HOME/bin
+export PATH=$PATH:$HOME/bin:/usr/local/mysql/bin
 ```
 
 ### Postinstallation setup
@@ -87,11 +87,9 @@ $ chown -R mysql:mysql data_3306
 $ chmod -R 750 data_3306
 $ chown mysql:mysql my.cnf
 $ chmod 750 my.cnf
-$ bin/mysqld --defaults-file=/usr/local/mysql/my.cnf --initialize --user=mysql
-```
-*$ bin/mysql_ssl_rsa_setup --datadir=/usr/local/mysql/data_3306*
+$ mysqld --defaults-file=/usr/local/mysql/my.cnf --initialize --user=mysql
+$ mysql_ssl_rsa_setup --datadir=/usr/local/mysql/data_3306
 
-```bash
 $ nohup /usr/local/mysql/bin/mysqld --defaults-file=/usr/local/mysql/my.cnf --user=mysql > /tmp/mysql.log 2>&1 &
 ```
 

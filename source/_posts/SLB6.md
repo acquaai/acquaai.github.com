@@ -50,7 +50,7 @@ virtual_server x.x.x.78 53 {
     lb_algo rr
     lb_kind DR
     nat_mask 255.255.255.0
-    persistence_timeout 50
+   #persistence_timeout 50
     protocol UDP
 
     real_server x.x.x.73 53 {
@@ -190,7 +190,7 @@ virtual_server {
        delay_loop 6
        lb_algo rr
        lb_kind DR
-       persistence_timeout 50
+      #persistence_timeout 50
        protocol UDP
 
        sorry_server {
