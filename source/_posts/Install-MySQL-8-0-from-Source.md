@@ -134,5 +134,15 @@ ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/tmp/mys
 $ mysql -uroot -ppassword -S /usr/local/mysql/data_3306/mysql.sock
 ```
 
+### Shutdown MySQL Server
+
+```bash
+$ mysqladmin -uroot -p shutdown
+OR:
+$ mysqld stop
+OR:
+$ mysql.server stop
+```
+
 **Reference**
 [MySQL 8.0 Reference Manual](https://dev.mysql.com/doc/refman/8.0/en/source-installation.html)
