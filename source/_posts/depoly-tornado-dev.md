@@ -5,9 +5,9 @@ categories: Python
 ---
 `Tornado`：[Tornado](http://www.tornadoweb.org/en/stable/) 是 Python 编写出来的一个极轻量级、高可伸缩性和非阻塞IO的Web服务器软件，例如前 Friendfeed 网站。
 
-`Supervisor`：一个服务（进程）管理工具，主要用于监控服务器上的服务，并且在出现问题时t自动重启。
+`Supervisor`：一个服务（进程）管理工具，主要用于监控服务器上的服务，并且在出现问题时自动重启。
 
-`Nginx`：在这里做为反向代理。
+`Nginx`：在这里作为反向代理。
 
 <!-- more -->
 
