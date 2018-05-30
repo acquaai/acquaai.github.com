@@ -239,6 +239,19 @@ Events:
   Normal  Started                2m    kubelet, 10.0.77.17  Started container
 ```
 
+**Client Access 2/3 Ways**
+
+如果10.0.88.16主机访问Harbor仓库，需要将Harbor的证书拷贝过来：
+
+```bash
+$ mkdir -p /etc/docker/certs.d/10.0.77.16 && cd /etc/docker/certs.d/10.0.77.16
+$ scp -P 8086 root@10.0.77.16:/etc/docker/certs.d/10.0.77.16/ca.crt ./
+$ docker login 10.0.77.16 
+Username: acqua
+Password: 
+Login Succeeded
+```
+
 **参考**
 
 + [configure_https](https://github.com/vmware/harbor/blob/master/docs/configure_https.md)
