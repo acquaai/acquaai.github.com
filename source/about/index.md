@@ -48,3 +48,13 @@ The word **Acqua** is the Italian word for water. I currently focused on **DevOp
 <figure class="half">
 <img src="http://p564fpez5.bkt.clouddn.com/readbooks/Intermediate-Python.png" title="Intermediate Python" high="100" width="150">
 </figure>
+
++ **2018-06**
+<figure class="half">
+<img src="http://p564fpez5.bkt.clouddn.com/readbooks/yuejin-angela.png" title="Intermediate Python" high="100" width="150">
+</figure>
+
++ **2018-07**
+<figure class="half">
+<img src="http://p564fpez5.bkt.clouddn.com/readbooks/redis_devops.png" title="Intermediate Python" high="100" width="150">
+</figure>
