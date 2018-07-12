@@ -51,10 +51,10 @@ The word **Acqua** is the Italian word for water. I currently focused on **DevOp
 
 + **2018-06**
 <figure class="half">
-<img src="http://p564fpez5.bkt.clouddn.com/readbooks/yuejin-angela.png" title="Intermediate Python" high="100" width="150">
+<img src="http://p564fpez5.bkt.clouddn.com/readbooks/yuejin-angela.png" title="跃进：从技术到管理的硅谷路径" high="100" width="150">
 </figure>
 
 + **2018-07**
 <figure class="half">
-<img src="http://p564fpez5.bkt.clouddn.com/readbooks/redis_devops.png" title="Intermediate Python" high="100" width="150">
+<img src="http://p564fpez5.bkt.clouddn.com/readbooks/redis_devops.png" title="Redis开发与运维" high="100" width="150">
 </figure>
