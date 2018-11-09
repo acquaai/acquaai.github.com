@@ -42,7 +42,7 @@ $ sudo groupadd haproxy
 + 安装系统包
 
 ```bash
-$ sudo yum install -y gcc net-snmp net-snmp-devel net-snmp-agent-libs、net-snmp-libs  pcre-static pcre-devel
+$ sudo yum install -y gcc net-snmp net-snmp-devel net-snmp-agent-libs net-snmp-libs  pcre-static pcre-devel
 ```
 
 + Download [HAProxy](http://www.haproxy.org/)
@@ -89,7 +89,7 @@ $ sudo ln -s /usr/local/haproxy/sbin/haproxy  /usr/sbin/haproxy
 + 配置HAProxy服务
 
 ```bash
-$ sudo cp /examples/haproxy.init /etc/rc.d/init.d/haproxy
+$ sudo cp examples/haproxy.init /etc/rc.d/init.d/haproxy
 $ sudo chmod 755 /etc/rc.d/init.d/haproxy
 $ sudo systemctl daemon-reload
 $ sudo chkconfig --add haproxy
