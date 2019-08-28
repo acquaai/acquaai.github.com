@@ -87,7 +87,7 @@ export NVM_DIR="$HOME/.nvm"
 ## 安装hexo
 ``` bash
 ➜  ~ cd acquaai.github.com
-➜  acquaai.github.com sudo npm install -g hexo-cli
+➜  acquaai.github.com npm install -g hexo-cli
 ```
 ### 部署网站
 ``` bash
@@ -234,9 +234,9 @@ Git仓库根目录下`.git/info/exclude`文件中添加的任何规则都不会�
 
 ## 多台电脑上编辑、发布文章
 + 安装、配置git
-+ clone网站仓库，并切换到hexo分支
++ clone网站仓库，git checkout hexo
 + 安装nvm、Node
-+ 安装hexo
++ 安装hexo (do not init)
 + npm install
 + 安装所需插件
 + 编写博客

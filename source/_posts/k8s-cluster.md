@@ -13,7 +13,7 @@ categories: DevOps
 
 <!-- more -->
 
-[K8S集群部署完整文档](https://github.com/acquaai/K8S/blob/master/docs/K8S-Cluster-Deployment.md)
+[K8S集群部署完整文档](https://github.com/acquaai/Kubernetes/blob/master/k8s-cluster-with-binary/k8s-with-binary.md)
 
 **Reference**
 [Jimmy Song的博客](https://jimmysong.io/posts/kubernetes-installation-document/)
