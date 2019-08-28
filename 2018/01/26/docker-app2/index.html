@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="构建Docker多容器应用">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2018/01/26/docker-app2/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> 构建Docker多容器应用 - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          构建Docker多容器应用
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-01-26
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#cluster-info"><span class="toc-text"> Cluster Info</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#nodejs-image"><span class="toc-text"> Node.js Image</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#redis-base-image"><span class="toc-text"> Redis Base Image</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#redis-master-image"><span class="toc-text"> Redis Master Image</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#redis-slave-image"><span class="toc-text"> Redis Slave Image</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#redis-cluster"><span class="toc-text"> Redis Cluster</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#node-container"><span class="toc-text"> Node Container</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#capture-app-logs"><span class="toc-text"> Capture App Logs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#no-ssh-4-docker"><span class="toc-text"> No SSH 4 Docker</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="cluster-info"><a class="markdownIt-Anchor" href="#cluster-info"></a> Cluster Info</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Container</th>
+<th style="text-align:left">Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">1 Node</td>
+<td style="text-align:left">Node应用</td>
+</tr>
+<tr>
+<td style="text-align:left">1 Redis Master</td>
+<td style="text-align:left">保存和集群化应用状态</td>
+</tr>
+<tr>
+<td style="text-align:left">2 Redis Slave</td>
+<td style="text-align:left">集群化应用状态</td>
+</tr>
+<tr>
+<td style="text-align:left">1 log</td>
+<td style="text-align:left">捕获应用日志</td>
+</tr>
+</tbody>
+</table>
+<a id="more"></a>
+<h3 id="nodejs-image"><a class="markdownIt-Anchor" href="#nodejs-image"></a> Node.js Image</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir nodejs &amp;&amp; <span class="built_in">cd</span> nodejs</span><br><span class="line">$ mkdir nodeapp &amp;&amp; <span class="built_in">cd</span> nodeapp</span><br><span class="line">$ wget https://raw.githubusercontent.com/jamtur01/dockerbook-code/</span><br><span class="line">master/code/6/node/nodejs/nodeapp/package.json</span><br><span class="line"></span><br><span class="line">$ wget https://raw.githubusercontent.com/jamtur01/dockerbook-code/</span><br><span class="line">master/code/6/node/nodejs/nodeapp/server.js</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">cd</span> ..</span><br><span class="line">$ vi Dockerfile</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/acquaai/dockerjenkins/blob/master/nodejs/N_Dockerfile" target="_blank" rel="noopener">Dockerfile</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker build -t acqua/nodejs .</span><br></pre></td></tr></table></figure>
+<h3 id="redis-base-image"><a class="markdownIt-Anchor" href="#redis-base-image"></a> Redis Base Image</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir redis_base &amp;&amp; <span class="built_in">cd</span> redis_base</span><br><span class="line">$ vi Dockerfile</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/acquaai/dockerjenkins/blob/master/nodejs/redis_base/Dockerfile" target="_blank" rel="noopener">Dockerfile</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker build -t acqua/redis .</span><br></pre></td></tr></table></figure>
+<h3 id="redis-master-image"><a class="markdownIt-Anchor" href="#redis-master-image"></a> Redis Master Image</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir redis_master &amp;&amp; <span class="built_in">cd</span> redis_master</span><br><span class="line">$ vi Dockerfile</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/acquaai/dockerjenkins/blob/master/nodejs/redis_primary/Dockerfile" target="_blank" rel="noopener">Dockerfile</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker build -t acqua/redis_master .</span><br></pre></td></tr></table></figure>
+<h3 id="redis-slave-image"><a class="markdownIt-Anchor" href="#redis-slave-image"></a> Redis Slave Image</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir redis_slave &amp;&amp; <span class="built_in">cd</span> redis_slave</span><br><span class="line">$ vi Dockerfile</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/acquaai/dockerjenkins/blob/master/nodejs/redis_replica/Dockerfile" target="_blank" rel="noopener">Dockerfile</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker build -t acqua/redis_slave .</span><br></pre></td></tr></table></figure>
+<h3 id="redis-cluster"><a class="markdownIt-Anchor" href="#redis-cluster"></a> Redis Cluster</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d -h redis_master \</span><br><span class="line"> --name redis_master acqua/redis_master</span><br><span class="line"></span><br><span class="line">-h 参数设置容器的主机名。-h会覆盖默认行为（默认将容器主机名设置为容器 ID），容器使用 redis_master 作为主机名，并被本地 DNS 服务正确解析。--name参数指定容器名 redis_master。</span><br><span class="line"></span><br><span class="line">$ docker logs redis_master</span><br><span class="line">$ docker run -ti --rm --volumes-from redis_master \</span><br><span class="line"> ubuntu cat /var/<span class="built_in">log</span>/redis/redis-server.log</span><br><span class="line"></span><br><span class="line">$ docker run -d -h redis_slave \</span><br><span class="line">  --name redis_slave \</span><br><span class="line">  --link redis_master:redis_master \</span><br><span class="line">  acqua/redis_slave</span><br><span class="line"></span><br><span class="line">$ docker run -ti --rm --volumes-from redis_slave \</span><br><span class="line">  ubuntu cat /var/<span class="built_in">log</span>/redis/redis-slave.log</span><br><span class="line"></span><br><span class="line">......</span><br><span class="line">1:S 26 Jan 01:35:54.084 * Ready to accept connections</span><br><span class="line">1:S 26 Jan 01:35:54.084 * Connecting to MASTER redis_master:6379</span><br><span class="line">1:S 26 Jan 01:35:54.085 * MASTER &lt;-&gt; SLAVE sync started</span><br><span class="line">1:S 26 Jan 01:35:54.085 * Non blocking connect <span class="keyword">for</span> SYNC fired the event.</span><br><span class="line">1:S 26 Jan 01:35:54.085 * Master replied to PING, replication can <span class="built_in">continue</span>...</span><br><span class="line">1:S 26 Jan 01:35:54.085 * Partial resynchronization not possible (no cached master)</span><br><span class="line">1:S 26 Jan 01:35:54.086 * Full resync from master: fc21c9aef176d604b8764ee9295f521a2656b2ad:0</span><br><span class="line">1:S 26 Jan 01:35:54.190 * MASTER &lt;-&gt; SLAVE sync: receiving 175 bytes from master</span><br><span class="line">1:S 26 Jan 01:35:54.190 * MASTER &lt;-&gt; SLAVE sync: Flushing old data</span><br><span class="line">1:S 26 Jan 01:35:54.190 * MASTER &lt;-&gt; SLAVE sync: Loading DB <span class="keyword">in</span> memory</span><br><span class="line">1:S 26 Jan 01:35:54.190 * MASTER &lt;-&gt; SLAVE sync: Finished with success</span><br></pre></td></tr></table></figure>
+<p><strong>增加 Redis Slave 节点</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d -h redis_slave2 \</span><br><span class="line">  --name redis_slave2 \</span><br><span class="line">  --link redis_master:redis_master \</span><br><span class="line">  acqua/redis_slave</span><br><span class="line"></span><br><span class="line">$ docker run -ti --rm --volumes-from redis_slave2 \</span><br><span class="line">  ubuntu cat /var/<span class="built_in">log</span>/redis/redis-slave.log</span><br></pre></td></tr></table></figure>
+<h3 id="node-container"><a class="markdownIt-Anchor" href="#node-container"></a> Node Container</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d \</span><br><span class="line">  --name nodeapp -p 3000:3000 \</span><br><span class="line">  --link redis_master:redis_master \</span><br><span class="line">  acqua/nodejs</span><br><span class="line"></span><br><span class="line">$ docker logs nodeapp</span><br><span class="line">Listening on port 3000</span><br></pre></td></tr></table></figure>
+<p>浏览器的会话状态会先被记录到 redis_master 容器，然后同步到 redis_slave、redis_slave2中。</p>
+<h3 id="capture-app-logs"><a class="markdownIt-Anchor" href="#capture-app-logs"></a> Capture App Logs</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir logstash &amp;&amp; <span class="built_in">cd</span> logstash</span><br><span class="line">$ vi Dockerfile</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/acquaai/dockerjenkins/tree/master/nodejs/logstash" target="_blank" rel="noopener">Dockerfile</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ docker build -t acqua/logstash .</span><br><span class="line"></span><br><span class="line">$ docker run  -d --name logstash \</span><br><span class="line">  --volumes-from redis_master \</span><br><span class="line">  --volumes-from nodeapp \</span><br><span class="line">  acqua/logstash</span><br><span class="line"></span><br><span class="line">$ docker logs -f logstash</span><br></pre></td></tr></table></figure>
+<p>刷新浏览器 <a href="http://x.x.x.x:3000" target="_blank" rel="noopener">http://x.x.x.x:3000</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">       &quot;message&quot; =&gt; &quot;::ffff:10.8.106.12 - - [Fri, 26 Jan 2018 02:14:58 GMT] \&quot;GET / HTTP/1.1\&quot; 200 20 \&quot;-\&quot; \&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7\&quot;&quot;,</span><br><span class="line">      &quot;@version&quot; =&gt; &quot;1&quot;,</span><br><span class="line">    &quot;@timestamp&quot; =&gt; &quot;2018-01-26T02:14:58.681Z&quot;,</span><br><span class="line">          &quot;host&quot; =&gt; &quot;fed88e7f73d0&quot;,</span><br><span class="line">          &quot;path&quot; =&gt; &quot;/var/log/nodeapp/nodeapp.log&quot;,</span><br><span class="line">          &quot;type&quot; =&gt; &quot;syslog&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="no-ssh-4-docker"><a class="markdownIt-Anchor" href="#no-ssh-4-docker"></a> No SSH 4 Docker</h3>
+<ul>
+<li>
+<p>如果服务通过某个网络接口来管理，可以在启动容器时暴露这个接口。</p>
+</li>
+<li>
+<p>如果服务通过 socket 来管理，可以通过卷公开这个套接字。</p>
+</li>
+<li>
+<p>如果要给容器发信号（非杀掉容器）：</p>
+<p><code>docker kill -s &lt;signal&gt; &lt;container&gt;</code></p>
+</li>
+<li>
+<p><code>docker exec</code></p>
+</li>
+</ul>
+<p><strong>Reference</strong><br>
+<a href="https://github.com/turnbullpress/dockerbook-code" target="_blank" rel="noopener">The Docker Book</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2018/01/26/docker-app2/">https://acquaai.github.io/2018/01/26/docker-app2/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/01/27/docker-consul/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Consul服务发现</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/01/25/docker-ci/">
+        <span class="next-text nav-default">Docker CI</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2018/01/26/docker-app2/';
+        this.page.identifier = '2018/01/26/docker-app2/';
+        this.page.title = '构建Docker多容器应用';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

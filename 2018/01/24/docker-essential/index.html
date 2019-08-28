@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Docker基础学习">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2018/01/24/docker-essential/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Docker基础学习 - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Docker基础学习
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-01-24
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#install"><span class="toc-text"> Install</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#commonly-commands"><span class="toc-text"> Commonly Commands</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#docker镜像和仓库"><span class="toc-text"> Docker镜像和仓库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#docker镜像"><span class="toc-text"> Docker镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#从镜像启动容器"><span class="toc-text"> 从镜像启动容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dockerfile-指令"><span class="toc-text"> Dockerfile 指令</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="install"><a class="markdownIt-Anchor" href="#install"></a> Install</h2>
+<p><a href="https://docs.docker.com/engine/installation/linux/docker-ce/centos/" target="_blank" rel="noopener">Docker CE</a></p>
+<h2 id="commonly-commands"><a class="markdownIt-Anchor" href="#commonly-commands"></a> Commonly Commands</h2>
+<p><code>$ docker run -ti --name ubuntu /bin/bash</code><br>
+基于ubuntu镜像启动一个新的new_C容器，并在容器中启动Bash Shell。</p>
+<a id="more"></a>
+<p><code>$ docker exec -d new_C touch /etc/newfile</code><br>
+-d 表明需要运行一个后台进程，-d 参数之后，指定要在内部执行这个命令的容器名字以及要执行的命令。</p>
+<p><code>$ docker exec -ti new_C /bin/bash</code><br>
+-ti 参数为执行的进程创建TTY并捕捉STDIN。</p>
+<p><code>$ docker ps -n 2</code><br>
+显示最后2个容器，无论这些容器运行还是停止。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker run --restart=always --name new_C -d ubuntu /bin/sh -c <span class="string">"while true; \</span></span><br><span class="line"><span class="string">    do echo Hello World; sleep 1; done"</span></span><br><span class="line">容器自动重；--restart=on-failure:3 尝试重启3次。</span><br></pre></td></tr></table></figure>
+<p><code>$ docker inspect new_C</code><br>
+查看容器信息。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker inspect --format=<span class="string">'&#123;&#123; .NetworkSettings.IPAddress &#125;&#125;'</span> new_C</span><br><span class="line">172.17.0.2</span><br><span class="line">--format 查看指定信息</span><br></pre></td></tr></table></figure>
+<p><code>$ docker rm new_C</code><br>
+删除容器，-f 强制删除活动容器。</p>
+<p><code>$ docker rm $(docker ps -aq)</code><br>
+删除所有非活动容器。</p>
+<p><code>$ docker rmi acqua/test_web</code><br>
+<code>$ docker rmi $(docker images -aq)</code><br>
+删除镜像。</p>
+<h2 id="docker镜像和仓库"><a class="markdownIt-Anchor" href="#docker镜像和仓库"></a> Docker镜像和仓库</h2>
+<h3 id="docker镜像"><a class="markdownIt-Anchor" href="#docker镜像"></a> Docker镜像</h3>
+<blockquote>
+<p>Docker镜像是由文件系统叠加而成。最底端是一个引导文件系统，即bootfs。Docker用户几乎不会与此有交互。当一个容器启动后，它将会被移到内存中，而引导文件系统则会umount，以留出更多的内存供initrd磁盘镜像使用。在Docker里，rootfs永远只能是只读状态，并且Docker利用联合加载（union mount）技术又会在rootfs层上加载更多的只读文件系统。联合加载指的是一次同时加载多个文件系统，但是外表看起来只能看到一个文件系统。联合加载会将各层文件系统叠加到一起，这样最终的文件系统会包含所有底层的文件和目录。Docker将这样的文件系统称为镜像。当从一个镜像启动容器时，Docker会在该镜像的最顶层加载一个读写文件系统，程序就是在这个读写层中执行。</p>
+</blockquote>
+<p><code>Copy on write</code><br>
+Docker第一次启动一个容器时，初始的读写层是空的。当文件系统发生变化时，这些变化都会应用到这一层上。比如，修改一个文件，这个文件首先从该读写层下面的只读层复制到该读写层。该文件的只读版本依然存在，但是已经被读写层中的该文件副本所隐藏。</p>
+<p><code>image-layering framework</code></p>
+<ul>
+<li>显示Docker镜像</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ docker images</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">docker.io/ubuntu    latest              00fd29ccc6f1        4 weeks ago         110.5 MB</span><br><span class="line">docker.io/centos    latest              3fa822599e10        6 weeks ago         203.5 MB</span><br><span class="line"></span><br><span class="line">$ docker images centos</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">docker.io/centos    latest              3fa822599e10        6 weeks ago         203.5 MB</span><br></pre></td></tr></table></figure>
+<ul>
+<li>拉取ubuntu仓库中所有内容</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ docker pull ubuntu</span><br><span class="line">$ docker pull ubuntu:16.04</span><br><span class="line"></span><br><span class="line">$ docker search mysql</span><br><span class="line">INDEX       NAME                             DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED</span><br><span class="line">docker.io   docker.io/mysql                  MySQL is a widely used, open-source relati...   5545      [OK]       </span><br><span class="line">docker.io   docker.io/mariadb                MariaDB is a community-developed fork of M...   1718      [OK]       </span><br><span class="line">docker.io   docker.io/mysql/mysql-server     Optimized MySQL Server Docker images. Crea...   381                  [OK]</span><br><span class="line"></span><br><span class="line">$ docker pull docker.io/mysql</span><br></pre></td></tr></table></figure>
+<ul>
+<li>commit 创建镜像</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ docker commit eb4a97d5a48c acqua/apache2</span><br><span class="line">$ docker commit -m=<span class="string">"custom image"</span> --author=<span class="string">"acqua"</span> eb4a97d5a48c acqua/apache2:webserver</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Dockerfile 创建镜像</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$ mkdir test_web &amp;&amp; <span class="built_in">cd</span> test_web</span><br><span class="line">$ vi Dockerfile</span><br><span class="line"></span><br><span class="line"><span class="comment"># Version: 0.0.1</span></span><br><span class="line">FROM ubuntu:14.04    **/FROM 指定基础镜像（base image），后续指令都基于该镜像进行。</span><br><span class="line">MAINTRAINER Acqua Young <span class="string">"acqua@gmail.com"</span></span><br><span class="line">RUN apt-get update</span><br><span class="line">RUN apt-get install -y nginx    **/ RUN [<span class="string">"apt-get"</span>,<span class="string">"install"</span>,<span class="string">"-y"</span>,<span class="string">"nginx"</span>]</span><br><span class="line">RUN <span class="built_in">echo</span> <span class="string">'Hi, I am in your container'</span> &gt; /usr/share/nginx/html/index.html</span><br><span class="line">EXPOSE 80</span><br><span class="line"></span><br><span class="line">$ docker build -t=<span class="string">"acqua/test_web"</span> .</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$ docker build -t=<span class="string">"acqua/test_web:v1"</span> .</span><br><span class="line">如果没有制定任何标签，Docker自动为镜像设置一个latest标签。. 当前目录查找Dockerfile，</span><br><span class="line">也可以用Git仓库源地址git@github.com:acqua/docker_test_web</span><br><span class="line"></span><br><span class="line">$ docker <span class="built_in">history</span> new_C</span><br><span class="line">查看容器创建历程。</span><br></pre></td></tr></table></figure>
+<h3 id="从镜像启动容器"><a class="markdownIt-Anchor" href="#从镜像启动容器"></a> 从镜像启动容器</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d -p 80 --name test_web acqua/test_web nginx -g <span class="string">"daemon off;"</span></span><br><span class="line">Docker可以在宿主机上随机选择一个介于 49000~49900 中一个比较大的端口号来映射到容器中的80端口上。</span><br><span class="line"></span><br><span class="line">$ docker run -d -p 127.0.0.1:80:80 --name test_web acqua/test_web nginx -g <span class="string">"daemon off;"</span></span><br><span class="line">也可以在Docker宿主机上指定个一个具体的端口号来映射到容器中的80端口上。</span><br><span class="line"></span><br><span class="line">$ docker run -d -p 127.0.0.1::80 --name test_web acqua/test_web nginx -g <span class="string">"daemon off;"</span></span><br><span class="line">容器内的80端口绑定到宿主机的随机端口上。</span><br><span class="line"></span><br><span class="line">$ docker port 430a5ba5df0e 80</span><br><span class="line">0.0.0.0:32768</span><br><span class="line">查看容器内的 80 端口对应宿主机的端口。</span><br><span class="line"></span><br><span class="line">$ docker run -d -P --name test_web acqua/test_web nginx -g <span class="string">"daemon off;"</span></span><br><span class="line">-P（大写）会将容器内的80端口对本地宿主机公开，并且绑定到宿主机的一个随机端口上。</span><br><span class="line">命令会将用来构建该镜像的Dockerfile文件中EXPOSE指令指定的其它端口也一并公开。</span><br><span class="line"></span><br><span class="line">有了这个端口号，就可以使用本地宿主机的IP或127.0.0.1的localhost连接到运行中的容器，查看WEB服务器内容了。</span><br><span class="line">$ docker port 0730f9d8b19f</span><br><span class="line">5000/tcp -&gt; 0.0.0.0:32769</span><br><span class="line"></span><br><span class="line">$ curl localhost:32769</span><br></pre></td></tr></table></figure>
+<h3 id="dockerfile-指令"><a class="markdownIt-Anchor" href="#dockerfile-指令"></a> Dockerfile 指令</h3>
+<ul>
+<li>
+<p>CMD<br>
+CMD用于指定容器启动时要运行的命令，RUN指令是指定镜像被构建时要运行的命令，而CMD是指定容器被启动时要运行的命令。<br>
+<code>CMD [&quot;/bin/bash&quot;, &quot;-l&quot;]</code><br>
+注：docker run命令可以覆盖CMD指令。<br>
+在Dockerfile中只能指定一条CMD指令。如果指定了多条CMD指令，也只有最后一条CMD指令会被使用。</p>
+</li>
+<li>
+<p>ENTRYPOINT<br>
+与CMD指令非常相似，而ENTRYPOINT指令提供的命令则不容易在启动容器时被覆盖。实际上，docker run命令行中指定的任何参数都会被当做参数再次传递给ENTRYPOINT指令中指定的命令。<br>
+<code>ENTRYPOINT [&quot;/usr/sbin/nginx&quot;, &quot;-g&quot;, &quot;daemon off;&quot;]</code><br>
+通过以数组的方式指定 ENTRYPOINT 在想运行的命令前加入 /bin/sh -c 避免各种问题。<br>
+<code>ENTRYPOINT [&quot;/usr/sbin/nginx&quot;]</code><br>
+<code>CMD [&quot;-h&quot;]</code><br>
+此时当我们启动一个容器时，任何在命令行中指定的参数都会被传递给Ngnix守护进程。</p>
+<p><code>docker run --entrypoint</code>来覆盖ENTRYPOINT指令。</p>
+</li>
+<li>
+<p>WORKDIR<br>
+用来在从镜像创建一个新容器时，在容器内部设置一个工作目录，ENTRYPOINT和 / 或CMD指定的程序会在这个目录下执行。<br>
+<code>WORKDIR /opt/webapp/db</code><br>
+<code>RUN bundle install</code><br>
+<code>WORKDIR /opt/webapp</code><br>
+<code>ENTRYPOINT [&quot; rackup&quot;]</code></p>
+<p><code>docker run -w /var/log ubuntu pwd</code>来覆盖WORKDIR指令。</p>
+</li>
+<li>
+<p>ENV<br>
+用来在镜像构建过程中设置环境变量。<br>
+<code>ENV RVM_PATH /home/rvm/</code></p>
+<p>新的环境变量可以在后续任何RUN指令中使用，如同在命令前面指定了环境变量前缀一样：<br>
+<code>RUN gem install unicorn</code><br>
+<code>ENV TARGET_DIR /opt/app</code><br>
+<code>WORKDIR $TARGET_DIR</code><br>
+<code>docker run -e</code>来传递环境变量</p>
+<p><code>$ docker run -it -e &quot;WEB_PORT=8080&quot; ubuntu env</code></p>
+</li>
+<li>
+<p>USER<br>
+指定该镜像以什么样的的用户去运行<br>
+<code>USER nginx</code><br>
+<code>USER user:group</code><br>
+<code>USER uid:gid</code></p>
+<p><code>docker run -u</code>来覆盖指令，如果不指定默认为root。</p>
+</li>
+<li>
+<p>VOLUME<br>
+用来向基于镜像创建的容器添加卷。</p>
+<ul>
+<li>卷可以在容器间共享和重用</li>
+<li>一个容器可以不是必须和其它容器共享卷</li>
+<li>对卷的修改是立即生效</li>
+<li>对卷的修改不会对更新镜像产生影响</li>
+<li>卷会一直存在直到没有任何容器再使用它</li>
+</ul>
+<p><code>VOLUME [&quot;/opt/project&quot;, &quot;/data&quot;]</code></p>
+</li>
+<li>
+<p>ADD<br>
+用来将构建环境下的文件和目录复制到镜像中。<br>
+ADD software.lic /opt/application/software.lic<br>
+将构建目录下的software.lic文件复制到镜像中的/opt/application/software.lic。源文件的位置参数可以是一个URL，或者构建上下文或环境中文件名或者目录。不能对构建目录或者上下文之外的文件进行ADD操作。<br>
+<code>ADD http://wordpress.org/latest.zip /root/wordpress.zip</code></p>
+<p>如果目的位置不存在，Docker会创建这个全路径（类似mkidr -p）。新创建的文件和目录的模式为0755，UID和GID为0。</p>
+</li>
+<li>
+<p>COPY<br>
+类似ADD，不同是COPY只关心在构建上下文中复制本地文件，而不会做文件提取（extraction）解压（decompression）<br>
+<code>COPY conf.d /etc/apache2/</code></p>
+<p>该指令创建的文件或目录的UID和GID都会设置为0，创建目录与mkdir -p相同。</p>
+</li>
+<li>
+<p>ONBUILD<br>
+为镜像添加触发器（trigger）。触发器会在构建过程中插入新指令，可以认为这些指令是紧跟在FROM之后指定的，触发器可以是任何构建指令：<br>
+<code>ONBUILD ADD . /app/src</code><br>
+<code>ONBUILD RUN cd /app/src &amp;&amp; make</code></p>
+<p>Example:<br>
+<code>FROM ubuntu:14.04</code><br>
+<code>MAINTAINER Acqua Young &quot;xxx@mail.com&quot;</code><br>
+<code>RUN apt-get update</code><br>
+<code>RUN apt-get install -y apache2</code><br>
+<code>ENV APACHE_RUN_USER www-data</code><br>
+<code>ENV APACHE_RUN_GROUP www-data</code><br>
+<code>ENV APACHE_LOG_DIR /var/log/apache2</code><br>
+<code>ONBUILD ADD . /var/www/</code><br>
+<code>EXPOSE 80</code><br>
+<code>ENTRYPOINT [&quot;/usr/sbin/apache2&quot;]</code><br>
+<code>CMD [&quot;-D&quot;, &quot;FOREGROUND&quot;]</code></p>
+<p>不能用在ONBUILD指令中，FROM、MAINTAINER和ONBUILD本身，也防止递归调用。</p>
+</li>
+</ul>
+<p><strong>Reference</strong><br>
+<a href="https://github.com/turnbullpress/dockerbook-code" target="_blank" rel="noopener">The Docker Book</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2018/01/24/docker-essential/">https://acquaai.github.io/2018/01/24/docker-essential/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/01/25/docker-app1/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">构建Docker容器应用</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/12/28/prometheus-alertmanager/">
+        <span class="next-text nav-default">Prometheus Alerting</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2018/01/24/docker-essential/';
+        this.page.identifier = '2018/01/24/docker-essential/';
+        this.page.title = 'Docker基础学习';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

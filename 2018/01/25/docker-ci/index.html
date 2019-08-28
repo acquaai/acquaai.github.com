@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Docker CI">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2018/01/25/docker-ci/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Docker CI - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Docker CI
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-01-25
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#构建jenkins和docker服务器"><span class="toc-text"> 构建Jenkins和Docker服务器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#create-image"><span class="toc-text"> Create Image</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#run-container"><span class="toc-text"> Run Container</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jenkins-job"><span class="toc-text"> Jenkins Job</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#new-job"><span class="toc-text"> New Job</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#general"><span class="toc-text"> General</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#source-code-management"><span class="toc-text"> Source Code Management</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#build"><span class="toc-text"> Build</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#post-build-actions"><span class="toc-text"> Post-build Actions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#run-job"><span class="toc-text"> Run Job</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p><img src="/images/j_CI.png" alt><br>
+图片来源Google</p>
+<a id="more"></a>
+<h2 id="构建jenkins和docker服务器"><a class="markdownIt-Anchor" href="#构建jenkins和docker服务器"></a> 构建Jenkins和Docker服务器</h2>
+<h3 id="create-image"><a class="markdownIt-Anchor" href="#create-image"></a> Create Image</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">$ cat Dockerfile</span><br><span class="line"></span><br><span class="line">FROM ubuntu:14.04</span><br><span class="line">MAINTAINER Acqua Young <span class="string">"acqua@gmail.com"</span></span><br><span class="line">ENV REFRESHED_AT 2018-01-20</span><br><span class="line"></span><br><span class="line">RUN apt-get -y update</span><br><span class="line">RUN apt-get install -qqy python-software-properties software-properties-common curl libcurl3 libcurl3-dev apt-transport-https ca-certificates</span><br><span class="line">RUN curl -fsSL https://get.docker.io/gpg | apt-key add -</span><br><span class="line">RUN <span class="built_in">echo</span> deb https://get.docker.io/ubuntu docker main &gt; /etc/apt/sources.list.d/docker.list</span><br><span class="line">RUN add-apt-repository ppa:openjdk-r/ppa</span><br><span class="line">RUN apt-get update -y &amp;&amp; apt-get install -qqy iptables openjdk-8-jdk lxc lxc-docker git-core</span><br><span class="line"></span><br><span class="line">ENV JENKINS_HOME /opt/jenkins/data</span><br><span class="line">ENV JENKINS_MIRROR http://mirrors.jenkins-ci.org</span><br><span class="line"></span><br><span class="line">RUN mkdir -p <span class="variable">$JENKINS_HOME</span>/plugins</span><br><span class="line">RUN curl -sf -o /opt/jenkins/jenkins.war -L <span class="variable">$JENKINS_MIRROR</span>/war-stable/latest/jenkins.war</span><br><span class="line"></span><br><span class="line">RUN <span class="keyword">for</span> plugin <span class="keyword">in</span> chucknorris greenballs scm-api git-client git ws-cleanup; \</span><br><span class="line">    <span class="keyword">do</span> curl -sf -o <span class="variable">$JENKINS_HOME</span>/plugins/<span class="variable">$&#123;plugin&#125;</span>.hpi \</span><br><span class="line">      -L <span class="variable">$JENKINS_MIRROR</span>/plugins/<span class="variable">$&#123;plugin&#125;</span>/latest/<span class="variable">$&#123;plugin&#125;</span>.hpi ; <span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">ADD ./dockerjenkins.sh /usr/<span class="built_in">local</span>/bin/dockerjenkins.sh</span><br><span class="line">RUN chmod +x /usr/<span class="built_in">local</span>/bin/dockerjenkins.sh</span><br><span class="line"></span><br><span class="line">VOLUME /var/lib/docker</span><br><span class="line"></span><br><span class="line">EXPOSE 8080</span><br><span class="line">ENTRYPOINT [<span class="string">"/usr/local/bin/dockerjenkins.sh"</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ ls jenkins/</span><br><span class="line">Dockerfile  dockerjenkins.sh</span><br><span class="line"></span><br><span class="line">$ docker build -t acqua/dockerjenkins .</span><br></pre></td></tr></table></figure>
+<h3 id="run-container"><a class="markdownIt-Anchor" href="#run-container"></a> Run Container</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d -p 8080:8080 --name jenkins --privileged acqua/dockerjenkins</span><br><span class="line">--privileged参数允许以其宿主机具有的（几乎）所有能力来运行容器，包括一些内核特性和设备访问。</span><br><span class="line"></span><br><span class="line">$ docker logs jenkins</span><br><span class="line">......</span><br><span class="line">INFO: </span><br><span class="line">*************************************************************</span><br><span class="line">*************************************************************</span><br><span class="line">*************************************************************</span><br><span class="line">Jenkins initial setup is required. An admin user has been created and a password generated.</span><br><span class="line">Please use the following password to proceed to installation:</span><br><span class="line">865688c1608e470aa96de47b481b34df</span><br><span class="line">This may also be found at: /opt/jenkins/data/secrets/initialAdminPassword</span><br><span class="line">*************************************************************</span><br><span class="line">*************************************************************</span><br><span class="line">*************************************************************</span><br><span class="line">INFO: Jenkins is fully up and running</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<h2 id="jenkins-job"><a class="markdownIt-Anchor" href="#jenkins-job"></a> Jenkins Job</h2>
+<p><a href="http://x.x.x.x:8080" target="_blank" rel="noopener">http://x.x.x.x:8080</a>   **/初始密码日志中已列出。</p>
+<blockquote>
+<p>Jenkins Plugins:<br>
+<a href="https://updates.jenkins-ci.org/download/plugins/" target="_blank" rel="noopener">https://updates.jenkins-ci.org/download/plugins/</a><br>
+<a href="http://mirrors.jenkins-ci.org/plugins/" target="_blank" rel="noopener">http://mirrors.jenkins-ci.org/plugins/</a></p>
+</blockquote>
+<h3 id="new-job"><a class="markdownIt-Anchor" href="#new-job"></a> New Job</h3>
+<p><img src="/images/j_Job.png" alt></p>
+<h3 id="general"><a class="markdownIt-Anchor" href="#general"></a> General</h3>
+<p><img src="/images/j_WS.png" alt></p>
+<h3 id="source-code-management"><a class="markdownIt-Anchor" href="#source-code-management"></a> <a href="https://github.com/acquaai/dockerjenkins.git" target="_blank" rel="noopener">Source Code Management</a></h3>
+<p><img src="/images/j_Git.png" alt></p>
+<h3 id="build"><a class="markdownIt-Anchor" href="#build"></a> Build</h3>
+<p>Execute shell<br>
+Command</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Build the image to be used for this job.</span></span><br><span class="line">IMAGE=$(docker build . | tail -1 | awk <span class="string">'&#123; print $NF &#125;'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Build the directory to be mounted into Docker.</span></span><br><span class="line">MNT=<span class="string">"<span class="variable">$WORKSPACE</span>/.."</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Execute the build inside Docker.</span></span><br><span class="line">CONTAINER=$(docker run -d -v <span class="variable">$MNT</span>:/opt/project/ <span class="variable">$IMAGE</span> /bin/bash -c <span class="string">'cd /opt/project/workspace &amp;&amp; rake spec'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Attach to the container so that we can see the output.</span></span><br><span class="line">docker attach <span class="variable">$CONTAINER</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Get its exit code as soon as the container stops.</span></span><br><span class="line">RC=$(docker <span class="built_in">wait</span> <span class="variable">$CONTAINER</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Delete the container we've just used.</span></span><br><span class="line">docker rm <span class="variable">$CONTAINER</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Exit with the same value as that with which the process exited.</span></span><br><span class="line"><span class="built_in">exit</span> <span class="variable">$RC</span></span><br></pre></td></tr></table></figure>
+<h3 id="post-build-actions"><a class="markdownIt-Anchor" href="#post-build-actions"></a> Post-build Actions</h3>
+<p><img src="/images/j_Report.png" alt></p>
+<h3 id="run-job"><a class="markdownIt-Anchor" href="#run-job"></a> Run Job</h3>
+<p><img src="/images/j_Build.png" alt></p>
+<p><strong>Build History</strong>下会列出构建的历史信息，<code>绿色Ball</code>表示成功，红色，sad。<br>
+每一条构建历史信息中的<code>Console Output</code>会显示构建的详细过程。</p>
+<p><img src="/images/j_C_output.png" alt></p>
+<p><strong>Reference</strong><br>
+<a href="https://github.com/turnbullpress/dockerbook-code" target="_blank" rel="noopener">The Docker Book</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2018/01/25/docker-ci/">https://acquaai.github.io/2018/01/25/docker-ci/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/01/26/docker-app2/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">构建Docker多容器应用</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/01/25/docker-app1/">
+        <span class="next-text nav-default">构建Docker容器应用</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2018/01/25/docker-ci/';
+        this.page.identifier = '2018/01/25/docker-ci/';
+        this.page.title = 'Docker CI';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

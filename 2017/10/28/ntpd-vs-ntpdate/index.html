@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="ntpd vs ntpdate">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2017/10/28/ntpd-vs-ntpdate/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> ntpd vs ntpdate - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          ntpd vs ntpdate
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-10-28
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#配置ntp-server"><span class="toc-text"> 配置NTP Server</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装ntp包"><span class="toc-text"> 安装NTP包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改系统时区"><span class="toc-text"> 修改系统时区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动ntp并检查"><span class="toc-text"> 启动NTP并检查</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置ntp-client"><span class="toc-text"> 配置NTP Client</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装ntp包-2"><span class="toc-text"> 安装NTP包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改系统时区-2"><span class="toc-text"> 修改系统时区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改etcntpconf"><span class="toc-text"> 修改/etc/ntp.conf</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <blockquote>
+<p>10月16日<a href="https://pingcap.com" target="_blank" rel="noopener">PingCAP</a>正式发布了TiDB 1.0版本，作为数据库的爱好者第一时间感受一下。在部署8节点的TiDB时，TiDB会precheck所有节点的时钟同步，而precheck的方式是<strong>only ntpd</strong>，由于OS来源于克隆模板，模板中采用了crontab的ntpdate &amp; hwclock -w方式来同步时间，so the question is coming, which one and why?</p>
+</blockquote>
+<p>The ntpd program is an operating system daemon which sets and maintains the system time of day in synchronism with Internet standard time servers. NTP provides a <code>smooth</code> time correction.</p>
+<p>ntpdate does not keep any state to perform this service for you so will not provide the same kind of accuracy. ntpdate corrects the system time <code>instantaneously</code>, which can cause problems with some software (<strong>Especially similar to database transactions, the time can’t jump back</strong>). ntpdate can be run manually as necessary to set the host clock, or it can be run from the host startup script to set the clock at boot time. It is also possible to run ntpdate from a cron script.</p>
+<p>NTP daemon uses sophisticated algorithms to maximize accuracy and reliability while minimizing resource use. Finally, since ntpdate does not discipline the host clock frequency as does ntpd, the accuracy using ntpdate is limited.</p>
+<a id="more"></a>
+<blockquote>
+<p>ntpd是系统同步时间的守护进程，依据偏移量来线性的调整时间，拥有更高的精度和安全性；而ntpdate简单、粗暴跳变式的立即更新时间，这在事务型的数据库应用中是致命的，上一秒你还是亿万富翁，一下秒也许你就变成了穷光蛋。</p>
+</blockquote>
+<h2 id="配置ntp-server"><a class="markdownIt-Anchor" href="#配置ntp-server"></a> 配置NTP Server</h2>
+<h3 id="安装ntp包"><a class="markdownIt-Anchor" href="#安装ntp包"></a> 安装NTP包</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum update</span><br><span class="line">$ sudo yum install -y ntp</span><br></pre></td></tr></table></figure>
+<h3 id="修改系统时区"><a class="markdownIt-Anchor" href="#修改系统时区"></a> 修改系统时区</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ sudo timedatectl list-timezones |grep Asia/Shanghai</span><br><span class="line">Asia/Shanghai</span><br><span class="line">$ sudo timedatectl <span class="built_in">set</span>-timezone Asia/Shanghai</span><br><span class="line">$ sudo timedatectl </span><br><span class="line">      Local time: Sat 2017-10-28 11:39:25 CST</span><br><span class="line">  Universal time: Sat 2017-10-28 03:39:25 UTC</span><br><span class="line">        RTC time: Sat 2017-10-28 03:39:25</span><br><span class="line">       Time zone: Asia/Shanghai (CST, +0800)</span><br><span class="line">     NTP enabled: no</span><br><span class="line">NTP synchronized: no</span><br><span class="line"> RTC <span class="keyword">in</span> <span class="built_in">local</span> TZ: no</span><br><span class="line">     DST active: n/a</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CentOS 7之前版本（可能需要tzdata包）：</span><br><span class="line">$ sudo vi /etc/sysconfig/clock </span><br><span class="line">ZONE=<span class="string">"Asia/Shanghai"</span></span><br><span class="line">$ sudo cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">修改/etc/ntp.conf</span><br><span class="line">国内阿里有原子时钟，可以使用阿里公布的时钟源</span><br><span class="line">$ sudo vi /etc/ntp.conf</span><br><span class="line">driftfile /var/lib/ntp/drift  <span class="comment">#以driftfile记录时间差异，百万分之一秒（ppm）</span></span><br><span class="line">restrict default kod nomodify notrap nopeer noquery	<span class="comment">#拒绝IPv4的连接</span></span><br><span class="line">restrict -6 default kod nomodify notrap nopeer noquery	<span class="comment">##拒绝IPv6的连接</span></span><br><span class="line"></span><br><span class="line">nomodify: 客户端不能使用ntpc与ntpq来修改服务器的时间参数，但客户端仍可以校时</span><br><span class="line">notrap: 不提供<span class="built_in">trap</span>远程事件登录（remote event logging）的功能</span><br><span class="line">noquery: 客户端不能够使用ntpq、ntpc等指令来查询时间服务器，客户端不可以校时</span><br><span class="line">ignore: 拒绝所有类型的NTP连接</span><br><span class="line">notrust: 拒绝没有认证的客户端</span><br><span class="line"></span><br><span class="line">restrict 127.0.0.1	<span class="comment">#允许本机来源</span></span><br><span class="line">restrict -6 ::1</span><br><span class="line">restrict 192.168.1.0 mask 255.255.255.0 nomodify   <span class="comment">#允许的网段</span></span><br><span class="line"></span><br><span class="line">server  time1.aliyun.com</span><br><span class="line">server  time2.aliyun.com</span><br><span class="line">server  time3.aliyun.com</span><br><span class="line">server  time4.aliyun.com</span><br><span class="line">server  time5.aliyun.com</span><br><span class="line">server  time6.aliyun.com  prefer</span><br><span class="line">server  time7.aliyun.com</span><br><span class="line"></span><br><span class="line">includefile /etc/ntp/crypto/pw</span><br><span class="line">keys /etc/ntp/keys</span><br></pre></td></tr></table></figure>
+<h3 id="启动ntp并检查"><a class="markdownIt-Anchor" href="#启动ntp并检查"></a> 启动NTP并检查</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ sudo systemctl start ntpd</span><br><span class="line">$ ntpstat</span><br><span class="line">**synchronised** to NTP server (115.28.122.198) at stratum 3 </span><br><span class="line">   time correct to within 75 ms</span><br><span class="line">   polling server every 1024 s</span><br><span class="line"></span><br><span class="line">$ ntpq -p</span><br><span class="line">     remote           refid      st t when poll reach   delay   offset  jitter</span><br><span class="line">==============================================================================</span><br><span class="line">*time6.aliyun.co 10.137.38.86     2 u  383 1024  377   24.056   -0.829   0.594</span><br><span class="line">+time4.aliyun.co 10.137.38.86     2 u  721 1024  377   20.286   -0.590   0.809</span><br><span class="line">-time5.aliyun.co 10.137.38.86     2 u  229 1024  373   34.518   -4.825   2.597</span><br><span class="line">+120.25.115.19   10.137.38.86     2 u  678 1024  337   18.701   -0.811   1.965</span><br><span class="line"></span><br><span class="line">$ sudo systemctl <span class="built_in">enable</span> ntpd</span><br></pre></td></tr></table></figure>
+<h2 id="配置ntp-client"><a class="markdownIt-Anchor" href="#配置ntp-client"></a> 配置NTP Client</h2>
+<h3 id="安装ntp包-2"><a class="markdownIt-Anchor" href="#安装ntp包-2"></a> 安装NTP包</h3>
+<h3 id="修改系统时区-2"><a class="markdownIt-Anchor" href="#修改系统时区-2"></a> 修改系统时区</h3>
+<h3 id="修改etcntpconf"><a class="markdownIt-Anchor" href="#修改etcntpconf"></a> 修改/etc/ntp.conf</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ sudo vi /etc/ntp.conf</span><br><span class="line">restrict 127.0.0.1</span><br><span class="line">server 192.168.1.118</span><br><span class="line"></span><br><span class="line">$ sudo systemctl start ntpd</span><br><span class="line">$ sudo ntpdate 192.168.1.118	<span class="comment">#由于client/server之间的误差不允许超过 1000 秒，可能需要先手动同步</span></span><br><span class="line">$ ntpstat </span><br><span class="line">synchronised to NTP server (192.168.1.118) at stratum 4 </span><br><span class="line">   time correct to within 79 ms</span><br><span class="line">   polling server every 64 s</span><br><span class="line">$ sudo systemctl <span class="built_in">enable</span> ntpd</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2017/10/28/ntpd-vs-ntpdate/">https://acquaai.github.io/2017/10/28/ntpd-vs-ntpdate/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/10/28/SQLAdvisor/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">SQLAdvisor</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/10/24/hello-world/">
+        <span class="next-text nav-default">Hello World</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2017/10/28/ntpd-vs-ntpdate/';
+        this.page.identifier = '2017/10/28/ntpd-vs-ntpdate/';
+        this.page.title = 'ntpd vs ntpdate';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

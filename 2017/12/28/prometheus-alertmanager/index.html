@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Prometheus Alerting">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2017/12/28/prometheus-alertmanager/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Prometheus Alerting - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Prometheus Alerting
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-12-28
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#开启prometheus告警规则"><span class="toc-text"> 开启prometheus告警规则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置alert-rules"><span class="toc-text"> 配置alert rules</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#修改prometheus服务项"><span class="toc-text"> 修改prometheus服务项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#configure-alertmanager"><span class="toc-text"> configure alertmanager</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开机启动alertmanager"><span class="toc-text"> 开机启动alertmanager</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p><a href="https://acquaai.github.io/2017/11/29/Prometheus-Monitoring/">Prometheus基本安装、配置参考</a><br>
+<a href="https://prometheus.io/docs/alerting/alertmanager/" target="_blank" rel="noopener">官方参考</a></p>
+<h2 id="开启prometheus告警规则"><a class="markdownIt-Anchor" href="#开启prometheus告警规则"></a> 开启prometheus告警规则</h2>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">$</span> <span class="string">vi</span> <span class="string">prometheus.yml</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="attr">rule_files:</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">/var/prometheus/prometheus-1.7.1.linux-amd64/alert.rules</span></span><br><span class="line"><span class="string">...</span></span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="配置alert-rules"><a class="markdownIt-Anchor" href="#配置alert-rules"></a> 配置alert rules</h2>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">ALERT</span> <span class="string">PingDown</span></span><br><span class="line">  <span class="string">IF</span> <span class="string">up</span> <span class="string">==</span> <span class="number">0</span></span><br><span class="line">  <span class="string">FOR</span> <span class="number">2</span><span class="string">m</span></span><br><span class="line">  <span class="string">LABELS</span> <span class="string">&#123;</span> <span class="string">severity</span> <span class="string">=</span> <span class="string">"warning"</span> <span class="string">&#125;</span></span><br><span class="line">  <span class="string">ANNOTATIONS</span> <span class="string">&#123;</span></span><br><span class="line">    <span class="string">summary</span> <span class="string">=</span> <span class="string">"Instance <span class="template-variable">&#123;&#123; $labels.instance &#125;&#125;</span> down"</span><span class="string">,</span></span><br><span class="line">    <span class="string">description</span> <span class="string">=</span> <span class="string">"<span class="template-variable">&#123;&#123; $labels.instance &#125;&#125;</span> of job <span class="template-variable">&#123;&#123; $labels.job &#125;&#125;</span> has been down for more than 2 minutes"</span></span><br><span class="line">  <span class="string">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="string">ALERT</span> <span class="string">PingCheck</span></span><br><span class="line">  <span class="string">IF</span> <span class="string">probe_success&#123;job="PingCheck"&#125;</span> <span class="string">==</span> <span class="number">0</span></span><br><span class="line">  <span class="string">FOR</span> <span class="number">1</span><span class="string">m</span></span><br><span class="line">  <span class="string">LABELS</span> <span class="string">&#123;</span></span><br><span class="line">    <span class="string">severity="warning"</span></span><br><span class="line">  <span class="string">&#125;</span></span><br><span class="line">  <span class="string">ANNOTATIONS</span> <span class="string">&#123;</span></span><br><span class="line">    <span class="string">SUMMARY</span> <span class="string">=</span> <span class="string">"<span class="template-variable">&#123;&#123; $labels.instance &#125;&#125;</span> down"</span><span class="string">,</span></span><br><span class="line">    <span class="string">DESCRIPTION</span> <span class="string">=</span> <span class="string">"<span class="template-variable">&#123;&#123; $labels.instance &#125;&#125;</span>: Node has been down for more than 1 minutes"</span></span><br><span class="line">  <span class="string">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="string">ALERT</span> <span class="string">CPUUsage</span> <span class="comment">#Windows</span></span><br><span class="line">  <span class="string">IF</span> <span class="string">(100</span> <span class="bullet">-</span> <span class="string">(avg</span> <span class="string">by</span> <span class="string">(instance)</span> <span class="string">(irate(node_cpu&#123;name="node-exporter",mode="idle"&#125;[5m]))</span> <span class="string">*</span> <span class="number">100</span><span class="string">))</span> <span class="string">&gt; 80</span></span><br><span class="line"><span class="string">  FOR 2m</span></span><br><span class="line"><span class="string">  LABELS &#123;</span></span><br><span class="line"><span class="string">    severity="warning"</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">  ANNOTATIONS &#123;</span></span><br><span class="line"><span class="string">    SUMMARY = "<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>: High CPU usage detected",</span></span><br><span class="line"><span class="string">    DESCRIPTION = "<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>: CPU usage is above 80% (current value is: <span class="template-variable">&#123;&#123; $value &#125;&#125;</span>)"</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">ALERT LoadAverage #Linux</span></span><br><span class="line"><span class="string">  IF ((node_load5 / count without (cpu, mode) (node_cpu&#123;mode="system"&#125;)) &gt; 1)</span></span><br><span class="line"><span class="string">  FOR 2m</span></span><br><span class="line"><span class="string">  LABELS &#123;</span></span><br><span class="line"><span class="string">    severity="warning"</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">  ANNOTATIONS &#123;</span></span><br><span class="line"><span class="string">    SUMMARY = "<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>: High LoadAverage detected",</span></span><br><span class="line"><span class="string">    DESCRIPTION = "<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>: LoadAverage is high"</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">ALERT SwapUsage</span></span><br><span class="line"><span class="string">  IF (((node_memory_SwapTotal-node_memory_SwapFree)/node_memory_SwapTotal)*100) &gt; 75</span></span><br><span class="line"><span class="string">  FOR 2m</span></span><br><span class="line"><span class="string">  LABELS &#123;</span></span><br><span class="line"><span class="string">    severity="warning"</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">  ANNOTATIONS &#123;</span></span><br><span class="line"><span class="string">    SUMMARY = "<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>: Swap usage detected",</span></span><br><span class="line"><span class="string">    DESCRIPTION = "<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>: Swap usage usage is above 75% (current value is: <span class="template-variable">&#123;&#123; $value &#125;&#125;</span>)"</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">ALERT MemoryUsage</span></span><br><span class="line"><span class="string">  IF (((node_memory_MemTotal-node_memory_MemFree-node_memory_Cached)/(node_memory_MemTotal)*100)) &gt; 75</span></span><br><span class="line"><span class="string">  FOR 2m</span></span><br><span class="line"><span class="string">  LABELS &#123;</span></span><br><span class="line"><span class="string">    severity="warning"</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">  ANNOTATIONS &#123;</span></span><br><span class="line"><span class="string">    SUMMARY = "<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>: High memory usage detected",</span></span><br><span class="line"><span class="string">    DESCRIPTION = "<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>: Memory usage is above 75% (current value is: <span class="template-variable">&#123;&#123; $value &#125;&#125;</span>)"</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">ALERT LowRootDisk</span></span><br><span class="line"><span class="string">  IF ((node_filesystem_size&#123;mountpoint="/"&#125; - node_filesystem_free&#123;mountpoint="/"&#125; ) / node_filesystem_size&#123;mountpoint="/"&#125; * 100) &gt; 75</span></span><br><span class="line"><span class="string">  FOR 2m</span></span><br><span class="line"><span class="string">  LABELS &#123;</span></span><br><span class="line"><span class="string">    severity="warning"</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">  ANNOTATIONS &#123;</span></span><br><span class="line"><span class="string">    SUMMARY = "<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>: Low root disk space",</span></span><br><span class="line"><span class="string">    DESCRIPTION = "<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>: Root disk usage is above 75% (current value is: <span class="template-variable">&#123;&#123; $value &#125;&#125;</span>)"</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">ALERT HttpCheckDown</span></span><br><span class="line"><span class="string">  IF probe_success&#123;job="HttpCheck"&#125; == 0</span></span><br><span class="line"><span class="string">  FOR 3m</span></span><br><span class="line"><span class="string">  LABELS &#123;</span></span><br><span class="line"><span class="string">    severity="critical"</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">  ANNOTATIONS &#123;</span></span><br><span class="line"><span class="string">    SUMMARY = "<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>: Http service is down",</span></span><br><span class="line"><span class="string">    DESCRIPTION = "<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>: Http request no response in 3 minutes"</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">ALERT DNSCheck</span></span><br><span class="line"><span class="string">  IF probe_success&#123;job="DNSCheck"&#125; == 0</span></span><br><span class="line"><span class="string">  FOR 1m</span></span><br><span class="line"><span class="string">  LABELS &#123;</span></span><br><span class="line"><span class="string">    severity="warning"</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">  ANNOTATIONS &#123;</span></span><br><span class="line"><span class="string">    SUMMARY = "<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>: DNS service is down",</span></span><br><span class="line"><span class="string">    DESCRIPTION = "<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>: DNS resolution failed in 1 minutes"</span></span><br><span class="line"><span class="string">  &#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="修改prometheus服务项"><a class="markdownIt-Anchor" href="#修改prometheus服务项"></a> 修改prometheus服务项</h2>
+<p>增加alertmanager模块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ vi /usr/lib/systemd/system/prometheus.service</span><br><span class="line">ExecStart=/var/prometheus/prometheus-1.7.1.linux-amd64/prometheus -config.file=/var/prometheus/prometheus-1.7.1.linux-amd64/prometheus.yml -storage.local.path=/var/lib/prometheus -alertmanager.url=http://prometheus:9093</span><br></pre></td></tr></table></figure>
+<p>更新配置文件好后，prometheus重新读取，有两种方法：</p>
+<ul>
+<li>
+<p>通过HTTP API向/-/reload发送POST请求，例：<br>
+curl -X POST <a href="http://prometheus:9090/-/reload" target="_blank" rel="noopener">http://prometheus:9090/-/reload</a></p>
+</li>
+<li>
+<p>向prometheus进程发送SIGHUP信号</p>
+</li>
+</ul>
+<h2 id="configure-alertmanager"><a class="markdownIt-Anchor" href="#configure-alertmanager"></a> configure alertmanager</h2>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">$</span> <span class="string">vi</span> <span class="string">simple.yml</span></span><br><span class="line"><span class="attr">global:</span></span><br><span class="line"><span class="attr">  resolve_timeout:</span> <span class="number">5</span><span class="string">m</span></span><br><span class="line"><span class="attr">route:</span></span><br><span class="line"><span class="attr">  group_by:</span> <span class="string">['alertname','severity']</span></span><br><span class="line"><span class="attr">  group_wait:</span> <span class="number">30</span><span class="string">s</span></span><br><span class="line"><span class="attr">  group_interval:</span> <span class="number">5</span><span class="string">m</span></span><br><span class="line"><span class="attr">  repeat_interval:</span> <span class="number">1</span><span class="string">h</span></span><br><span class="line"><span class="attr">  receiver:</span> <span class="string">onealert</span></span><br><span class="line"></span><br><span class="line"><span class="attr">inhibit_rules:</span></span><br><span class="line"><span class="attr">  - source_match:</span></span><br><span class="line"><span class="attr">      severity:</span> <span class="string">'critical'</span></span><br><span class="line"><span class="attr">    target_match:</span></span><br><span class="line"><span class="attr">      severity:</span> <span class="string">'warning'</span></span><br><span class="line"><span class="attr">    equal:</span> <span class="string">['alertname','service','instance']</span></span><br><span class="line"></span><br><span class="line"><span class="attr">receivers:</span></span><br><span class="line"><span class="attr">- name:</span> <span class="string">'onealert'</span></span><br><span class="line"><span class="attr">  webhook_configs:</span></span><br><span class="line"><span class="attr">  - url:</span> <span class="string">'http://api.110monitor.com/alert/api/event/prometheus/xxx'</span></span><br><span class="line"><span class="attr">    send_resolved:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<h2 id="开机启动alertmanager"><a class="markdownIt-Anchor" href="#开机启动alertmanager"></a> 开机启动alertmanager</h2>
+<p>可配为systemd服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ crontab -l</span><br><span class="line">@reboot /var/prometheus/blackbox_exporter-0.11.0/blackbox_exporter --config.file=/var/prometheus/blackbox_exporter-0.11.0/blackbox.yml &gt; /tmp/blackbox.log 2&gt;&amp;1 &amp;</span><br><span class="line">@reboot /var/prometheus/alertmanager-0.12.0/alertmanager -config.file=/var/prometheus/alertmanager-0.12.0/simple.yml &gt; /tmp/alertmanager.log 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2017/12/28/prometheus-alertmanager/">https://acquaai.github.io/2017/12/28/prometheus-alertmanager/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/01/24/docker-essential/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Docker基础学习</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/12/21/mysql-router/">
+        <span class="next-text nav-default">MySQL Router</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2017/12/28/prometheus-alertmanager/';
+        this.page.identifier = '2017/12/28/prometheus-alertmanager/';
+        this.page.title = 'Prometheus Alerting';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

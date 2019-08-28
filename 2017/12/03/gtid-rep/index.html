@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="GTID - MySQL Replication">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2017/12/03/gtid-rep/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> GTID - MySQL Replication - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          GTID - MySQL Replication
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-12-03
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/MySQL/">MySQL</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#mysql-gtid"><span class="toc-text"> MySQL GTID</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#enable-gtid-conditions"><span class="toc-text"> Enable GTID conditions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#offline-procedure"><span class="toc-text"> Offline procedure</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#online-procedure-to-enable-gtid"><span class="toc-text"> Online procedure to enable GTID</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>Binlog replication is <a href="https://acquaai.github.io/2017/12/02/binlog-rep/">here</a>.</p>
+<h2 id="mysql-gtid"><a class="markdownIt-Anchor" href="#mysql-gtid"></a> MySQL GTID</h2>
+<p>MySQL <code>5.6.6</code>开始支持GTID的新特性，但是需要离线配置，从<code>5.7.6</code>开始支持在线。</p>
+<h3 id="enable-gtid-conditions"><a class="markdownIt-Anchor" href="#enable-gtid-conditions"></a> Enable GTID conditions</h3>
+<ul>
+<li>
+<p>MySQL 5.6</p>
+</li>
+<li>
+<p>gtid_mode = ON (required)</p>
+</li>
+<li>
+<p>enforce_gtid_consistency = ON (required)</p>
+</li>
+<li>
+<p>log_bin = ON (required)</p>
+</li>
+<li>
+<p>log_slave_updates = ON (required)</p>
+</li>
+<li>
+<p>MySQL 5.7.13 or higher</p>
+</li>
+<li>
+<p>gtid_mode = ON (required)</p>
+</li>
+<li>
+<p>enforce_gtid_consistency = ON (required)</p>
+</li>
+<li>
+<p>log_bin = ON (option – 高可用切换)</p>
+</li>
+<li>
+<p>log_slave_updates = ON (option – 高可用切换)</p>
+</li>
+</ul>
+<a id="more"></a>
+<h3 id="offline-procedure"><a class="markdownIt-Anchor" href="#offline-procedure"></a> Offline procedure</h3>
+<ol>
+<li>停止业务访问（disable all write）</li>
+<li>等待 master(s) 复制所有事务到 slaves</li>
+<li>停止所有 MySQL 服务器</li>
+<li>所有服务器中的 my.cnf 文件中配置 <code>gtid-mode=ON</code></li>
+<li>启动所有 MySQL 服务器</li>
+<li>开启业务访问</li>
+</ol>
+<h3 id="online-procedure-to-enable-gtid"><a class="markdownIt-Anchor" href="#online-procedure-to-enable-gtid"></a> Online procedure to enable GTID</h3>
+<ol>
+<li>所有Server上执行，<code>不能返回有任何警告</code></li>
+</ol>
+  <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(root@localhost)[(none)]&gt; set @@global.enforce_gtid_consistency = warn;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>所有Server上执行</li>
+</ol>
+  <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(root@localhost)[(none)]&gt; set @@global.enforce_gtid_consistency = on;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>所有Server上执行</li>
+</ol>
+  <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(root@localhost)[(none)]&gt; set @@global.gtid_mode = off_permissive;</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>这一步将产生携带 GTID 信息的日志，推荐先在 slave 上执行，再在master上执行</li>
+</ol>
+  <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(root@localhost)[(none)]&gt; set @@global.gtid_mode=on_permissive;</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>确认所有节点 binlog 复制完毕，<code>Value 0</code></li>
+</ol>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">(root@localhost)[(none)]&gt; show status like 'ongoing_anonymous_transaction_count';</span><br><span class="line">+<span class="comment">-------------------------------------+-------+</span></span><br><span class="line">| Variable_name                       | Value |</span><br><span class="line">+<span class="comment">-------------------------------------+-------+</span></span><br><span class="line">| Ongoing_anonymous_transaction_count | 0     |</span><br><span class="line">+<span class="comment">-------------------------------------+-------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">必要时执行：</span><br><span class="line"></span><br><span class="line">(root@localhost)[(<span class="keyword">none</span>)]&gt; <span class="keyword">flush</span> <span class="keyword">logs</span>;</span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>所有节点启用 gtid_mode</li>
+</ol>
+  <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(root@localhost)[(none)]&gt; set @@global.gtid_mode=on;</span><br></pre></td></tr></table></figure>
+<ol start="7">
+<li>修改 my.cnf 配置文件</li>
+</ol>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">"gtid_mode=on"</span> &gt;&gt; /etc/my.cnf</span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">"enforce_gtid_consistency=on"</span> &gt;&gt; /etc/my.cnf</span><br></pre></td></tr></table></figure>
+<ol start="8">
+<li>启用GTID的自动节点复制，如果使用了<code>multi-source</code>复制，可以为每一个源配置<code>channel</code></li>
+</ol>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(root@localhost)[(none)]&gt; stop slave [FOR CHANNEL 'channel1'];</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">(root@localhost)[(none)]&gt; change master to master_auto_position=1 [FOR CHANNEL 'channel1'];</span><br><span class="line">Query OK, 0 rows affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">(root@localhost)[(none)]&gt; start slave [FOR CHANNEL 'channel1'];</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br></pre></td></tr></table></figure>
+<p>Reference<br>
+<a href="http://dev.mysql.com/doc/refman/5.7/en/replication-mode-change-online-enable-gtids.html" target="_blank" rel="noopener">Official Manual</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2017/12/03/gtid-rep/">https://acquaai.github.io/2017/12/03/gtid-rep/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/12/15/mysql-log-maintenance/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">MySQL log maintenance</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/12/03/xfs-resizing/">
+        <span class="next-text nav-default">XFS filesystem resizing</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2017/12/03/gtid-rep/';
+        this.page.identifier = '2017/12/03/gtid-rep/';
+        this.page.title = 'GTID - MySQL Replication';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

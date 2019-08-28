@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Inception">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2018/02/01/inception/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Inception - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Inception
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-02-01
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/MySQL/">MySQL</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装inception"><span class="toc-text"> 安装Inception</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置inception"><span class="toc-text"> 配置Inception</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动inception"><span class="toc-text"> 启动Inception</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线上配置"><span class="toc-text"> 线上配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用inception"><span class="toc-text"> 使用Inception</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="安装inception"><a class="markdownIt-Anchor" href="#安装inception"></a> 安装Inception</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$ yum install bison cmake ncurses-devel openssl-devel libgcc gcc gcc-c++ git   **/ http://ftp.gnu.org/gnu/bison/</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/mysql-inception/inception.git</span><br><span class="line">$ <span class="built_in">cd</span> inception &amp;&amp; mkdir debug</span><br><span class="line">$ <span class="built_in">cd</span> debug</span><br><span class="line">$ cmake .. -DWITH_DEBUG=OFF \</span><br><span class="line"> 	-DWITH_ZLIB=system \</span><br><span class="line"> 	-DCMAKE_INSTALL_PREFIX=/var/inception \</span><br><span class="line"> 	-DWITH_SSL=bundled \</span><br><span class="line"> 	-DCMAKE_BUILD_TYPE=RELEASE \</span><br><span class="line"> 	-DWITH_ZLIB=bundled</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">-- Generating <span class="keyword">done</span></span><br><span class="line">-- Build files have been written to: /root/inception/debug</span><br><span class="line"></span><br><span class="line">$ make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="配置inception"><a class="markdownIt-Anchor" href="#配置inception"></a> 配置Inception</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ vi /var/inception/bin/inc.cnf</span><br><span class="line"></span><br><span class="line">[inception]</span><br><span class="line">general_log=1</span><br><span class="line">general_log_file=/var/inception/<span class="built_in">log</span>/inception.log</span><br><span class="line">port=6669</span><br><span class="line">socket=/var/inception/inc.socket</span><br><span class="line">character-set-client-handshake=0</span><br><span class="line">character-set-server=utf8</span><br><span class="line"></span><br><span class="line">inception_remote_system_user=inc_bk</span><br><span class="line">inception_remote_system_password=Acqua@107</span><br><span class="line">inception_remote_backup_host=10.0.77.19</span><br><span class="line">inception_remote_backup_port=3306</span><br><span class="line">inception_support_charset=utf8mb4</span><br></pre></td></tr></table></figure>
+<h2 id="启动inception"><a class="markdownIt-Anchor" href="#启动inception"></a> 启动Inception</h2>
+<p>两种启动方式：</p>
+<ul>
+<li>/var/inception/bin/Inception --defaults-file=inc.cnf</li>
+<li>/var/inception/bin/Inception --port=6669</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ nohup /var/inception/bin/Inception --defaults-file=inc.cnf &gt; /tmp/inception.out 2&gt;&amp;1 &amp;</span><br><span class="line"></span><br><span class="line">$ /var/inception/bin/mysql -h 127.0.0.1 -P 6669</span><br><span class="line">mysql&gt; inception get variables;</span><br></pre></td></tr></table></figure>
+<h2 id="线上配置"><a class="markdownIt-Anchor" href="#线上配置"></a> 线上配置</h2>
+<ul>
+<li>线上服务器开启 Binlog。</li>
+<li>binlog_format=row/mined</li>
+<li>binlog_row_image=full</li>
+<li>server_id !=0/1</li>
+<li>Private account for Inception and Specify related privileges(Read-only / Write)：<br>
++<br>
+<code>mysql&gt; grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, PROCESS, ALTER, SUPER, REPLICATION SLAVE, REPLICATION CLIENT, TRIGGER on *.* to 'winception'@'%' identified by 'Acqua@107';</code></li>
+<li>Primary KEY</li>
+<li><code>DML &amp; DDL</code> Executed  Separately.</li>
+</ul>
+<h2 id="使用inception"><a class="markdownIt-Anchor" href="#使用inception"></a> 使用Inception</h2>
+<p>python-devel ===&gt; MySQLdb</p>
+<p><strong><a href="http://inception.py" target="_blank" rel="noopener">inception.py</a></strong></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment">#-\*-coding: utf-8-\*-</span></span><br><span class="line"><span class="keyword">import</span> MySQLdb</span><br><span class="line">sql=<span class="string">'/*--user=winception;--password=Acqua@107;--host=10.0.77.17;--execute=1;--port=3306;*/\</span></span><br><span class="line"><span class="string">inception_magic_start;\</span></span><br><span class="line"><span class="string">use bsdb;\</span></span><br><span class="line"><span class="string">DROP TABLE test;\</span></span><br><span class="line"><span class="string">inception_magic_commit;'</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    conn=MySQLdb.connect(host=<span class="string">'127.0.0.1'</span>,user=<span class="string">''</span>,passwd=<span class="string">''</span>,port=<span class="number">6669</span>)</span><br><span class="line">    cur=conn.cursor()</span><br><span class="line">    ret=cur.execute(sql)</span><br><span class="line">    result=cur.fetchall()</span><br><span class="line">    num_fields = len(cur.description)</span><br><span class="line">    field_names = [i[<span class="number">0</span>] <span class="keyword">for</span> i <span class="keyword">in</span> cur.description]</span><br><span class="line">    <span class="keyword">print</span> field_names</span><br><span class="line">    <span class="keyword">for</span> row <span class="keyword">in</span> result:</span><br><span class="line">        <span class="keyword">print</span> row[<span class="number">0</span>], <span class="string">"|"</span>,row[<span class="number">1</span>],<span class="string">"|"</span>,row[<span class="number">2</span>],<span class="string">"|"</span>,row[<span class="number">3</span>],<span class="string">"|"</span>,row[<span class="number">4</span>],<span class="string">"|"</span>,row[<span class="number">5</span>],<span class="string">"|"</span>,row[<span class="number">6</span>],<span class="string">"|"</span>,row[<span class="number">7</span>],<span class="string">"|"</span>,row[<span class="number">8</span>],<span class="string">"|"</span>,row[<span class="number">9</span>],<span class="string">"|"</span>,row[<span class="number">10</span>]</span><br><span class="line">    cur.close()</span><br><span class="line">    conn.close()</span><br><span class="line"><span class="keyword">except</span> MySQLdb.Error,e:</span><br><span class="line">     <span class="keyword">print</span> <span class="string">"Mysql Error %d: %s"</span> % (e.args[<span class="number">0</span>], e.args[<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ python inception.py</span><br><span class="line"></span><br><span class="line">[<span class="string">'ID'</span>, <span class="string">'stage'</span>, <span class="string">'errlevel'</span>, <span class="string">'stagestatus'</span>, <span class="string">'errormessage'</span>, <span class="string">'SQL'</span>, <span class="string">'Affected_rows'</span>, <span class="string">'sequence'</span>, <span class="string">'backup_dbname'</span>, <span class="string">'execute_time'</span>, <span class="string">'sqlsha1'</span>]</span><br><span class="line">1 | RERUN | 0 | Execute Successfully | None | use bsdb | 0 | <span class="string">'1517555914_20_0'</span> | None | 0.000 | </span><br><span class="line">2 | EXECUTED | 0 | Execute Successfully</span><br><span class="line">Backup successfully | None | DROP TABLE <span class="built_in">test</span> | 0 | <span class="string">'1517555914_20_1'</span> | 10_0_77_17_3306_bsdb | 0.020 |</span><br></pre></td></tr></table></figure>
+<p><strong>Inception日志</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ cat /var/inception/log/inception.log</span><br><span class="line">...</span><br><span class="line">180202 15:18:34    16 Query     set autocommit=0</span><br><span class="line"></span><br><span class="line">                   16 Query     /*--user=winception;--password=Acqua@107;--host=10.0.77.17;--execute=1;--port=3306;*/inception_magic_start;use bsdb;DROP TABLE test;inception_magic_commit</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p><strong>远程(10.0.77.19)备份信息</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show databases;</span><br><span class="line">+<span class="comment">----------------------+</span></span><br><span class="line">| Database             |</span><br><span class="line">+<span class="comment">----------------------+</span></span><br><span class="line">| information_schema   |</span><br><span class="line">| 10_0_77_17_3306_bsdb |</span><br><span class="line">| bsdb                 |</span><br><span class="line">| inception            |</span><br><span class="line">| mysql                |</span><br><span class="line">| performance_schema   |</span><br><span class="line">| sys                  |</span><br><span class="line">+<span class="comment">----------------------+</span></span><br><span class="line">7 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">use</span> <span class="number">10</span>_0_77_17_3306_bsdb;</span><br><span class="line"></span><br><span class="line">mysql&gt; show tables;</span><br><span class="line">+<span class="comment">------------------------------------+</span></span><br><span class="line">| Tables_in_10_0_77_17_3306_bsdb     |</span><br><span class="line">+<span class="comment">------------------------------------+</span></span><br><span class="line">| $_$Inception_backup_information$_$ |</span><br><span class="line">| test                               |</span><br><span class="line">+<span class="comment">------------------------------------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">desc</span> <span class="keyword">test</span>;</span><br><span class="line">+<span class="comment">--------------------+-------------+------+-----+---------+----------------+</span></span><br><span class="line">| Field              | Type        | Null | Key | Default | Extra          |</span><br><span class="line">+<span class="comment">--------------------+-------------+------+-----+---------+----------------+</span></span><br><span class="line">| id                 | bigint(20)  | NO   | PRI | NULL    | auto_increment |</span><br><span class="line">| rollback_statement | mediumtext  | YES  |     | NULL    |                |</span><br><span class="line">| opid_time          | varchar(50) | YES  |     | NULL    |                |</span><br><span class="line">+<span class="comment">--------------------+-------------+------+-----+---------+----------------+</span></span><br><span class="line">3 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> $_$Inception_backup_information$_$;</span><br><span class="line">+<span class="comment">-----------------+-------------------+------------------+-----------------+----------------+-----------------+------------+--------+-----------+------+---------------------+-----------+</span></span><br><span class="line">| opid_time       | start_binlog_file | start_binlog_pos | end_binlog_file | end_binlog_pos | sql_statement   | host       | dbname | tablename | port | time                | type      |</span><br><span class="line">+<span class="comment">-----------------+-------------------+------------------+-----------------+----------------+-----------------+------------+--------+-----------+------+---------------------+-----------+</span></span><br><span class="line">| 1517555914_20_1 |                   |                0 |                 |              0 | <span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">test</span> | <span class="number">10.0</span><span class="number">.77</span><span class="number">.17</span> | bsdb   | <span class="keyword">test</span>      | <span class="number">3306</span> | <span class="number">2018</span><span class="number">-02</span><span class="number">-02</span> <span class="number">15</span>:<span class="number">18</span>:<span class="number">34</span> | DROPTABLE |</span><br><span class="line">+<span class="comment">-----------------+-------------------+------------------+-----------------+----------------+-----------------+------------+--------+-----------+------+---------------------+-----------+</span></span><br><span class="line"><span class="number">1</span> <span class="keyword">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+<p><strong>Reference</strong><br>
+<a href="https://item.jd.com/12195430.html" target="_blank" rel="noopener">MySQL 运维内参</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2018/02/01/inception/">https://acquaai.github.io/2018/02/01/inception/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/02/03/ci-cd/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">CI/CDs</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/01/31/xtrabackup/">
+        <span class="next-text nav-default">Percona XtraBackup</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2018/02/01/inception/';
+        this.page.identifier = '2018/02/01/inception/';
+        this.page.title = 'Inception';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Binlog - MySQL Classic Replication">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2017/12/02/binlog-rep/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Binlog - MySQL Classic Replication - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Binlog - MySQL Classic Replication
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-12-02
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/MySQL/">MySQL</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#install-mysql"><span class="toc-text"> Install MySQL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#configure-master"><span class="toc-text"> Configure Master</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#take-snapshot"><span class="toc-text"> Take snapshot</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#configure-slave"><span class="toc-text"> Configure Slave</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#set-the-master-information-on-the-slaves"><span class="toc-text"> Set the master information on the slave’s</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置半同步复制"><span class="toc-text"> 配置半同步复制</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>GTID replication is <a href="https://acquaai.github.io/2017/12/03/gtid-rep/">here</a>.</p>
+<h2 id="install-mysql"><a class="markdownIt-Anchor" href="#install-mysql"></a> Install MySQL</h2>
+<p><a href="https://dev.mysql.com/downloads/repo/yum/" target="_blank" rel="noopener">Download MySQL Yum Repository</a><br>
+<a href="https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/" target="_blank" rel="noopener">Using the MySQL Yum Repository</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ yum update</span><br><span class="line">$ yum install -y net-tools yum-utils</span><br><span class="line">$ rpm -ivh mysql57-community-release-el7-11.noarch.rpm</span><br><span class="line">$ yum-config-manager --enable mysql57-community</span><br><span class="line">$ yum repolist enabled | grep mysql</span><br><span class="line">$ yum install mysql-community-server</span><br><span class="line">$ systemctl start mysqld</span><br><span class="line">$ grep &quot;temporary password&quot; /var/log/mysqld.log</span><br><span class="line">$ mysql -uroot -p</span><br><span class="line"></span><br><span class="line">mysql&gt; alter user &apos;root&apos;@&apos;localhost&apos; identified by &apos;Acqua@107&apos;;</span><br><span class="line">mysql&gt; flush privileges;</span><br><span class="line"></span><br><span class="line">$ mysql_secure_installation</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="configure-master"><a class="markdownIt-Anchor" href="#configure-master"></a> Configure Master</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/my.cnf</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">server-id=1</span><br><span class="line"><span class="built_in">log</span>-bin=mysql-bin</span><br><span class="line">binlog_format=ROW</span><br><span class="line"></span><br><span class="line">$ systemctl restart mysqld</span><br><span class="line"></span><br><span class="line">mysql&gt; grant replication slave on *.* to <span class="string">'replicator'</span>@<span class="string">'%'</span> identified by <span class="string">'Acqua@107'</span>;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>%: slave_ip</p>
+</blockquote>
+<h3 id="take-snapshot"><a class="markdownIt-Anchor" href="#take-snapshot"></a> Take snapshot</h3>
+<p>Option:备份数据</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ mysqldump -u root -p --all-databases --flush-privileges --single-transaction --master-data=2 --flush-logs --triggers --routines --events --hex-blob &gt;/path/to/backupdir/full_backup-<span class="variable">$TIMESTAMP</span>.sql</span><br><span class="line"></span><br><span class="line">对于MyISAM表，需要省略`--single-transaction`选项，而`--master-data=2`选项会自动打开`--lock-all-tables`。</span><br></pre></td></tr></table></figure>
+<p>对于新安装的 M/S 服务器（No data），不需要做备份，只需要记录日志的位置。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show master status \G</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">             File: mysql-bin.000001</span><br><span class="line">         Position: 595</span><br><span class="line">     Binlog_Do_DB: </span><br><span class="line"> Binlog_Ignore_DB: </span><br><span class="line">Executed_Gtid_Set: </span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+<h2 id="configure-slave"><a class="markdownIt-Anchor" href="#configure-slave"></a> Configure Slave</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/my.cnf</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">server-id=2</span><br><span class="line">relay_log=relay-log</span><br><span class="line">skip-slave-start		**/ useful to make any checks before starting the slave</span><br><span class="line">                           (this way, slave must be started manually after each mysql restart)</span><br><span class="line"></span><br><span class="line">$ systemctl restart mysqld</span><br></pre></td></tr></table></figure>
+<p>**Option:**恢复数据</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mysql -u root -p &lt; /path/to/backupdir/full_backup-$TIMESTAMP.sql</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">从备份文件中获取Master的日志位置信息。</span><br><span class="line"></span><br><span class="line">$ head -n 50 /path/to/backupdir/full_backup-<span class="variable">$TIMESTAMP</span>.sql|grep <span class="string">"CHANGE MASTER TO"</span></span><br><span class="line">OR</span><br><span class="line">Master&gt; show master status \G</span><br></pre></td></tr></table></figure>
+<h3 id="set-the-master-information-on-the-slaves"><a class="markdownIt-Anchor" href="#set-the-master-information-on-the-slaves"></a> Set the master information on the slave’s</h3>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">slavel&gt; change master to \</span><br><span class="line">     master_host='10.0.77.17', \</span><br><span class="line">     master_port=3306, \</span><br><span class="line">     master_user='replicator', \</span><br><span class="line">     master_password='Acqua@107', \</span><br><span class="line">     master_log_file='mysql-bin.000001', \</span><br><span class="line">     master_log_pos=595;</span><br><span class="line">     </span><br><span class="line">slavel&gt; start slave;</span><br><span class="line"></span><br><span class="line">slavel&gt; show slave status \G</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">               Slave_IO_State: Waiting for master to send event</span><br><span class="line">                  Master_Host: 10.0.77.17</span><br><span class="line">                  Master_User: replicator</span><br><span class="line">                  Master_Port: 3306</span><br><span class="line">                Connect_Retry: 60</span><br><span class="line">              Master_Log_File: mysql-bin.000001</span><br><span class="line">          Read_Master_Log_Pos: 595</span><br><span class="line">               Relay_Log_File: relay-log.000002</span><br><span class="line">                Relay_Log_Pos: 320</span><br><span class="line">        Relay_Master_Log_File: mysql-bin.000001</span><br><span class="line">             Slave_IO_Running: Yes</span><br><span class="line">            Slave_SQL_Running: Yes     </span><br><span class="line">                   ......</span><br></pre></td></tr></table></figure>
+<ul>
+<li>If the Slave_IO_State= connecting … then make sure that the slave user information is set correctly and there is no firewall restrictions between the two servers (master and slave) this could be checked by connecting to the master’s MySQL from the salve server by the replication user (in this example, slave_user_name).</li>
+<li>If both Slave_IO_Running and Slave_SQL_Running = Yes, then the replication had been set up correctly.</li>
+<li>If the Slave_SQL_Running = No, check the value of Last_SQL_Error for more details about the SQL error.</li>
+<li>If you know that error and you want to ignore it, you can execute “SET GLOBAL sql_slave_skip_counter = 1;” on the slave and then start the slave again “START SLAVE;”.</li>
+<li>To restrict all normal users from changing data on the slave - which might break the replication - the option “read-only” should be added in the slave’s my.cnf file.</li>
+<li>the server option “server-id” must be unique among all servers inside the replication (masters and slaves).</li>
+<li>If your database size is big (100GB or so) <a href="https://acquaai.github.io/2018/01/31/xtrabackup/">Xtrabackup</a> tool could be used instead of mysqldump - when preparing the master snapshot - for faster backup and restore operations.</li>
+</ul>
+<h2 id="配置半同步复制"><a class="markdownIt-Anchor" href="#配置半同步复制"></a> 配置半同步复制</h2>
+<p>相比传统的binlog异步复制，半同步复制提高了数据完整性，防止 主/从 数据不一致。</p>
+<ul>
+<li>所有master、slave服务器需要安装半同步插件</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">master&gt; install plugin rpl_semi_sync_master soname 'semisync_master.so';</span><br><span class="line">slave&gt; install plugin rpl_semi_sync_slave soname 'semisync_slave.so';</span><br></pre></td></tr></table></figure>
+<ul>
+<li>master开启半同步</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">master&gt; set global rpl_semi_sync_master_enabled = 1;</span><br><span class="line">master&gt; set global rpl_semi_sync_master_timeout = 100;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>slave开启半同步</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slave&gt; set global rpl_semi_sync_slave_enabled = on;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>slave重启IO线程</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">slave&gt; stop slave io_thread;</span><br><span class="line">slave&gt; start slave io_thread;</span><br></pre></td></tr></table></figure>
+<p><strong>Reference</strong><br>
+<a href="http://www.fromdual.com/how_to_setup_mysql_master-slave_replication" target="_blank" rel="noopener">http://www.fromdual.com/how_to_setup_mysql_master-slave_replication</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2017/12/02/binlog-rep/">https://acquaai.github.io/2017/12/02/binlog-rep/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/12/03/xfs-resizing/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">XFS filesystem resizing</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/11/29/golang/">
+        <span class="next-text nav-default">Golang</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2017/12/02/binlog-rep/';
+        this.page.identifier = '2017/12/02/binlog-rep/';
+        this.page.title = 'Binlog - MySQL Classic Replication';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

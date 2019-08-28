@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="SSL with Tomcat">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2017/11/17/SSL-with-Tomcat/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> SSL with Tomcat - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          SSL with Tomcat
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-17
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#prepare-the-certificate-keystore"><span class="toc-text"> Prepare the Certificate Keystore</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#certificate-keystore-type"><span class="toc-text"> Certificate Keystore Type</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#certificate-keystore-transform"><span class="toc-text"> Certificate Keystore Transform</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#edit-the-tomcat-configuration-file"><span class="toc-text"> Edit the Tomcat Configuration File</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#jsse-connector"><span class="toc-text"> JSSE connector</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#apr-connector"><span class="toc-text"> APR connector</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#configure-ssl"><span class="toc-text"> Configure SSL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#access-with-https"><span class="toc-text"> Access with https</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="prepare-the-certificate-keystore"><a class="markdownIt-Anchor" href="#prepare-the-certificate-keystore"></a> Prepare the Certificate Keystore</h2>
+<h3 id="certificate-keystore-type"><a class="markdownIt-Anchor" href="#certificate-keystore-type"></a> Certificate Keystore Type</h3>
+<blockquote>
+<p>Tomcat当前支持 JKS，PKCS11，PKCS12（v5.0/5.0+）书格式。JKS为JAVA标准的『Java KeyStore』格式，是由JDK的keytool命令行工具生成。PKCS12是互联网标准格式，由OpenSSL与Microsoft’s Key-Manager共同维护。</p>
+</blockquote>
+<p>创建一个自签名的JKS keystore</p>
+<ul>
+<li>
+<p>Windows:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"%JAVA_HOME%\bin\keytool"</span> -genkey -<span class="built_in">alias</span> tomcat -keyalg RSA -keystore \path\to\my\keystore</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>Unix:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$JAVA_HOME</span>/bin/keytool -genkey -<span class="built_in">alias</span> tomcat -keyalg RSA -keystore /path/to/my/keystore</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<p>目前大多数云服务商都提供系统自动生成keystore。</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="certificate-keystore-transform"><a class="markdownIt-Anchor" href="#certificate-keystore-transform"></a> Certificate Keystore Transform</h3>
+<p>使用java jdk将PFX格式证书转换为JKS格式证书(windows环境注意在%JAVA_HOME%/jdk/bin目录下执行)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ keytool -importkeystore -srckeystore your-name.pfx -destkeystore your-name.jks -srcstoretype PKCS12 -deststoretype JKS</span><br></pre></td></tr></table></figure>
+<p>回车后输入JKS证书密码和PFX证书密码，强烈推荐将JKS密码与PFX证书密码相同，否则可能会导致Tomcat启动失败。</p>
+<h2 id="edit-the-tomcat-configuration-file"><a class="markdownIt-Anchor" href="#edit-the-tomcat-configuration-file"></a> Edit the Tomcat Configuration File</h2>
+<p>Tomcat使用2种不同的SSL实现方式：</p>
+<ul>
+<li>与Java runtime(since 1.4)一起提供的<code>JSSE</code>实现</li>
+<li>默认使用OpenSSL引擎的<code>APR</code>实现</li>
+</ul>
+<p>若在server.xml文件中使用通用的<code>protocol=&quot;HTTP/1.1&quot;</code>来配置Connector，则由Tomcat自动选择SSL实现方式。在安装了 Tomcat native libraryr 情况下，将使用APR SSL来实现，否则使用Java JSSE来实现。由于APR与JSSE实现有很大的差异，建议避免自动选择来实现。</p>
+<h3 id="jsse-connector"><a class="markdownIt-Anchor" href="#jsse-connector"></a> JSSE connector</h3>
+<p>定义JSSE connector，无论是否加载APR库，使用以下方式之一：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Define a HTTP/1.1 Connector on port 8443, JSSE NIO implementation --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">protocol</span>=<span class="string">"org.apache.coyote.http11.Http11NioProtocol"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">port</span>=<span class="string">"8443"</span> <span class="attr">...</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">OR:</span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Define a HTTP/1.1 Connector on port 8443, JSSE BIO implementation --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">protocol</span>=<span class="string">"org.apache.coyote.http11.Http11Protocol"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">port</span>=<span class="string">"8443"</span> <span class="attr">...</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>The BIO and NIO connectors use JSSE whereas the APR/native connector uses APR.</strong></p>
+</blockquote>
+<h3 id="apr-connector"><a class="markdownIt-Anchor" href="#apr-connector"></a> APR connector</h3>
+<p>定义APR connector(APR库必须可用)</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Define a HTTP/1.1 Connector on port 8443, APR implementation --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">protocol</span>=<span class="string">"org.apache.coyote.http11.Http11AprProtocol"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">port</span>=<span class="string">"8443"</span> <span class="attr">...</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在使用APR时，可以选择配置OpenSSL作为引擎：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Listener</span> <span class="attr">className</span>=<span class="string">"org.apache.catalina.core.AprLifecycleListener"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">SSLEngine</span>=<span class="string">"someengine"</span> <span class="attr">SSLRandomSeed</span>=<span class="string">"somedevice"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>ARP默认值：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Listener</span> <span class="attr">className</span>=<span class="string">"org.apache.catalina.core.AprLifecycleListener"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">SSLEngine</span>=<span class="string">"on"</span> <span class="attr">SSLRandomSeed</span>=<span class="string">"builtin"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>要在APR下使用SSL，要确保SSLEngine属性设置为非关闭状态，默认值是打开的。如果你指定另一个值，它必须是一个有效的引擎名称。</p>
+<p><s>为什么网上有文章说要注释掉</s></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Listener</span> <span class="attr">className</span>=<span class="string">"org.apache.catalina.core.AprLifecycleListener"</span> <span class="attr">SSLEngine</span>=<span class="string">"on"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p><s>原因在<code>自动选择</code></s></p>
+<h2 id="configure-ssl"><a class="markdownIt-Anchor" href="#configure-ssl"></a> Configure SSL</h2>
+<ul>
+<li>With JSSE</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Define a SSL Coyote HTTP/1.1 Connector on port 8443 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Connector</span></span></span><br><span class="line"><span class="tag">           <span class="attr">protocol</span>=<span class="string">"org.apache.coyote.http11.Http11NioProtocol"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">port</span>=<span class="string">"8443"</span> <span class="attr">maxThreads</span>=<span class="string">"200"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">scheme</span>=<span class="string">"https"</span> <span class="attr">secure</span>=<span class="string">"true"</span> <span class="attr">SSLEnabled</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">keystoreFile</span>=<span class="string">"$&#123;user.home&#125;/.keystore"</span> <span class="attr">keystorePass</span>=<span class="string">"changeit"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">clientAuth</span>=<span class="string">"false"</span> <span class="attr">sslProtocol</span>=<span class="string">"TLS"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>With APR</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Define a SSL Coyote HTTP/1.1 Connector on port 8443 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Connector</span></span></span><br><span class="line"><span class="tag">           <span class="attr">protocol</span>=<span class="string">"org.apache.coyote.http11.Http11AprProtocol"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">port</span>=<span class="string">"8443"</span> <span class="attr">maxThreads</span>=<span class="string">"200"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">scheme</span>=<span class="string">"https"</span> <span class="attr">secure</span>=<span class="string">"true"</span> <span class="attr">SSLEnabled</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">SSLCertificateFile</span>=<span class="string">"/usr/local/ssl/server.crt"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">SSLCertificateKeyFile</span>=<span class="string">"/usr/local/ssl/server.pem"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">SSLVerifyClient</span>=<span class="string">"optional"</span> <span class="attr">SSLProtocol</span>=<span class="string">"TLSv1+TLSv1.1+TLSv1.2"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="access-with-https"><a class="markdownIt-Anchor" href="#access-with-https"></a> Access with <code>https</code></h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vi <span class="variable">$TOMCAT_HOME</span>/conf/web.xml</span><br></pre></td></tr></table></figure>
+<p>Add lines:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">login-config</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">auth-method</span>&gt;</span>CLIENT-CERT<span class="tag">&lt;/<span class="name">auth-method</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">realm-name</span>&gt;</span>Client Cert Users-only Area<span class="tag">&lt;/<span class="name">realm-name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">login-config</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">security-constraint</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">web-resource-collection</span> &gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">web-resource-name</span> &gt;</span>SSL<span class="tag">&lt;/<span class="name">web-resource-name</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;/<span class="name">web-resource-collection</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">user-data-constraint</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">transport-guarantee</span>&gt;</span>CONFIDENTIAL<span class="tag">&lt;/<span class="name">transport-guarantee</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;/<span class="name">user-data-constraint</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">security-constraint</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>Reference</strong><br>
+<a href="https://tomcat.apache.org/tomcat-7.0-doc/config/http.html#SSL%20Support" target="_blank" rel="noopener">HTTP connector</a><br>
+<a href="https://tomcat.apache.org/tomcat-7.0-doc/ssl-howto.html" target="_blank" rel="noopener">Apache HOW-TO</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2017/11/17/SSL-with-Tomcat/">https://acquaai.github.io/2017/11/17/SSL-with-Tomcat/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/11/21/SLB7/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">DPVS</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/11/13/Install-MySQL-8-0-from-Source/">
+        <span class="next-text nav-default">Install MySQL 8.0 from Source</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2017/11/17/SSL-with-Tomcat/';
+        this.page.identifier = '2017/11/17/SSL-with-Tomcat/';
+        this.page.title = 'SSL with Tomcat';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

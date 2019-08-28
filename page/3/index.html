@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/page/3/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  <section id="posts" class="posts">
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2018/03/23/sonar/">SonarQube on Kubernetes</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-23
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <blockquote>
+<p>本文中PostgreSQL使用 Ceph RBD 作为持久卷，SonarQube使用 NFS 作为持久卷。</p>
+</blockquote>
+<h2 id="requirements"><a class="markdownIt-Anchor" href="#requirements"></a> Requirements</h2>
+<ul>
+<li>Ceph 客户端</li>
+<li><code>kubernetes all Nodes</code>（尤其是 master 节点）上依然需要安装 。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ yum -y install ceph-common</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Kubernetes 使用 ceph 存储需要用到如下配置：</li>
+<li>Monitors: Ceph montors 列表</li>
+<li>Path：作为挂载的根路径，默认是 /</li>
+<li>User：RADOS用户名，默认是 admin</li>
+<li>secretFile：keyring 文件路径，默认是 /etc/ceph/keyring，Ceph 集群提供的文件是 ceph.client.admin.keyring</li>
+<li>secretRef：Ceph 认证 secret 的引用，如果配置了将会覆盖 secretFile。</li>
+<li>readOnly：该文件系统是否只读。</li>
+</ul>
+          <div class="read-more">
+            <a href="/2018/03/23/sonar/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2018/03/13/ceph-cluster/">Ceph Distributed Storage System</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-13
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="ceph-介绍"><a class="markdownIt-Anchor" href="#ceph-介绍"></a> Ceph 介绍</h2>
+<p>Ceph 是一个符合 POSIX 的开源分布式存储系统，能提供 Ceph Object、Ceph RBD 和 Ceph FS 的存储能力。Ceph Cluster至少需要一个<code>Ceph Monitor</code> 和两个<code>OSD Daemon</code>，当运行 Ceph 文件系统客户端时，还必须要有元数据服务器（MDS）。</p>
+<p>Components:</p>
+<ul>
+<li>Monitors: 基于 PAXOS 算法维护集群状态的各种图表，包括监视器图、OSD图、PG图、CRUSH图。Ceph 保存( <code>epoch</code> )发生在 Monitor、OSD 和 PG 上的每一次状态变更的历史信息。</li>
+<li>OSDs: 存储数据，处理数据的复制、恢复、回填、再均衡，并通过检查其它 OSD 守护进程的心跳来向 Monitors 提供监控信息。当存储集群设定为 2个副本 时，至少需要 2个OSD守护进程，集群才能达到<code>active + clean</code>的状态，Ceph 默认为 3副本。</li>
+<li>MDSs: 存储 Ceph FS 元数据。（针对 Object/RBD 存储不需要 MDS）MDS也可以在多节点部署实现冗余。MDS守护进程可以被配置为活跃或者被动状态，活跃的MDS为主MDS，其他的MDS处于备用状态，当主MDS节点故障时，备用MDS节点会接管其工作并被提升为主节点。</li>
+</ul>
+          <div class="read-more">
+            <a href="/2018/03/13/ceph-cluster/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2018/03/10/k8s-pv/">K8S持久化卷</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-10
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <blockquote>
+<p>声明：本文来自<a href="https://jimmysong.io/posts/kubernetes-persistent-volume/" target="_blank" rel="noopener">jimmysong</a>的文章，整理记录在此仅为加深对 K8S PV 学习和理解。</p>
+</blockquote>
+<p>在 K8S 中没有使用<strong>持久化卷</strong>是不完整的，PV作为子系统为管理员和用户提供了API。</p>
+<h2 id="apis"><a class="markdownIt-Anchor" href="#apis"></a> APIs</h2>
+<p><code>PersistentVolume</code>（PV）管理员配置的存储，作为 K8S 群集的一部分。类似节点是集群中的资源一样，PV 也是集群中的资源。 PV 是 Volume 之类的卷插件，具有独立于 使用PV的Pod 的生命周期。卷的生命比 Pod 中的所有容器都长，当容器重启时数据仍然得以保存。只有当 Pod 消亡时，卷将不复存在。Kubernetes 支持多种类型的卷，Pod 可以同时使用任意数量的卷。该API对象包含存储实现的细节，即 NFS、RBD 或云厂商的存储系统。</p>
+<p><code>PersistentVolumeClaim</code>（PVC）用户对存储的请求，与 Pod 类似。Pod 消耗节点资源，PVC 消耗 PV 资源。PVC 请求特定的大小和访问模式。</p>
+<h2 id="卷和声明claim的生命周期"><a class="markdownIt-Anchor" href="#卷和声明claim的生命周期"></a> 卷和声明(claim)的生命周期</h2>
+<p>PV作为集群中的一项资源，PVC消费PV资源，也作为对资源的消费检查。</p>
+          <div class="read-more">
+            <a href="/2018/03/10/k8s-pv/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2018/03/10/nfs/">NFS Share</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-10
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="server"><a class="markdownIt-Anchor" href="#server"></a> Server</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ setsebool -P virt_use_nfs 1 (OR SELinux status: disabled)</span><br><span class="line">$ yum -y install nfs-utils libnfsidmap</span><br><span class="line">$ systemctl <span class="built_in">enable</span> rpcbind nfs-server</span><br><span class="line">$ systemctl start rpcbind nfs-server rpc-statd nfs-idmapd</span><br><span class="line"></span><br><span class="line">$ cat /etc/expots</span><br><span class="line">/nfs/sonar/conf 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line">/nfs/sonar/data 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line">/nfs/sonar/extensions 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line">/nfs/sonar/logs 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line"></span><br><span class="line">$ chmod -R 777 /nfs</span><br><span class="line">$ exportfs -r</span><br></pre></td></tr></table></figure>
+          <div class="read-more">
+            <a href="/2018/03/10/nfs/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    
+      <a class="prev" href="/page/2/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/page/4/">
+        <span class="next-text">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+
+          </div>
+          
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

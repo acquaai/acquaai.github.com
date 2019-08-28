@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Server Load Balancer">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2017/11/11/SLB1/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Server Load Balancer - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Server Load Balancer
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-11
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#主流负载均衡器"><span class="toc-text"> 主流负载均衡器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#haproxy特性"><span class="toc-text"> HAProxy特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#haproxy工作原理"><span class="toc-text"> HAProxy工作原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lvslinux-virtual-server特性"><span class="toc-text"> LVS(Linux Virtual Server)特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#nginxengine-x特性"><span class="toc-text"> Nginx(engine x)特性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#负载均衡高可用-keepalived"><span class="toc-text"> 负载均衡高可用 - Keepalived</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#工作原理"><span class="toc-text"> 工作原理</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="主流负载均衡器"><a class="markdownIt-Anchor" href="#主流负载均衡器"></a> 主流负载均衡器</h2>
+<h3 id="haproxy特性"><a class="markdownIt-Anchor" href="#haproxy特性"></a> HAProxy特性</h3>
+<ul>
+<li>支持两种代理模式：<strong>TCP（OSI四层）<strong>和</strong>HTTP（OSI七层）</strong>，且HAProxy支持虚拟主机。</li>
+<li>HAProxy做七层代理的话，一般需要和stunnel结合起来使用，stunnel把接收的HTTPS请求转发到HAProxy，然后再由HAProxy转发到后端服务器。</li>
+<li>HAProxy可以隐藏后端服务器信息。</li>
+<li>支持url检测后端的服务器是否故障。</li>
+<li>与LVS一样，本身仅仅就只是一款负载均衡软件，单纯从效率上来讲HAProxy比Nginx有更出色的负载均衡速度，在并发处理上也优于Nginx。</li>
+<li>HAProxy可以对MySQL读进行负载均衡，对后端的MySQL节点进行检测和负载均衡，但在后端的MySQL slaves数量超过10台时性能不如LVS。</li>
+<li>HAProxy 负载均衡策略非常多：Round-robin（轮循）、Weight-round-robin（带权轮循）、source（原地址保持）、RI（请求URL）、rdp-cookie（根据cookie）。</li>
+</ul>
+<h3 id="haproxy工作原理"><a class="markdownIt-Anchor" href="#haproxy工作原理"></a> HAProxy工作原理</h3>
+<p>HAProxy是一个单线程/多线程(v1.8支持)、事件驱动，给予优先级调度非阻塞的I/O的程序，设计理念源自于数据转发，可以快速移动数据并减少数据的操作时间。因此它实现了分层模式，在每个级别提供旁路机制，从而确保数据不会去往更高层。HAProxy大多数情况下是在内核中完成处理。当haproxy启动后，它只做三件事情：</p>
+<a id="more"></a>
+<blockquote>
+<p>0.客户端发送请求 -&gt; 1.HAProxy开始处理传入的链接 -&gt; 2.定期检查后端服务的状态 -&gt; 3.与其它HAProxy节点交换信息</p>
+</blockquote>
+<ul>
+<li>接受来自于前端（frontend）实体链接，实体链接引用了一个或者多个的监听地址；</li>
+<li>ACL规则判断这些链接是否被拦截，规则可以修改这些链接标题或拦截他们执行内部小程序，比如：页面统计；</li>
+<li>过滤规则完成后，将这些链接传递给后端实体（backend），后端服务器中包含负载均衡的策略（比如：roundrobin策略）；</li>
+<li>将后端特定的处理规则应用于这些连接；</li>
+<li>根据负载均衡的策略来转发链接给backend；</li>
+<li>将后端特定的处理规则应用于响应数据；</li>
+<li>将前端特定的处理规则应用于响应数据；</li>
+<li>返回一个日志来报告发生的细节；</li>
+<li>在HTTP中，循环回到第二步，等待新的请求，否则关闭连接；</li>
+</ul>
+<p>前端和后端有时被认为是半代理，因为它们只有看到一端 端对端 的连接；前端只关心客户端，而后端只关心服务器。 HAProxy也支持完全代理，正是前端和后端的联合。当HTTP 期望处理，该配置通常将被分割成前端和后端，因为任何一个前端都可能通过连接到任何后端。</p>
+<h3 id="lvslinux-virtual-server特性"><a class="markdownIt-Anchor" href="#lvslinux-virtual-server特性"></a> LVS(Linux Virtual Server)特性</h3>
+<ul>
+<li>抗负载能力强、是工作在 <strong>OSI4层(传输层)</strong> 之上仅作分发之用，没有流量的产生，此特点也决定了它在负载均衡软件里的性能最强的。</li>
+<li>配置性比较低，是缺点同时也是一个优点，因为没有可太多配置的东西，所以并不需要太多接触，大大减少了人为出错的几率。</li>
+<li>工作稳定，自身有完整的双机热备方案，如LVS+Keepalived和LVS+Heartbeat，目前使用比较多的还是LVS/DR+Keepalived。</li>
+<li>无流量，保证了均衡器IO的性能不会收到大流量的影响。</li>
+<li>应用范围比较广，可以对所有应用做负载均衡。</li>
+<li>软件本身不支持正则处理，不能做动静分离；在这方面有需求的，还是Nginx/HAProxy+Keepalived的优势所在。</li>
+<li>如果是网站应用比较庞大的话，实施、维护LVS/DR+Keepalived起来就比较复杂，特别后端有Windows Server应用。</li>
+</ul>
+<h3 id="nginxengine-x特性"><a class="markdownIt-Anchor" href="#nginxengine-x特性"></a> Nginx(engine x)特性</h3>
+<ul>
+<li>工作在 <strong>OSI7层(应用层)</strong> 之上，可以针对http应用做一些分流的策略，比如针对域名、目录结构，它的正则规则比HAProxy更为强大和灵活。</li>
+<li>Nginx对网络的依赖非常小，理论上能ping通就就能进行负载功能，是它的优势所在。</li>
+<li>Nginx安装和配置比较简单，测试起来比较方便。</li>
+<li>也可以承担高的负载压力且稳定，一般能支撑超过几万次的并发量。</li>
+<li>Nginx可以通过端口检测到服务器内部的故障，比如根据服务器处理网页返回的状态码、超时等等，并且会把返回错误的请求重新提交到另一个节点，不过其中缺点就是不支持url来检测。</li>
+<li>Nginx<strong>仅能支持http和Email</strong>，这样就在适用范围上面小很多，是弱势。</li>
+<li>Nginx不仅仅是一款优秀的负载均衡器/反向代理软件，它同时也是功能强大的Web应用服务器。LNMP现在也是非常流行的web架构，和以前最流行的LAMP架构分庭抗争之势，在高流量的环境中也有很好的效果。</li>
+<li>Nginx现在作为Web反向加速缓存越来越成熟，速度比传统的Squid服务器更快，可以考虑用其作为反向代理加速器。</li>
+</ul>
+<h2 id="负载均衡高可用-keepalived"><a class="markdownIt-Anchor" href="#负载均衡高可用-keepalived"></a> 负载均衡高可用 - <strong>Keepalived</strong></h2>
+<p>Keepalived是基于VRRP协议的高级应用，作用于<strong>网络层、传输层和应用层</strong>交换机制的处理高可用的软件。主要根据TCP/IP五层模型中的3, 4, 5层交换机制检查RealServer的健康状态检查以及LoadBalance主机和BackUP主机之间failover的实现。后来又加入了VRRP的功能，VRRP是Virtual Router Redundancy Protocol（虚拟路由器冗余协议）的缩写，目的是为了解决静态路由出现的单点故障问题，通过VRRP可以实现网络不间断地、稳定地运行。因此，Keepalived一方面具有服务器状态检测和故障隔离功能，另一方面也具有HA cluster功能。keepalived可以实现轻量级的高可用，一般用于前端高可用，且不需要共享存储，一般常用于两个节点的高可用（常见的前端高可用组合有LVS+Keepalived、Nginx+Keepalived、HAproxy+Keepalived）。</p>
+<h3 id="工作原理"><a class="markdownIt-Anchor" href="#工作原理"></a> 工作原理</h3>
+<p>在网络层，运行着四个重要的协议：互连网协议IP、互连网控制报文协议ICMP、地址转换协议ARP以及反向地址转换协议RARP。</p>
+<p>Keepalived在网络层采用的最常见的工作方式是通过ICMP协议向服务器集群中的每个节点发送一个ICMP的数据包（类似于ping实现的功能），如果某个节点没有返回响应数据包，那么就认为此节点发生了故障，Keepalived将报告此节点失效，并从服务器集群中剔除故障节点。</p>
+<p>在传输层，提供了两个主要的协议：传输控制协议TCP和用户数据协议UDP。传输控制协议TCP可以提供可靠的数据传输服务，IP地址和端口，代表一个TCP连接的一个连接端。要获得TCP服务,须在发送机的一个端口上和接收机的一个端口上建立连接，而Keepalived在传输层就是利用TCP协议的端口连接和扫描技术来判断集群节点是否正常的。比如，对于常见的Web服务默认的80端口、SSH服务默认的22端口等，Keepalived一旦在传输层探测到这些端口没有响应数据返回，就认为这些端口发生异常，然后强制将此端口对应的节点从服务器集群组中移除。</p>
+<p>在应用层，可以运行FTP、TELNET、SMTP、DNS等各种不同类型的高层协议，Keepalived的运行方式也更加全面化和复杂化，用户可以通过自定义Keepalived的工作方式，例如用户可以通过编写程序来运行Keepalived，而Keepalived将根据用户的设定检测各种程序或服务是否正常，如果Keepalived的检测结果与用户设定不一致时，Keepalived将把对应的服务从服务器中移除。</p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2017/11/11/SLB1/">https://acquaai.github.io/2017/11/11/SLB1/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/11/11/SLB2/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Install HAProxy + Keepalived</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/11/07/Install-MySQL-5-7-from-Source/">
+        <span class="next-text nav-default">Install MySQL 5.7 from Source</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2017/11/11/SLB1/';
+        this.page.identifier = '2017/11/11/SLB1/';
+        this.page.title = 'Server Load Balancer';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

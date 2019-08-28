@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="部署 Tornado 开发环境">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2018/05/22/depoly-tornado-dev/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> 部署 Tornado 开发环境 - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          部署 Tornado 开发环境
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-05-22
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/Python/">Python</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#centos-系统基础环境"><span class="toc-text"> CentOS 系统基础环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-python-3"><span class="toc-text"> 安装 Python 3</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-tornado"><span class="toc-text"> 安装 Tornado</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#test"><span class="toc-text"> Test</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-nginx"><span class="toc-text"> 安装 Nginx</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-supervisor"><span class="toc-text"> 安装 Supervisor</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pip2"><span class="toc-text"> pip2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#virtualenv"><span class="toc-text"> virtualenv</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置-supervisor"><span class="toc-text"> 配置 supervisor</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p><code>Tornado</code>：<a href="http://www.tornadoweb.org/en/stable/" target="_blank" rel="noopener">Tornado</a> 是 Python 编写出来的一个极轻量级、高可伸缩性和非阻塞IO的Web服务器软件，例如前 Friendfeed 网站。</p>
+<p><code>Supervisor</code>：一个服务（进程）管理工具，主要用于监控服务器上的服务，并且在出现问题时自动重启。</p>
+<p><code>Nginx</code>：在这里作为反向代理。</p>
+<a id="more"></a>
+<h2 id="centos-系统基础环境"><a class="markdownIt-Anchor" href="#centos-系统基础环境"></a> CentOS 系统基础环境</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ yum update -y</span><br></pre></td></tr></table></figure>
+<p>因为目前 Supervisor 仅支持 python2，但又需要使用 Python3 来开发，所以它们需要共存。为了不同环境互不干扰，将使用<code>virtualenv</code>来达到这一目的。</p>
+<h3 id="安装-python-3"><a class="markdownIt-Anchor" href="#安装-python-3"></a> 安装 Python 3</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Python2的软链接</span></span><br><span class="line"></span><br><span class="line">$ ll /usr/bin/python*</span><br><span class="line">lrwxrwxrwx 1 root root    7 May 21 10:30 /usr/bin/python -&gt; python2</span><br><span class="line">lrwxrwxrwx 1 root root    9 May 21 10:30 /usr/bin/python2 -&gt; python2.7</span><br><span class="line">-rwxr-xr-x 1 root root 7216 Apr 11 15:36 /usr/bin/python2.7</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装Python3的依赖</span></span><br><span class="line">$ yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc make </span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装Python3.6</span></span><br><span class="line">$ wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tgz</span><br><span class="line">$ tar xzvf Python-3.6.5.tgz</span><br><span class="line">$ <span class="built_in">cd</span> Python-3.6.5</span><br><span class="line">$ ./configure perfix=/usr/<span class="built_in">local</span>/python3</span><br><span class="line">$ make &amp;&amp; make install</span><br><span class="line">$ python -V</span><br><span class="line"></span><br><span class="line"><span class="comment"># （可选）设置Python3为系统默认版本</span></span><br><span class="line"></span><br><span class="line">$ mv /usr/bin/python /usr/bin/python.bak</span><br><span class="line">$ ln -s /usr/<span class="built_in">local</span>/python3/bin/python3.6 /usr/bin/python</span><br><span class="line">$ python -V</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置 yum（yum包管理工具使用Python2）</span></span><br><span class="line">$ vi /usr/bin/yum</span><br><span class="line"></span><br><span class="line"><span class="comment">#! /usr/bin/python ===&gt; #! /usr/bin/python2</span></span><br><span class="line"></span><br><span class="line">$ vi /usr/libexec/urlgrabber-ext-down</span><br><span class="line"><span class="comment">#! /usr/bin/python ===&gt; #! /usr/bin/python2</span></span><br></pre></td></tr></table></figure>
+<h2 id="安装-tornado"><a class="markdownIt-Anchor" href="#安装-tornado"></a> 安装 Tornado</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ pip3 install tornado</span><br><span class="line"></span><br><span class="line"><span class="comment"># 新建示例页面</span></span><br><span class="line">$ mkdir /var/www</span><br><span class="line">$ vi /var/www/index.py</span><br></pre></td></tr></table></figure>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tornado.ioloop</span><br><span class="line"><span class="keyword">import</span> tornado.web</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MainHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.write(<span class="string">"Hello, Tornado!"</span>)</span><br><span class="line"> </span><br><span class="line">application = tornado.web.Application([</span><br><span class="line">    (<span class="string">r"/"</span>, MainHandler),</span><br><span class="line">    (<span class="string">r"/index.py"</span>, MainHandler),</span><br><span class="line">])</span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    application.listen(<span class="number">8006</span>)</span><br><span class="line">    tornado.ioloop.IOLoop.instance().start()</span><br></pre></td></tr></table></figure>
+<h3 id="test"><a class="markdownIt-Anchor" href="#test"></a> Test</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ python3 index.py</span><br><span class="line"></span><br><span class="line">http://10.0.77.119:8006</span><br></pre></td></tr></table></figure>
+<h2 id="安装-nginx"><a class="markdownIt-Anchor" href="#安装-nginx"></a> 安装 Nginx</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ cat /etc/yum.repos.d/nginx.repo</span><br><span class="line">[nginx]</span><br><span class="line">name=nginx repo</span><br><span class="line">baseurl=http://nginx.org/packages/centos/7/<span class="variable">$basearch</span>/</span><br><span class="line">gpgcheck=0</span><br><span class="line">enabled=1</span><br><span class="line"></span><br><span class="line">$ yum install nginx</span><br></pre></td></tr></table></figure>
+<p><a href="http://nginx.org/keys/nginx_signing.key" target="_blank" rel="noopener">nginx signing key</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">$ cat /etc/nginx/nginx.conf          </span><br><span class="line"></span><br><span class="line">user  nginx;</span><br><span class="line">worker_processes  1;</span><br><span class="line"></span><br><span class="line">error_log  /var/<span class="built_in">log</span>/nginx/error.log warn;</span><br><span class="line">pid        /var/run/nginx.pid;</span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024;</span><br><span class="line">    use epoll;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    upstream tornado &#123;</span><br><span class="line">        server 10.0.77.119:8006;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">        listen 80;</span><br><span class="line">        root /var/www;</span><br><span class="line">        index index.py index.html;</span><br><span class="line"></span><br><span class="line">        server_name server;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">            <span class="keyword">if</span> (!-e <span class="variable">$request_filename</span>) &#123;</span><br><span class="line">                rewrite ^/(.*)$ /index.py/<span class="variable">$1</span> last;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location ~ /index\.py &#123;</span><br><span class="line">            proxy_pass_header Server;</span><br><span class="line">            proxy_set_header Host <span class="variable">$http_host</span>;</span><br><span class="line">            proxy_set_header X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">            proxy_set_header X-Scheme <span class="variable">$scheme</span>;</span><br><span class="line">            proxy_pass http://tornado;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/test_Tornado.png" alt></p>
+<h2 id="安装-supervisor"><a class="markdownIt-Anchor" href="#安装-supervisor"></a> 安装 Supervisor</h2>
+<h3 id="pip2"><a class="markdownIt-Anchor" href="#pip2"></a> pip2</h3>
+<ul>
+<li>安装 pip</li>
+<li>yum 安装</li>
+</ul>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$ yum install epel-release</span><br><span class="line">$ yum install python-pip</span><br></pre></td></tr></table></figure>
+<ul>
+<li>curl 安装</li>
+</ul>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl <span class="string">"https://bootstrap.pypa.io/get-pip.py"</span> -o <span class="string">"get-pip.py"</span></span><br><span class="line">$ python get-pip.py</span><br></pre></td></tr></table></figure>
+<ul>
+<li>检测安装</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip --<span class="built_in">help</span></span><br><span class="line">pip -V</span><br></pre></td></tr></table></figure>
+<h3 id="virtualenv"><a class="markdownIt-Anchor" href="#virtualenv"></a> virtualenv</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pip2 install virtualenv</span><br></pre></td></tr></table></figure>
+<h3 id="配置-supervisor"><a class="markdownIt-Anchor" href="#配置-supervisor"></a> 配置 supervisor</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 新建 virtualenv 环境</span></span><br><span class="line">$ mkdir /etc/supervisor</span><br><span class="line">$ virtualenv --distribute -p /usr/bin/python2 supervisor</span><br><span class="line"></span><br><span class="line">Already using interpreter /usr/bin/python2</span><br><span class="line">New python executable <span class="keyword">in</span> /etc/supervisor/bin/python2</span><br><span class="line">Also creating executable <span class="keyword">in</span> /etc/supervisor/bin/python</span><br><span class="line">Installing setuptools, pip, wheel...done.</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入 virtualenv 环境</span></span><br><span class="line">$ <span class="built_in">cd</span> supervisor/</span><br><span class="line">$ <span class="built_in">source</span> bin/activate</span><br><span class="line">(supervisor) [root@tornado-web supervisor]<span class="comment"># ./bin/pip install supervisor</span></span><br><span class="line">...</span><br><span class="line">Successfully installed meld3-1.0.2 supervisor-3.3.4</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(supervisor) [root@tornado-web supervisor]<span class="comment"># echo_supervisord_conf &gt; /etc/supervisord.conf</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改如下内容：</span></span><br><span class="line">[unix_http_server]</span><br><span class="line">file=/var/run/supervisor.sock</span><br><span class="line">chmod=0700</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开启Web管理功能</span></span><br><span class="line">[inet_http_server]</span><br><span class="line">port=10.0.77.119:9001iface</span><br><span class="line">username=user</span><br><span class="line">password=123</span><br><span class="line"></span><br><span class="line">[supervisord]</span><br><span class="line">logfile=/var/<span class="built_in">log</span>/supervisor/supervisord.log</span><br><span class="line">pidfile=/var/run/supervisord.pid</span><br><span class="line"></span><br><span class="line">[supervisorctl]</span><br><span class="line">serverurl=unix:///var/run/supervisor.sock</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在文件末尾增加如下内容：</span></span><br><span class="line"><span class="comment"># 主要作用就是在Supervisor启动的时候自动启动 hello 应用对应的</span></span><br><span class="line"><span class="comment"># Tornado Web Server进程并纳入管理。</span></span><br><span class="line">[program:hello]</span><br><span class="line"><span class="built_in">command</span>=/usr/<span class="built_in">local</span>/bin/python3.6 /var/www/index.py --port=8006</span><br><span class="line">directory=/var/www</span><br><span class="line">autorestart=<span class="literal">true</span></span><br><span class="line">redirect_stderr=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动 Supervisord</span></span><br><span class="line">(supervisor) [root@tornado-web supervisor]<span class="comment"># supervisord  -c /etc/supervisord.conf</span></span><br><span class="line">(supervisor) [root@tornado-web supervisor]<span class="comment"># supervisorctl</span></span><br><span class="line">hello                            RUNNING   pid 5107, uptime 0:05:04</span><br><span class="line">supervisor&gt; <span class="built_in">help</span></span><br><span class="line"></span><br><span class="line">default commands (<span class="built_in">type</span> <span class="built_in">help</span> &lt;topic&gt;):</span><br><span class="line">=====================================</span><br><span class="line">add    <span class="built_in">exit</span>      open  reload  restart   start   tail   </span><br><span class="line">avail  <span class="built_in">fg</span>        pid   remove  shutdown  status  update </span><br><span class="line">clear  maintail  quit  reread  signal    stop    version</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置和运行 Supervisord 后，就可以退出 virtulenv</span></span><br><span class="line">(supervisor) [root@tornado-web supervisor]<span class="comment"># deactivate</span></span><br></pre></td></tr></table></figure>
+<p><img src="/images/supervisor.png" alt></p>
+<p><strong>Reference</strong></p>
+<ul>
+<li><a href="http://tornado-zh.readthedocs.io/zh/latest/guide/running.html" target="_blank" rel="noopener">Tornado Docs</a></li>
+<li><a href="http://supervisord.org/" target="_blank" rel="noopener">Supervisor Docs</a></li>
+<li><a href="http://einverne.github.io/post/2017/10/nginx-conf.html" target="_blank" rel="noopener">Nginx 配置详解</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2018/05/22/depoly-tornado-dev/">https://acquaai.github.io/2018/05/22/depoly-tornado-dev/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2019/08/28/k8s-ha-with-kubeadm/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Creating Kubernetes HA cluster with kubeadm</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/05/04/bootable-usb/">
+        <span class="next-text nav-default">Create a bootable USB using macOS</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2018/05/22/depoly-tornado-dev/';
+        this.page.identifier = '2018/05/22/depoly-tornado-dev/';
+        this.page.title = '部署 Tornado 开发环境';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

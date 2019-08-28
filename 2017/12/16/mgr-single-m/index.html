@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="MGR单主复制配置流程">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2017/12/16/mgr-single-m/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> MGR单主复制配置流程 - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          MGR单主复制配置流程
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-12-16
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/MySQL/">MySQL</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#mysql的参数设置"><span class="toc-text"> MySQL的参数设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#开启binlog和relaylog功能"><span class="toc-text"> 开启Binlog和Relaylog功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#开启gtid功能"><span class="toc-text"> 开启GTID功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置row格式的binlog"><span class="toc-text"> 设置ROW格式的Binlog</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#禁用binlog_checksum"><span class="toc-text"> 禁用binlog_checksum</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用系统表来存储slave的信息"><span class="toc-text"> 使用系统表来存储Slave的信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#开启并行复制"><span class="toc-text"> 开启并行复制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#开启主键信息采集功能"><span class="toc-text"> 开启主键信息采集功能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#group-replication插件的使用"><span class="toc-text"> Group Replication插件的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#加载插件"><span class="toc-text"> 加载插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启用插件"><span class="toc-text"> 启用插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#停用插件"><span class="toc-text"> 停用插件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#group-replication插件的基本参数设置"><span class="toc-text"> Group Replication插件的基本参数设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#设置组名"><span class="toc-text"> 设置组名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置成员的本地地址"><span class="toc-text"> 设置成员的本地地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置种子成员地址"><span class="toc-text"> 设置种子成员地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置成员ip白名单"><span class="toc-text"> 设置成员IP白名单</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#将参数写入配置文件"><span class="toc-text"> 将参数写入配置文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#group-replication的数据库用户"><span class="toc-text"> Group Replication的数据库用户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#group-replication组初始化"><span class="toc-text"> Group Replication组初始化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化特有的参数"><span class="toc-text"> 初始化特有的参数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#组初始化步骤"><span class="toc-text"> 组初始化步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#成员加入组步骤"><span class="toc-text"> 成员加入组步骤</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="mysql的参数设置"><a class="markdownIt-Anchor" href="#mysql的参数设置"></a> MySQL的参数设置</h2>
+<p><code>修改MySQL参数文件---/etc/my.cnf</code></p>
+<h3 id="开启binlog和relaylog功能"><a class="markdownIt-Anchor" href="#开启binlog和relaylog功能"></a> 开启Binlog和Relaylog功能</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">server_id = 1</span><br><span class="line">log_bin = binlog</span><br><span class="line">log_slave_updates = ON</span><br><span class="line">relay_log = relay-log</span><br></pre></td></tr></table></figure>
+<h3 id="开启gtid功能"><a class="markdownIt-Anchor" href="#开启gtid功能"></a> 开启GTID功能</h3>
+<p>Group Replication必须使用GTID功能。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gtid_mode = ON</span><br><span class="line">enforce_gtid_consistency = ON</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h3 id="设置row格式的binlog"><a class="markdownIt-Anchor" href="#设置row格式的binlog"></a> 设置ROW格式的Binlog</h3>
+<p>Group Replication只支持ROW格式的Binlog。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">binlog_format = ROW</span><br></pre></td></tr></table></figure>
+<h3 id="禁用binlog_checksum"><a class="markdownIt-Anchor" href="#禁用binlog_checksum"></a> 禁用binlog_checksum</h3>
+<p>Group Replication到<code>5.7.17</code>还不支持带Checksum的Binlog Event。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">binlog_checksum = NONE</span><br></pre></td></tr></table></figure>
+<p>在<code>5.7.20</code>中,默认为CRC32：<code>在测试时，err.log中提示设置为NONE</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show variables like '%binlog_checksum%';</span><br><span class="line">+<span class="comment">-----------------+-------+</span></span><br><span class="line">| Variable_name   | Value |</span><br><span class="line">+<span class="comment">-----------------+-------+</span></span><br><span class="line">| binlog_checksum | CRC32 |</span><br><span class="line">+<span class="comment">-----------------+-------+</span></span><br></pre></td></tr></table></figure>
+<h3 id="使用系统表来存储slave的信息"><a class="markdownIt-Anchor" href="#使用系统表来存储slave的信息"></a> 使用系统表来存储Slave的信息</h3>
+<p>Group Replication要使用到多源复制的功能，多源复制必须将Slave（Channel）的状态信息存储到系统表。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">master_info_repository = TABLE</span><br><span class="line">relay_log_info_repository = TABLE</span><br></pre></td></tr></table></figure>
+<h3 id="开启并行复制"><a class="markdownIt-Anchor" href="#开启并行复制"></a> 开启并行复制</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">slave_parallel_type = &apos;LOGICAL_CLOCK&apos;</span><br><span class="line">slave_parallel_workers = 8  线程数</span><br><span class="line">slave_preserve_commit_order = ON</span><br></pre></td></tr></table></figure>
+<h3 id="开启主键信息采集功能"><a class="markdownIt-Anchor" href="#开启主键信息采集功能"></a> 开启主键信息采集功能</h3>
+<p>除了使用Binlog之外，Group Replication还需要Server层帮助采集被更新数据的主键信息：XXHASH64、MURMUR32，默认OFF。同一个组内的所有成员必须设置相同的哈希算法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">transaction_write_set_extraction = XXHASH64</span><br></pre></td></tr></table></figure>
+<h2 id="group-replication插件的使用"><a class="markdownIt-Anchor" href="#group-replication插件的使用"></a> Group Replication插件的使用</h2>
+<h3 id="加载插件"><a class="markdownIt-Anchor" href="#加载插件"></a> 加载插件</h3>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; install plugin group_replication soname 'group_replication.so';</span><br></pre></td></tr></table></figure>
+<h3 id="启用插件"><a class="markdownIt-Anchor" href="#启用插件"></a> 启用插件</h3>
+<p>命令将本MySQL服务器加入到一个存在的GR组内，或者将它初始化为组内的第一个成员。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; start group_replication;</span><br></pre></td></tr></table></figure>
+<h3 id="停用插件"><a class="markdownIt-Anchor" href="#停用插件"></a> 停用插件</h3>
+<p>命令将本MySQL服务器从一个GR组内移除出去。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; start group_replication;</span><br></pre></td></tr></table></figure>
+<h2 id="group-replication插件的基本参数设置"><a class="markdownIt-Anchor" href="#group-replication插件的基本参数设置"></a> Group Replication插件的基本参数设置</h2>
+<h3 id="设置组名"><a class="markdownIt-Anchor" href="#设置组名"></a> 设置组名</h3>
+<p>每个GR需要唯一识别的组名。在初始化或加入一个组时，必须设置。且组名使用UUID。UUID用来标记组内所有成员上产生的Binlog Event，任何成员生成的GTID都会使用这个UUID，容易区分Event是哪个组产生的,可以使用 <code>uuidgen</code>生成。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">group_replication_group_name = &lt;uuid&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="设置成员的本地地址"><a class="markdownIt-Anchor" href="#设置成员的本地地址"></a> 设置成员的本地地址</h3>
+<p>每个成员都要有一个独立的TCP端口，成员之间通过此端口通信。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">group_replication_local_address = &lt;ip:port&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="设置种子成员地址"><a class="markdownIt-Anchor" href="#设置种子成员地址"></a> 设置种子成员地址</h3>
+<p>当加入一个组时，新成员首先必须要和组内成员进行通信来完成加入过程，因此需要至少<code>一个</code>当前组内成员地址。这此成员就是<code>种子成员</code>。这个变量配置的是其它成员的group_replication_local_address内容。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">group_replication_group_seeds = &lt;ip:port,ip:port&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="设置成员ip白名单"><a class="markdownIt-Anchor" href="#设置成员ip白名单"></a> 设置成员IP白名单</h3>
+<p>GR通过白名单地址列表来控制哪些IP地址的MySQL服务器能够加入到组里来。地址列表可以是具体IP或网段，之间用&quot;,&quot;分隔。若不配置白名单，GR会自动识别本机网口上配置的私网地址和私网网段，只允许和自己在同一私网的MySQL服务器连接到自己的端口。<code>配置白名单必须要关闭GR</code>，提前规划IP。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">group_replication_whitelist = &lt;ip,net,...&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="将参数写入配置文件"><a class="markdownIt-Anchor" href="#将参数写入配置文件"></a> 将参数写入配置文件</h3>
+<p>插件的参数只能在插件加载后设置，若设置这些参数到配置文件中，须在参数前加前缀: <code>loose-</code></p>
+<h2 id="group-replication的数据库用户"><a class="markdownIt-Anchor" href="#group-replication的数据库用户"></a> Group Replication的数据库用户</h2>
+<p><code>_gr_user@localhost</code>用户<br>
+GR使用此用户执行SQL语句来查询和配置数据库中的一些参数，在加载GR时创建。</p>
+<p><code>root</code>用户<br>
+检查_gr_user@localhost用户是否存在和创建它时，这个session是由root用户来执行的。在使用GR时，必须要有root用户。</p>
+<h2 id="group-replication组初始化"><a class="markdownIt-Anchor" href="#group-replication组初始化"></a> Group Replication组初始化</h2>
+<h3 id="初始化特有的参数"><a class="markdownIt-Anchor" href="#初始化特有的参数"></a> 初始化特有的参数</h3>
+<p>GR组的初始化是在启用第一个成员时完成。在启用第一个成员时，须使用参数告诉GR插件：它是该组的第一个成员，需要做初始化工作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">group_replication_bootstrap_group = ON</span><br></pre></td></tr></table></figure>
+<p><code>注：此参数只在初始化第一个成员时使用，所以不能将此参数写入到配置文件中，且在初始化完成后将该参数设置成 OFF 。</code></p>
+<h2 id="组初始化步骤"><a class="markdownIt-Anchor" href="#组初始化步骤"></a> 组初始化步骤</h2>
+<p>Group Replication初始化：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">install plugin group_replication soname &apos;group_replication.so&apos;;</span><br><span class="line">group_replication_group_name = &lt;uuid&gt;</span><br><span class="line">group_replication_local_address = &lt;ip:port&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">group_replication_bootstrap_group = ON</span><br><span class="line">start group replication</span><br><span class="line">group_replication_bootstrap_group = OFF</span><br></pre></td></tr></table></figure>
+<h2 id="成员加入组步骤"><a class="markdownIt-Anchor" href="#成员加入组步骤"></a> 成员加入组步骤</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">install plugin group_replication soname &apos;group_replication.so&apos;;</span><br><span class="line">group_replication_group_name = &lt;uuid&gt;</span><br><span class="line">group_replication_local_address = &lt;ip:port&gt;</span><br><span class="line">group_replication_group_seeds = &lt;ip:port&gt;,&lt;ip:port&gt;...</span><br><span class="line">change master to master_user = &apos;rpl_user&apos;,master_password = &apos;rpl_password&apos; for channel &apos;group_replication_recovery&apos;;</span><br><span class="line">start group_replication;</span><br></pre></td></tr></table></figure>
+<p><strong>Reference</strong><br>
+<a href="https://item.jd.com/12195430.html" target="_blank" rel="noopener">MySQL 运维内参</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2017/12/16/mgr-single-m/">https://acquaai.github.io/2017/12/16/mgr-single-m/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/12/17/mgr-single-m-example/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">MGR单主复制配置实例</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/12/15/mysql-log-maintenance/">
+        <span class="next-text nav-default">MySQL log maintenance</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2017/12/16/mgr-single-m/';
+        this.page.identifier = '2017/12/16/mgr-single-m/';
+        this.page.title = 'MGR单主复制配置流程';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

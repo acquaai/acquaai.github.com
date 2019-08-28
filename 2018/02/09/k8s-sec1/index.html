@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Kubernetes Security">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2018/02/09/k8s-sec1/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Kubernetes Security - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Kubernetes Security
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-02-09
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#docker宿主机安全"><span class="toc-text"> Docker宿主机安全</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#docker安全"><span class="toc-text"> Docker安全</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#api"><span class="toc-text"> API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#运行参数"><span class="toc-text"> 运行参数</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p><strong>Reference</strong></p>
+<ol>
+<li><a href="https://docs.docker.com/engine/security/security/" target="_blank" rel="noopener">Docker security</a></li>
+<li><a href="http://www.freebuf.com/column/152398.html" target="_blank" rel="noopener">Docker容器全面的安全防护</a></li>
+</ol>
+<h2 id="docker宿主机安全"><a class="markdownIt-Anchor" href="#docker宿主机安全"></a> Docker宿主机安全</h2>
+<ul>
+<li>Minimal Install</li>
+<li>sudo yum update -y</li>
+<li>按需安装附加包/服务</li>
+</ul>
+<a id="more"></a>
+<ul>
+<li>SSH Service</li>
+</ul>
+<p><strong>采用认证登录</strong><br>
+认证服务器(C端)生成一对公/私钥，私钥放在C端，公钥上传到S端。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa</span><br><span class="line"></span><br><span class="line">[dockeruser@repo ~]$ mkidr ~/.ssh</span><br><span class="line">[dockeruser@repo ~]$ sudo chmod 700 ~/.ssh</span><br><span class="line"></span><br><span class="line">$ scp ~/.ssh/id_rsa.pub dockeruser@10.0.77.16:~/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+<p><strong>sshd_config</strong><br>
+SSH禁用root登录和使用密码的身份验证。</p>
+<p>PermitRootLogin yes =&gt; no<br>
+PasswordAuthentication yes =&gt; no</p>
+<p><strong>使用非<code>:22</code>默认端口</strong></p>
+<ul>
+<li>关闭无用服务/端口</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ sudo nmap -sU -sS -p 1-65535 localhost</span><br><span class="line"></span><br><span class="line">Starting Nmap 6.40 ( http://nmap.org ) at 2018-02-09 09:21 CST</span><br><span class="line">Nmap scan report <span class="keyword">for</span> localhost (127.0.0.1)</span><br><span class="line">Host is up (0.0000060s latency).</span><br><span class="line">Other addresses <span class="keyword">for</span> localhost (not scanned): 127.0.0.1</span><br><span class="line">Not shown: 131068 closed ports</span><br><span class="line">PORT     STATE SERVICE</span><br><span class="line">25/tcp   open  smtp</span><br><span class="line">8086/tcp open  d<span class="_">-s</span>-n</span><br><span class="line"></span><br><span class="line">Nmap <span class="keyword">done</span>: 1 IP address (1 host up) scanned <span class="keyword">in</span> 1.74 seconds</span><br><span class="line"></span><br><span class="line">$ sudo systemctl stop postfix</span><br><span class="line">$ sudo yum remove postfix</span><br></pre></td></tr></table></figure>
+<h2 id="docker安全"><a class="markdownIt-Anchor" href="#docker安全"></a> Docker安全</h2>
+<h3 id="api"><a class="markdownIt-Anchor" href="#api"></a> API</h3>
+<ul>
+<li>
+<p><a href="https://www.kubernetes.org.cn/1995.html" target="_blank" rel="noopener">APIServer认证、授权、准入控制</a></p>
+</li>
+<li>
+<p><a href="https://www.kubernetes.org.cn/2781.html" target="_blank" rel="noopener">NetworkPolicy</a></p>
+</li>
+</ul>
+<p>默认情况下，K8S没有限制集群内Pod间的通信，NetworkPolicy于Pod间创建防火墙。</p>
+<h3 id="运行参数"><a class="markdownIt-Anchor" href="#运行参数"></a> 运行参数</h3>
+<ul>
+<li>
+<p><code>-default-ulimit</code><br>
+限制进程和文件数 -default-ulimit nproc=X:X -default-ulimit nofile=X:X</p>
+</li>
+<li>
+<p><code>-icc=false/true</code><br>
+管理容器间通信，建议设置为 false，使用<code>--link</code> 参数允许容器间通信。</p>
+</li>
+<li>
+<p><code>-iptables=true</code><br>
+启用iptables规则</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2018/02/09/k8s-sec1/">https://acquaai.github.io/2018/02/09/k8s-sec1/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/02/09/harbor/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Harbor</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/02/03/ci-cd/">
+        <span class="next-text nav-default">CI/CDs</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2018/02/09/k8s-sec1/';
+        this.page.identifier = '2018/02/09/k8s-sec1/';
+        this.page.title = 'Kubernetes Security';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

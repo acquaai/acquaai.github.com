@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="构建Docker容器应用">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2018/01/25/docker-app1/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> 构建Docker容器应用 - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          构建Docker容器应用
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-01-25
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#redis容器应用"><span class="toc-text"> Redis容器应用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#容器互连"><span class="toc-text"> 容器互连</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用容器连接来通信的方式"><span class="toc-text"> 使用容器连接来通信的方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jekyll-apache应用"><span class="toc-text"> Jekyll &amp; Apache应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#备份jekyll卷"><span class="toc-text"> 备份Jekyll卷</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#java应用"><span class="toc-text"> Java应用</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="redis容器应用"><a class="markdownIt-Anchor" href="#redis容器应用"></a> Redis容器应用</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$ cat Dockerfile </span><br><span class="line"></span><br><span class="line">FROM ubuntu:14.04</span><br><span class="line">MAINTAINER Acqua Young <span class="string">"acqua@gmail.com"</span></span><br><span class="line">ENV REFRESHED_AT 2018-01-20</span><br><span class="line"></span><br><span class="line">RUN apt-get update</span><br><span class="line">RUN apt-get -y install redis-server redis-tools</span><br><span class="line"></span><br><span class="line">EXPOSE 6379</span><br><span class="line">ENTRYPOINT [<span class="string">"/usr/bin/redis-server"</span>]</span><br><span class="line">CMD []</span><br><span class="line"></span><br><span class="line">$ docker build -t acqua/redis .</span><br><span class="line">$ docker run -d -p 6379 --name redis acqua/redis</span><br><span class="line"></span><br><span class="line">Docker默认会把公开的端口绑定到所有的网络接口上，localhost或127.0.0.1来访问。</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="容器互连"><a class="markdownIt-Anchor" href="#容器互连"></a> 容器互连</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d --name redis acqua/redis</span><br><span class="line">未指定端口</span><br><span class="line"></span><br><span class="line">$ docker run -p 4567 \</span><br><span class="line">  --name webapp --link redis:db -t -i \</span><br><span class="line">  -v /root/sinatra/webapp:/opt/webapp acqua/sinatra \</span><br><span class="line">  /bin/bash</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>–link参数创建了两个容器间的父子连接。该参数需指定：一个是要连接的容器名字，另一个是连接后容器的别名。示例中，把新容器连接到redis容器，并使用db作为别名。别名可以访问公开信息，而无须关注底层容器的名字。连接让父容器能访问子容器，并且把子容器的一些连接细节分享给父容器，这些细节有助于配置应用程序并使用这个连接。</p>
+</blockquote>
+<blockquote>
+<p>在启动Redis容器时，并没有使用-p公开Redis的端口，因为不需要。通过把容器连接在一起，可以让父容器直接访问任意子容器的公开端口（如，父容器webapp可以连接到子容器redis的6379端口）。更好的是只有使用–link参数连接到这个容器的容器才能连接到这个端口，容器的端口不需要对本地宿主机公开。</p>
+</blockquote>
+<blockquote>
+<p>出于安全考虑，可以强制Docker只允许有连接的容器之间互相通信，需要在启动Docker守护进程时加上<code>--icc=false</code>标志，关闭所有没有连接的容器间的通信。</p>
+</blockquote>
+<p>也可以把多个容器连接在一起。如想让这个Redis实例服务于多个Web应用程序，可以把每个Web应用程序的容器和同一个redis容器连接在一起：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -p 4567 --name webapp2 --link redis:db ...</span><br><span class="line">$ docker run -p 4567 --name webapp3 --link redis:db ...</span><br><span class="line"></span><br><span class="line">被连接的容器必须运行在同一个Docker宿主机上，不同Docker宿主机上运行的容器无法连接。</span><br></pre></td></tr></table></figure>
+<p>Docker在父容器中2个地方写入了连接信息：</p>
+<ul>
+<li>/etc/hosts</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ cat  /etc/hosts</span><br><span class="line">127.0.0.1       localhost</span><br><span class="line">::1     localhost ip6-localhost ip6-loopback</span><br><span class="line">fe00::0 ip6-localnet</span><br><span class="line">ff00::0 ip6-mcastprefix</span><br><span class="line">ff02::1 ip6-allnodes</span><br><span class="line">ff02::2 ip6-allrouters</span><br><span class="line">172.17.0.4      db bb4ca80d2586 redis</span><br><span class="line">172.17.0.3      004026a0d810</span><br><span class="line"></span><br><span class="line">容器的主机名也可以不是其ID的一部分，可以在执行`docker run`命令时使用`-h`或`--hostname`参数指定容器的主机名。</span><br></pre></td></tr></table></figure>
+<ul>
+<li>包含连接信息的环境变量中</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">root@004026a0d810:/<span class="comment"># env</span></span><br><span class="line">HOSTNAME=004026a0d810</span><br><span class="line">DB_NAME=/webapp/db</span><br><span class="line">DB_PORT_6379_TCP_PORT=6379</span><br><span class="line">TERM=xterm</span><br><span class="line">DB_PORT=tcp://172.17.0.4:6379</span><br><span class="line">DB_PORT_6379_TCP=tcp://172.17.0.4:6379</span><br><span class="line">OLDPWD=/opt</span><br><span class="line">LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:<span class="keyword">do</span>=01;35:bd=40;33;01:<span class="built_in">cd</span>=40;33;</span><br><span class="line">......</span><br><span class="line">DB_ENV_REFRESHED_AT=2018-01-20</span><br><span class="line">PATH=/usr/<span class="built_in">local</span>/sbin:/usr/<span class="built_in">local</span>/bin:/usr/sbin:/usr/bin:/sbin:/bin</span><br><span class="line">REFRESHED_AT=2018-01-19</span><br><span class="line">PWD=/</span><br><span class="line">DB_PORT_6379_TCP_ADDR=172.17.0.4</span><br><span class="line">DB_PORT_6379_TCP_PROTO=tcp</span><br><span class="line">SHLVL=1</span><br><span class="line">HOME=/root</span><br><span class="line">LESSOPEN=| /usr/bin/lesspipe %s</span><br><span class="line">LESSCLOSE=/usr/bin/lesspipe %s %s</span><br><span class="line">_=/usr/bin/env</span><br></pre></td></tr></table></figure>
+<p>Docker在连接webapp和redis容器时，自动创建了以DB开头的环境变量，自动创建的环境变量包含以下信息：</p>
+<ul>
+<li>子容器的名字</li>
+<li>容器里运行的服务所使用的协议、IP和端口号</li>
+<li>容器里运行的不同服务所指定的协议、IP和端口号</li>
+<li>容器里由Docker设置的环境变量的值</li>
+</ul>
+<h3 id="使用容器连接来通信的方式"><a class="markdownIt-Anchor" href="#使用容器连接来通信的方式"></a> 使用容器连接来通信的方式</h3>
+<ul>
+<li>使用环境变量  （发现服务的方法）</li>
+<li>使用DNS和/etc/hosts信息</li>
+</ul>
+<h2 id="jekyll-apache应用"><a class="markdownIt-Anchor" href="#jekyll-apache应用"></a> Jekyll &amp; Apache应用</h2>
+<p><a href="https://github.com/acquaai/dockerjenkins/tree/master/Jekyll_Apache" target="_blank" rel="noopener">Dockerfiles</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -v /root/jekyll/acqua_blog:/data/ --name acqua_blog acqua/jekll</span><br><span class="line"></span><br><span class="line">Configuration file: /data/_config.yml</span><br><span class="line">            Source: /data</span><br><span class="line">       Destination: /var/www/html</span><br><span class="line">      Generating... </span><br><span class="line">                    <span class="keyword">done</span>.</span><br><span class="line"> Auto-regeneration: disabled. Use --watch to <span class="built_in">enable</span>.</span><br><span class="line"></span><br><span class="line">$ docker run -d -P --volumes-from acqua_blog acqua/apache</span><br><span class="line">$ docker port 15a03f8210c8 80</span><br><span class="line">0.0.0.0:32775</span><br><span class="line"></span><br><span class="line">$ docker start acqua_blog</span><br><span class="line">$ docker logs acqua_blog</span><br><span class="line"></span><br><span class="line">因为共享卷会自动更新，不需要更新或重启Apache容器。</span><br></pre></td></tr></table></figure>
+<h3 id="备份jekyll卷"><a class="markdownIt-Anchor" href="#备份jekyll卷"></a> 备份Jekyll卷</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ docker run --rm --volumes-from acqua_blog \</span><br><span class="line">  -v $(<span class="built_in">pwd</span>):/backup ubuntu \</span><br><span class="line">  tar cvf /backup/acqua_blog.tar /var/www/html</span><br><span class="line"></span><br><span class="line">--rm参数会在容器（Ubuntu）的进程运行完毕后自动删除，适用容器用完即扔的场景。</span><br><span class="line">   </span><br><span class="line">$ ls</span><br><span class="line">acqua_blog  acqua_blog.tar  Dockerfile</span><br></pre></td></tr></table></figure>
+<h2 id="java应用"><a class="markdownIt-Anchor" href="#java应用"></a> Java应用</h2>
+<p><a href="https://github.com/acquaai/dockerjenkins/tree/master/Java" target="_blank" rel="noopener">Dockerfiles</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ docker build -t acqua/java .</span><br><span class="line">$ docker run  -t -i --name sample acqua/java \</span><br><span class="line"> https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war</span><br><span class="line"></span><br><span class="line">$ docker inspect -f <span class="string">'&#123;&#123; .Config.Volumes &#125;&#125;'</span> sample</span><br><span class="line">map[/var/lib/tomcat7/webapps/:&#123;&#125;]</span><br><span class="line"></span><br><span class="line">$ docker build -t acqua/tomcat7 .</span><br><span class="line">$ docker run --name sample_app --volumes-from sample \</span><br><span class="line"> -d -P acqua/tomcat7</span><br><span class="line"> </span><br><span class="line">$ docker port sample_app 8080</span><br><span class="line">0.0.0.0:32768</span><br><span class="line"></span><br><span class="line">http://x.x.x.x:32768/sample/</span><br></pre></td></tr></table></figure>
+<p><strong>Reference</strong><br>
+<a href="https://github.com/turnbullpress/dockerbook-code" target="_blank" rel="noopener">The Docker Book</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2018/01/25/docker-app1/">https://acquaai.github.io/2018/01/25/docker-app1/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/01/25/docker-ci/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Docker CI</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/01/24/docker-essential/">
+        <span class="next-text nav-default">Docker基础学习</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2018/01/25/docker-app1/';
+        this.page.identifier = '2018/01/25/docker-app1/';
+        this.page.title = '构建Docker容器应用';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

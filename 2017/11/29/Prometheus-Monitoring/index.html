@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Prometheus Monitoring">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2017/11/29/Prometheus-Monitoring/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Prometheus Monitoring - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Prometheus Monitoring
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-29
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#prometheus简介"><span class="toc-text"> Prometheus简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#prometheus-的特性"><span class="toc-text"> Prometheus 的特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prometheus-的数据模型"><span class="toc-text"> Prometheus 的数据模型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#prometheus安装和配置"><span class="toc-text"> Prometheus安装和配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#配置prometheus监控自已"><span class="toc-text"> 配置Prometheus监控自已</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#添加系统服务"><span class="toc-text"> 添加系统服务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#grafana简介"><span class="toc-text"> Grafana简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#grafana-主要特性"><span class="toc-text"> Grafana 主要特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#grafana安装和配置"><span class="toc-text"> Grafana安装和配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#监控windows主机"><span class="toc-text"> 监控Windows主机</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#prometheusyml文件中增加被监控主机信息"><span class="toc-text"> prometheus.yml文件中增加被监控主机信息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#监控linux主机"><span class="toc-text"> 监控Linux主机</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#编译node_exporter"><span class="toc-text"> 编译node_exporter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prometheusyml文件中增加被监控主机信息-2"><span class="toc-text"> prometheus.yml文件中增加被监控主机信息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#blackbox_exporter监控http-dns等服务"><span class="toc-text"> blackbox_exporter监控http、DNS等服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#配置blackboxyml"><span class="toc-text"> 配置blackbox.yml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prometheusyml文件中配置信息"><span class="toc-text"> prometheus.yml文件中配置信息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#监控sql-server数据库"><span class="toc-text"> 监控SQL Server数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#influxdb配置文件部分内容"><span class="toc-text"> InfluxDB配置文件部分内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sql-server数据采集器"><span class="toc-text"> SQL Server数据采集器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#telegrafconf配置文件部分内容"><span class="toc-text"> telegraf.conf配置文件部分内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sql-server创建采集用户"><span class="toc-text"> SQL Server创建采集用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#执行采集"><span class="toc-text"> 执行采集</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="prometheus简介"><a class="markdownIt-Anchor" href="#prometheus简介"></a> Prometheus简介</h2>
+<blockquote>
+<p><a href="https://prometheus.io" target="_blank" rel="noopener">Prometheus</a>是一套开源的监控&amp;报警&amp;时间序列数据库的组合，源于 Google Borgmon 的一个开源监控系统，用 Golang 开发，被称为下一代监控系统。Prometheus 基本原理是通过 HTTP 协议周期性抓取被监控组件的状态，这样做的好处是任意组件只要提供 HTTP 接口就可以接入监控系统，不需要任何 SDK 或者其他的集成过程。这样做非常适合虚拟化环境比如 VM 或者 Docker 。Prometheus 应该是为数不多的适合 Docker、Mesos 、Kubernetes 环境的监控系统之一。输出被监控组件信息的 HTTP 接口被叫做 exporter 。</p>
+</blockquote>
+<h3 id="prometheus-的特性"><a class="markdownIt-Anchor" href="#prometheus-的特性"></a> Prometheus 的特性</h3>
+<ul>
+<li>自定义多维度的数据模型</li>
+<li>非常高效的存储，平均一个采样数据占 ~3.5 bytes左右，320万的时间序列，每30秒采样，保持60天，消耗磁盘大概228G。</li>
+<li>强大的查询语句</li>
+<li>轻松实现数据可视化</li>
+</ul>
+<a id="more"></a>
+<p><code>Prometheus daemon</code> 负责定时去目标上抓取 metrics(指标) 数据，每个抓取目标需要暴露一个http服务的接口给它定时抓取。支持通过配置文件、文本文件、zookeeper、Consul、DNS SRV lookup等方式指定抓取目标。<br>
+<code>Alertmanager</code> 是独立于Prometheus的一个组件，可以支持Prometheus的查询语句，提供十分灵活的报警方式。<br>
+Prometheus支持很多方式的图表可视化，例如十分精美的Grafana，自带的Promdash，以及自身提供的模版引擎等等，还提供HTTP API的查询方式，自定义所需要的输出。<br>
+<code>PushGateway</code>这个组件是支持Client主动推送 metrics 到PushGateway，而Prometheus只是定时去Gateway上抓取数据。<br>
+如果有使用过statsd的用户，则会觉得这十分相似，只是statsd是直接发送给服务器端，而Prometheus主要还是靠进程主动去抓取。</p>
+<h3 id="prometheus-的数据模型"><a class="markdownIt-Anchor" href="#prometheus-的数据模型"></a> Prometheus 的数据模型</h3>
+<p>Prometheus 从根本上所有的存储都是按时间序列去实现的，相同的 metrics(指标名称) 和 label(一个或多个标签) 组成一条时间序列，不同的label表示不同的时间序列。为了支持一些查询，有时还会临时产生一些时间序列存储。</p>
+<h2 id="prometheus安装和配置"><a class="markdownIt-Anchor" href="#prometheus安装和配置"></a> Prometheus安装和配置</h2>
+<p><a href="https://github.com/prometheus/prometheus/releases" target="_blank" rel="noopener">Download</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ sudo groupadd prometheus</span><br><span class="line">$ sudo useradd -g prometheus -d /var/lib/prometheus -s /sbin/nologin prometheus</span><br><span class="line">$ sudo tar xvfz prometheus-1.7.1.linux-amd64.tar.gz  -C /usr/<span class="built_in">local</span>/</span><br><span class="line">$ <span class="built_in">cd</span> /usr/<span class="built_in">local</span></span><br><span class="line">$ mv prometheus-1.7.1.linux-amd64 prometheus</span><br></pre></td></tr></table></figure>
+<h3 id="配置prometheus监控自已"><a class="markdownIt-Anchor" href="#配置prometheus监控自已"></a> 配置Prometheus监控自已</h3>
+<p>Prometheus 通过默认 <code>http://localhost:9090/metrics</code>  HTTP接口暴露了自己的性能指标数据，当然也就可以配置抓取目标 targets了。Prometheus 采集自身性能数据就是一个十分好的例子了，编辑安装目录下的prometheus.yml配置文件：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">global:</span> </span><br><span class="line"><span class="attr">    scrape_interval:</span> <span class="number">15</span><span class="string">s</span> </span><br><span class="line"><span class="attr">    scrape_timeout:</span> <span class="number">10</span><span class="string">s</span></span><br><span class="line"><span class="attr">    evaluation_interval:</span> <span class="number">15</span><span class="string">s</span> </span><br><span class="line"><span class="attr">    external_labels:</span> </span><br><span class="line"><span class="attr">        monitor:</span> <span class="string">codelab-monitor</span></span><br><span class="line"><span class="attr">scrape_configs:</span> </span><br><span class="line"><span class="attr">  -  job_name:</span> <span class="string">prometheus</span></span><br><span class="line"><span class="attr">     scrape_interval:</span> <span class="number">5</span><span class="string">s</span></span><br><span class="line"><span class="attr">     scrape_timeout:</span> <span class="number">5</span><span class="string">s</span></span><br><span class="line"><span class="attr">     metrics_path:</span> <span class="string">/metrics</span></span><br><span class="line"><span class="attr">     scheme:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">     static_configs:</span>    </span><br><span class="line"><span class="attr">      -  targets:</span></span><br><span class="line"><span class="bullet">         -</span> <span class="number">192.168</span><span class="number">.100</span><span class="number">.55</span><span class="string">:9090</span></span><br></pre></td></tr></table></figure>
+<h3 id="添加系统服务"><a class="markdownIt-Anchor" href="#添加系统服务"></a> 添加系统服务</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$sudo</span> vi /usr/lib/systemd/system/prometheus.service</span><br><span class="line">[Unit]</span><br><span class="line">Description=prometheus</span><br><span class="line">After=network.target</span><br><span class="line">[Service]</span><br><span class="line">Type=simple</span><br><span class="line">User=root</span><br><span class="line">ExecStart=/usr/<span class="built_in">local</span>/prometheus -config.file=/usr/<span class="built_in">local</span>/prometheus/prometheus.yml -storage.local.path=/var/lib/prometheus</span><br><span class="line">Restart=on-failure</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+<h2 id="grafana简介"><a class="markdownIt-Anchor" href="#grafana简介"></a> Grafana简介</h2>
+<blockquote>
+<p>Grafana 为开源软件，是功能齐全的度量仪表盘和图形编辑器，支持 <a href="http://www.oschina.net/p/graphite" target="_blank" rel="noopener">Graphite</a>、<a href="http://www.oschina.net/p/influxdb" target="_blank" rel="noopener">InfluxDB</a>和 <a href="http://www.oschina.net/p/opentsdb" target="_blank" rel="noopener">OpenTSDB</a>。</p>
+</blockquote>
+<h3 id="grafana-主要特性"><a class="markdownIt-Anchor" href="#grafana-主要特性"></a> Grafana 主要特性</h3>
+<ul>
+<li>灵活丰富的图形化选项</li>
+<li>可以混合多种风格</li>
+<li>支持白天和夜间模式</li>
+<li>多个数据源</li>
+<li>Graphite 和 InfluxDB 查询编辑器</li>
+</ul>
+<h3 id="grafana安装和配置"><a class="markdownIt-Anchor" href="#grafana安装和配置"></a> Grafana安装和配置</h3>
+<p><a href="https://grafana.com/grafana/download" target="_blank" rel="noopener">Download</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$sudo</span> rpm -ivh grafana-4.3.2-1.x86_64.rpm </span><br><span class="line"><span class="variable">$sudo</span> /bin/systemctl daemon-reload</span><br><span class="line"><span class="variable">$sudo</span> /bin/systemctl <span class="built_in">enable</span> grafana-server.service</span><br><span class="line"><span class="variable">$sudo</span> /bin/systemctl start grafana-server.service</span><br></pre></td></tr></table></figure>
+<p><code>http://192.168.100.55:3000</code></p>
+<h2 id="监控windows主机"><a class="markdownIt-Anchor" href="#监控windows主机"></a> 监控Windows主机</h2>
+<p><a href="https://github.com/martinlindhe/wmi_exporter" target="_blank" rel="noopener">agent</a><br>
+<a href="https://grafana.com/dashboards/2129" target="_blank" rel="noopener">dashboards</a></p>
+<ul>
+<li>wmi_exporter为可执行文件，安装后以系统服务的形式存在。</li>
+<li>wmi_exporter能收集的指标项与默认收集项，可根据实际需求，指定启动参数进行收集。</li>
+</ul>
+<h3 id="prometheusyml文件中增加被监控主机信息"><a class="markdownIt-Anchor" href="#prometheusyml文件中增加被监控主机信息"></a> prometheus.yml文件中增加被监控主机信息</h3>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">- job_name:</span> <span class="string">'win-exporter'</span></span><br><span class="line"><span class="attr">  scrape_interval:</span> <span class="number">5</span><span class="string">s</span></span><br><span class="line"><span class="attr">  static_configs:</span></span><br><span class="line"><span class="attr">     - targets:</span><span class="string">['10.0.88.65:9182','10.0.88.69:9182']</span></span><br><span class="line"><span class="attr">       labels:</span></span><br><span class="line"><span class="attr">         group:</span> <span class="string">'Web'</span></span><br></pre></td></tr></table></figure>
+<h2 id="监控linux主机"><a class="markdownIt-Anchor" href="#监控linux主机"></a> 监控Linux主机</h2>
+<p><a href="https://github.com/prometheus/node_exporter" target="_blank" rel="noopener">agent</a><br>
+<a href="https://grafana.com/dashboards/22" target="_blank" rel="noopener">dashboards</a></p>
+<h3 id="编译node_exporter"><a class="markdownIt-Anchor" href="#编译node_exporter"></a> 编译node_exporter</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo go get github.com/prometheus/node_exporter</span><br><span class="line">$ <span class="built_in">cd</span> <span class="variable">$&#123;GOPATH-$HOME/go&#125;</span>/src/github.com/prometheus/node_exporter</span><br><span class="line">$ make</span><br><span class="line">$ nohup ./node_exporter &gt; /tmp/node_exporter.log 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+<h3 id="prometheusyml文件中增加被监控主机信息-2"><a class="markdownIt-Anchor" href="#prometheusyml文件中增加被监控主机信息-2"></a> prometheus.yml文件中增加被监控主机信息</h3>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line"><span class="attr">  - job_name:</span> <span class="string">'linux'</span></span><br><span class="line"><span class="attr">      static_configs:</span></span><br><span class="line"><span class="attr">        - targets:</span> <span class="string">['x.x.x.x:9100']</span></span><br><span class="line"><span class="attr">             labels:</span> <span class="attr">instance:</span> <span class="string">node1</span></span><br></pre></td></tr></table></figure>
+<h2 id="blackbox_exporter监控http-dns等服务"><a class="markdownIt-Anchor" href="#blackbox_exporter监控http-dns等服务"></a> blackbox_exporter监控http、DNS等服务</h2>
+<h3 id="配置blackboxyml"><a class="markdownIt-Anchor" href="#配置blackboxyml"></a> 配置blackbox.yml</h3>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">modules:</span></span><br><span class="line"><span class="attr">  http_2xx:</span></span><br><span class="line"><span class="attr">    prober:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">    http:</span></span><br><span class="line"><span class="attr">  http_post_2xx:</span></span><br><span class="line"><span class="attr">    prober:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">    http:</span></span><br><span class="line"><span class="attr">      method:</span> <span class="string">POST</span></span><br><span class="line"><span class="attr">  tcp_connect:</span></span><br><span class="line"><span class="attr">    prober:</span> <span class="string">tcp</span></span><br><span class="line"><span class="attr">  pop3s_banner:</span></span><br><span class="line"><span class="attr">    prober:</span> <span class="string">tcp</span></span><br><span class="line"><span class="attr">    tcp:</span></span><br><span class="line"><span class="attr">      query_response:</span></span><br><span class="line"><span class="attr">      - expect:</span> <span class="string">"^+OK"</span></span><br><span class="line"><span class="attr">      tls:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">      tls_config:</span></span><br><span class="line"><span class="attr">        insecure_skip_verify:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">  ssh_banner:</span></span><br><span class="line"><span class="attr">    prober:</span> <span class="string">tcp</span></span><br><span class="line"><span class="attr">    tcp:</span></span><br><span class="line"><span class="attr">      query_response:</span></span><br><span class="line"><span class="attr">      - expect:</span> <span class="string">"^SSH-2.0-"</span></span><br><span class="line"><span class="attr">  irc_banner:</span></span><br><span class="line"><span class="attr">    prober:</span> <span class="string">tcp</span></span><br><span class="line"><span class="attr">    tcp:</span></span><br><span class="line"><span class="attr">      query_response:</span></span><br><span class="line"><span class="attr">      - send:</span> <span class="string">"NICK prober"</span></span><br><span class="line"><span class="attr">      - send:</span> <span class="string">"USER prober prober prober :prober"</span></span><br><span class="line"><span class="attr">      - expect:</span> <span class="string">"PING :([^ ]+)"</span></span><br><span class="line"><span class="attr">        send:</span> <span class="string">"PONG $&#123;1&#125;"</span></span><br><span class="line"><span class="attr">      - expect:</span> <span class="string">"^:[^ ]+ 001"</span></span><br><span class="line"><span class="attr">  icmp:</span></span><br><span class="line"><span class="attr">    prober:</span> <span class="string">icmp</span></span><br><span class="line"><span class="attr">  dns_tcp:</span></span><br><span class="line"><span class="attr">    prober:</span> <span class="string">dns</span></span><br><span class="line"><span class="attr">    dns:</span></span><br><span class="line"><span class="attr">      transport_protocol:</span> <span class="string">"tcp"</span> <span class="comment"># defaults to "udp"</span></span><br><span class="line"><span class="attr">      preferred_ip_protocol:</span> <span class="string">"ip4"</span> <span class="comment">#  defaults to "ip6"</span></span><br><span class="line"><span class="attr">      query_name:</span> <span class="string">"www.domain.com"</span></span><br><span class="line"><span class="attr">      query_type:</span> <span class="string">"A"</span></span><br><span class="line"><span class="attr">  ping:</span></span><br><span class="line"><span class="attr">    prober:</span> <span class="string">icmp</span></span><br><span class="line"><span class="attr">    timeout:</span> <span class="number">30</span><span class="string">s</span></span><br><span class="line"><span class="attr">    icmp:</span></span><br><span class="line"><span class="attr">      preferred_ip_protocol:</span> <span class="string">"ip4"</span></span><br><span class="line">     <span class="comment">#payload_size:</span></span><br></pre></td></tr></table></figure>
+<h3 id="prometheusyml文件中配置信息"><a class="markdownIt-Anchor" href="#prometheusyml文件中配置信息"></a> prometheus.yml文件中配置信息</h3>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">- job_name:</span> <span class="string">'HttpCheck'</span></span><br><span class="line"><span class="attr">    metrics_path:</span> <span class="string">/probe</span></span><br><span class="line"><span class="attr">    params:</span></span><br><span class="line"><span class="attr">      module:</span> <span class="string">[http_2xx]</span>  <span class="comment"># Look for a HTTP 200 response.</span></span><br><span class="line"><span class="attr">    metrics_path:</span> <span class="string">/probe</span></span><br><span class="line"><span class="attr">    static_configs:</span></span><br><span class="line"><span class="attr">      - targets:</span></span><br><span class="line"><span class="attr">        - http:</span><span class="string">//www.xxx.com</span></span><br><span class="line"><span class="attr">        - https:</span><span class="string">//www.xxx.cn</span></span><br><span class="line"><span class="attr">        - http:</span><span class="string">//www.xxx.cn:8080</span></span><br><span class="line"><span class="attr">    relabel_configs:</span></span><br><span class="line"><span class="attr">      - source_labels:</span> <span class="string">[__address__]</span></span><br><span class="line"><span class="attr">        target_label:</span> <span class="string">__param_target</span></span><br><span class="line"><span class="attr">      - source_labels:</span> <span class="string">[__param_target]</span></span><br><span class="line"><span class="attr">        target_label:</span> <span class="string">instance</span></span><br><span class="line"><span class="attr">      - target_label:</span> <span class="string">__address__</span></span><br><span class="line"><span class="attr">        replacement:</span> <span class="attr">prometheus:9115</span></span><br><span class="line"></span><br><span class="line"><span class="attr">  - job_name:</span> <span class="string">'DNSCheck'</span></span><br><span class="line"><span class="attr">    metrics_path:</span> <span class="string">/probe</span></span><br><span class="line"><span class="attr">    params:</span></span><br><span class="line"><span class="attr">      module:</span> <span class="string">[dns_tcp]</span></span><br><span class="line"><span class="attr">    static_configs:</span></span><br><span class="line"><span class="attr">      - targets:</span></span><br><span class="line"><span class="bullet">        -</span> <span class="string">x.x.x.x:53</span></span><br><span class="line"><span class="bullet">        -</span> <span class="string">x.x.x.x:53</span></span><br><span class="line"><span class="attr">    relabel_configs:</span></span><br><span class="line"><span class="attr">      - source_labels:</span> <span class="string">[__address__]</span></span><br><span class="line"><span class="attr">        target_label:</span> <span class="string">__param_target</span></span><br><span class="line"><span class="attr">      - source_labels:</span> <span class="string">[__param_target]</span></span><br><span class="line"><span class="attr">        target_label:</span> <span class="string">instance</span></span><br><span class="line"><span class="attr">      - target_label:</span> <span class="string">__address__</span></span><br><span class="line"><span class="attr">        replacement:</span> <span class="attr">prometheus:9115</span></span><br><span class="line"></span><br><span class="line"><span class="attr">  - job_name:</span> <span class="string">'PingCheck'</span></span><br><span class="line"><span class="attr">    metrics_path:</span> <span class="string">/probe</span></span><br><span class="line"><span class="attr">    params:</span> </span><br><span class="line"><span class="attr">      module:</span> <span class="string">[ping]</span></span><br><span class="line"><span class="attr">    static_configs:</span></span><br><span class="line"><span class="attr">      - targets:</span></span><br><span class="line"><span class="bullet">        -</span> <span class="string">x.x.x.x</span></span><br><span class="line"><span class="bullet">        -</span> <span class="string">x.x.x.x</span></span><br><span class="line"><span class="attr">    relabel_configs:</span></span><br><span class="line">      <span class="comment"># Set the target's address as the target-GET-parameter for the blackbox exporter</span></span><br><span class="line"><span class="attr">      - source_labels:</span> <span class="string">[__address__]</span></span><br><span class="line"><span class="attr">        regex:</span> <span class="string">(.*)</span></span><br><span class="line"><span class="attr">        target_label:</span> <span class="string">__param_target</span></span><br><span class="line"><span class="attr">        replacement:</span> <span class="string">$&#123;1&#125;</span></span><br><span class="line">      <span class="comment"># Set the target's address as the instance name</span></span><br><span class="line"><span class="attr">      - source_labels:</span> <span class="string">[__address__]</span></span><br><span class="line"><span class="attr">        regex:</span> <span class="string">(.*)</span></span><br><span class="line"><span class="attr">        target_label:</span> <span class="string">instance</span></span><br><span class="line"><span class="attr">        replacement:</span> <span class="string">$&#123;1&#125;</span></span><br><span class="line">      <span class="comment"># Set the scrape address to the blackbox exporter</span></span><br><span class="line"><span class="attr">      - source_labels:</span> <span class="string">[]</span></span><br><span class="line"><span class="attr">        regex:</span> <span class="string">.*</span></span><br><span class="line"><span class="attr">        target_label:</span> <span class="string">__address__</span></span><br><span class="line"><span class="attr">        replacement:</span> <span class="attr">prometheus:9115</span></span><br></pre></td></tr></table></figure>
+<h2 id="监控sql-server数据库"><a class="markdownIt-Anchor" href="#监控sql-server数据库"></a> 监控SQL Server数据库</h2>
+<p>SQL Server指标采集使用telegraf，而telegraf采用另一个时序数据库<a href="https://www.influxdata.com/" target="_blank" rel="noopener">InfluxDB</a>，它的采集精度更高，为 ms 级，Prometheus为 s 级。InfluxDB安装方法与Prometheus相同，不再赘述。<br>
+<a href="https://github.com/influxdata/telegraf" target="_blank" rel="noopener">agent</a><br>
+<a href="https://grafana.com/dashboards/409" target="_blank" rel="noopener">dashboards</a></p>
+<h3 id="influxdb配置文件部分内容"><a class="markdownIt-Anchor" href="#influxdb配置文件部分内容"></a> InfluxDB配置文件部分内容</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo vi /var/influxdb/etc/influxdb/influxdb.conf</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[meta]</span><br><span class="line">  dir = &quot;/var/lib/influxdb/meta&quot;</span><br><span class="line">[data]</span><br><span class="line">  dir = &quot;/var/lib/influxdb/data&quot;</span><br><span class="line">  wal-dir = &quot;/var/lib/influxdb/wal&quot;</span><br><span class="line">[admin]</span><br><span class="line">   enabled = true </span><br><span class="line">[http]</span><br><span class="line">   enabled = true</span><br><span class="line">   bind-address = &quot;192.168.100.55:8086&quot;</span><br><span class="line">   realm = &quot;InfluxDB&quot;</span><br><span class="line">   log-enabled = true</span><br><span class="line">   max-connection-limit = 0</span><br></pre></td></tr></table></figure>
+<h3 id="sql-server数据采集器"><a class="markdownIt-Anchor" href="#sql-server数据采集器"></a> SQL Server数据采集器</h3>
+<p>下载 telegraf-1.3.2_windows_amd64.zip 文件，解压得到 telegraf.exe 和 telegraf.conf 文件。</p>
+<h3 id="telegrafconf配置文件部分内容"><a class="markdownIt-Anchor" href="#telegrafconf配置文件部分内容"></a> telegraf.conf配置文件部分内容</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[[inputs.sqlserver]]</span><br><span class="line">   servers = [&quot;Server=10.7.252.56;Port=1433;User Id=telegraf;Password=mystrongpassword;app name=telegraf;log=1;&quot;]</span><br></pre></td></tr></table></figure>
+<h3 id="sql-server创建采集用户"><a class="markdownIt-Anchor" href="#sql-server创建采集用户"></a> SQL Server创建采集用户</h3>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">USE</span> <span class="keyword">master</span>; </span><br><span class="line">GO</span><br><span class="line"><span class="keyword">CREATE</span> LOGIN [telegraf] <span class="keyword">WITH</span> <span class="keyword">PASSWORD</span> = N<span class="string">'mystrongpassword'</span>;</span><br><span class="line">GO</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">VIEW</span> <span class="keyword">SERVER</span> STATE <span class="keyword">TO</span> [telegraf]; </span><br><span class="line">GO</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">VIEW</span> <span class="keyword">ANY</span> DEFINITION <span class="keyword">TO</span> [telegraf]; </span><br><span class="line">GO</span><br></pre></td></tr></table></figure>
+<h3 id="执行采集"><a class="markdownIt-Anchor" href="#执行采集"></a> 执行采集</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c:\telegraf&gt; .\telegraf.exe -config .\telegraf.conf</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2017/11/29/Prometheus-Monitoring/">https://acquaai.github.io/2017/11/29/Prometheus-Monitoring/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/11/29/golang/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Golang</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/11/29/Consistent-Network-Device-Naming/">
+        <span class="next-text nav-default">Consistent Network Device Naming</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2017/11/29/Prometheus-Monitoring/';
+        this.page.identifier = '2017/11/29/Prometheus-Monitoring/';
+        this.page.title = 'Prometheus Monitoring';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

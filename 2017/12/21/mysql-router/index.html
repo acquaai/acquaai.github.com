@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="MySQL Router">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2017/12/21/mysql-router/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> MySQL Router - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          MySQL Router
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-12-21
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/MySQL/">MySQL</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#download-package"><span class="toc-text"> Download package</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#configure"><span class="toc-text"> Configure</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#mysql-router-configuration-file"><span class="toc-text"> MySQL Router Configuration file</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#start-router"><span class="toc-text"> Start Router</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <blockquote>
+<p>MySQL Router是轻量级的中间件，提供数据库访问的Load Balance（负载均衡）、Failover（故障切换）、读写分离等高可用性服务。Router自身的高可用需要借助类Keepalived来实现。</p>
+</blockquote>
+<p><img src="/images/router_arch.png" alt></p>
+<a id="more"></a>
+<h2 id="download-package"><a class="markdownIt-Anchor" href="#download-package"></a> Download package</h2>
+<p><a href="http://dev.mysql.com/downloads/router/" target="_blank" rel="noopener">Router</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ tar xzvf mysql-router-2.1.4-linux-glibc2.12-x86-64bit.tar.gz -C /usr/local/</span><br><span class="line">$ cd /usr/local</span><br><span class="line">$ mv mysql-router-2.1.4-linux-glibc2.12-x86-64bit router</span><br><span class="line">$ ll router/</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x 2 7161 31415  25 Jun 27 15:29 bin</span><br><span class="line">drwxrwxr-x 2 7161 31415   6 Jun 27 15:29 data</span><br><span class="line">drwxr-xr-x 4 7161 31415  38 Jun 27 15:29 include</span><br><span class="line">drwxr-xr-x 3 7161 31415 156 Jun 27 15:29 lib</span><br><span class="line">drwxrwxr-x 2 7161 31415   6 Jun 27 15:29 run</span><br><span class="line">drwxr-xr-x 3 7161 31415  17 Jun 27 15:29 share</span><br></pre></td></tr></table></figure>
+<h2 id="configure"><a class="markdownIt-Anchor" href="#configure"></a> Configure</h2>
+<h3 id="mysql-router-configuration-file"><a class="markdownIt-Anchor" href="#mysql-router-configuration-file"></a> MySQL Router Configuration file</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">$ /usr/local/router/share/doc/mysqlrouter/sample_mysqlrouter.conf  /etc/mysqlrouter.conf</span><br><span class="line">$ vi /etc/mysqlrouter.conf</span><br><span class="line">[DEFAULT]</span><br><span class="line">logging_folder =</span><br><span class="line">plugin_folder = /usr/local/router/lib/mysqlrouter</span><br><span class="line">config_folder = /etc</span><br><span class="line">runtime_folder = /var/run</span><br><span class="line"></span><br><span class="line">[logger]</span><br><span class="line">level = INFO</span><br><span class="line"></span><br><span class="line">[routing:read_only]</span><br><span class="line">bind_address = 192.168.0.170</span><br><span class="line">bind_port = 7002</span><br><span class="line">mode = read-only</span><br><span class="line">destinations = 192.168.0.172:3306</span><br><span class="line"></span><br><span class="line">[routing:read_write]</span><br><span class="line">bind_address = 192.168.0.170</span><br><span class="line">bind_port = 7001</span><br><span class="line">mode = read-write</span><br><span class="line">destinations = 192.168.0.171:3306</span><br><span class="line"></span><br><span class="line">[keepalive]</span><br><span class="line">interval = 60</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>[routing:read_only]</code> Clients请求被轮询转发到destinations指定的列表，当遇到列表中不可用服务器时，将跳过到下一个可用服务器处理。若列表中无可用服务器时，路由失败。</p>
+</blockquote>
+<blockquote>
+<p><code>[routing:read_write]</code> Clients请求始终被转发到destinations列表中第一个可用服务器，当第一个不可用时才会转发到下一个可用服务器。若列表中无可用服务器时，路由失败。</p>
+</blockquote>
+<h2 id="start-router"><a class="markdownIt-Anchor" href="#start-router"></a> Start Router</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">$ cd /usr/local/router/bin/</span><br><span class="line">$ ./mysqlrouter --config=/etc/mysqlrouter.conf </span><br><span class="line">2017-12-21 16:44:43 INFO    [7fef60055700] keepalive started with interval 60</span><br><span class="line">2017-12-21 16:44:43 INFO    [7fef60055700] keepalive</span><br><span class="line">2017-12-21 16:44:43 INFO    [7fef57fff700] [routing:read_write] started: listening on 192.168.0.170:7001; read-write</span><br><span class="line">2017-12-21 16:44:43 INFO    [7fef5f854700] [routing:read_only] started: listening on 192.168.0.170:7002; read-only</span><br><span class="line">2017-12-21 16:45:43 INFO    [7fef60055700] keepalive</span><br><span class="line">2017-12-21 16:46:43 INFO    [7fef60055700] keepalive</span><br><span class="line"></span><br><span class="line">$ mysql -h 10.0.88.171 -P7002 -uroot -p -e &quot;show variables like &apos;hostname&apos;;&quot;</span><br><span class="line">Enter password: </span><br><span class="line">+---------------+---------+</span><br><span class="line">| Variable_name | Value   |</span><br><span class="line">+---------------+---------+</span><br><span class="line">| hostname      | mysql02 |</span><br><span class="line">+---------------+---------+</span><br><span class="line">$ mysql -h 10.0.88.171 -P7001 -uroot -p -e &quot;show variables like &apos;hostname&apos;;&quot;</span><br><span class="line">Enter password: </span><br><span class="line">+---------------+---------+</span><br><span class="line">| Variable_name | Value   |</span><br><span class="line">+---------------+---------+</span><br><span class="line">| hostname      | mysql01 |</span><br><span class="line">+---------------+---------+</span><br></pre></td></tr></table></figure>
+<p><strong>Reference</strong><br>
+<a href="http://mysqlhighavailability.com/setting-up-mysql-router/" target="_blank" rel="noopener">MySQL High Availability</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2017/12/21/mysql-router/">https://acquaai.github.io/2017/12/21/mysql-router/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/12/28/prometheus-alertmanager/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Prometheus Alerting</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/12/17/mgr-single-m-example/">
+        <span class="next-text nav-default">MGR单主复制配置实例</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2017/12/21/mysql-router/';
+        this.page.identifier = '2017/12/21/mysql-router/';
+        this.page.title = 'MySQL Router';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

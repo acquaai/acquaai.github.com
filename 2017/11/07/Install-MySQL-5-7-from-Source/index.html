@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Install MySQL 5.7 from Source">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2017/11/07/Install-MySQL-5-7-from-Source/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Install MySQL 5.7 from Source - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Install MySQL 5.7 from Source
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-07
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/MySQL/">MySQL</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#source-installation-requirements"><span class="toc-text"> Source Installation Requirements</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#preconfiguration-setup"><span class="toc-text"> Preconfiguration setup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#beginning-of-source-build-specific-instructions"><span class="toc-text"> Beginning of source-build specific instructions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#configure-mysql-system-environment-variables"><span class="toc-text"> Configure MySQL System Environment variables</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#postinstallation-setup"><span class="toc-text"> Postinstallation setup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#next-command-is-optional"><span class="toc-text"> Next command is optional</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#change-mysql-root-password"><span class="toc-text"> Change MySQL root password</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#global-security-configuration"><span class="toc-text"> Global Security Configuration</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="source-installation-requirements"><a class="markdownIt-Anchor" href="#source-installation-requirements"></a> Source Installation Requirements</h2>
+<ul>
+<li><a href="http://www.cmake.org" target="_blank" rel="noopener">CMake</a>: as the build framework on all platforms.</li>
+<li><a href="http://www.gnu.org/software/make/" target="_blank" rel="noopener">make</a>: it’s highly recommended that you use GNU make3.75 or higher.</li>
+<li>A working ANSI C++ compiler. See the description of the FORCE_UNSUPPORTED_COMPILER. option for some guidelines.</li>
+<li>The Boost C++ libraries are required to build MySQL (but not to use it). Boost 1.59.0 must be installed.</li>
+<li><a href="https://www.gnu.org/software/ncurses/ncurses.html" target="_blank" rel="noopener">ncurses</a> library.</li>
+<li>Sufficient free memory.</li>
+<li>Perl is needed if you intend to run test scripts.</li>
+<li><a href="http://www.gnu.org/software/bison/" target="_blank" rel="noopener">bison</a> 2.1 or higher, (Version 1 is no longer supported.)</li>
+</ul>
+<h3 id="preconfiguration-setup"><a class="markdownIt-Anchor" href="#preconfiguration-setup"></a> Preconfiguration setup</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ cat /etc/redhat-release </span><br><span class="line">  CentOS Linux release 7.3.1611 (Core)</span><br><span class="line">  </span><br><span class="line">$ yum install cmake gcc gcc-c++ bison libaio-devel ncurses-devel openssl openssl-devel</span><br><span class="line">$ groupadd mysql</span><br><span class="line">$ useradd -r -g mysql -s /bin/<span class="literal">false</span> mysql</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h3 id="beginning-of-source-build-specific-instructions"><a class="markdownIt-Anchor" href="#beginning-of-source-build-specific-instructions"></a> Beginning of source-build specific instructions</h3>
+<p>Download <a href="https://dev.mysql.com/downloads/mysql/" target="_blank" rel="noopener">MySQL</a> source code</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">$ tar zxvf mysql-boost-5.7.20.tar.gz</span><br><span class="line">$ <span class="built_in">cd</span> mysql-5.7.20</span><br><span class="line">$ mkdir bld</span><br><span class="line">$ <span class="built_in">cd</span> bld</span><br><span class="line">$ cmake .. -DBUILD_CONFIG=mysql_release \</span><br><span class="line">           -DCMAKE_BUILD_TYPE=RelWithDebInfo \</span><br><span class="line">           -DINSTALL_LAYOUT=STANDALONE \</span><br><span class="line">           -DCMAKE_INSTALL_PREFIX=/usr/<span class="built_in">local</span>/mysql \</span><br><span class="line">           -DINSTALL_PLUGINDIR=<span class="string">"/usr/local/mysql/lib/plugin"</span> \</span><br><span class="line">           -DCOMPILATION_COMMENT=<span class="string">"MySQL Server (GPL)"</span> \</span><br><span class="line">           -DFEATURE_SET=community \</span><br><span class="line">           -DDEFAULT_CHARSET=utf8 \</span><br><span class="line">           -DDEFAULT_COLLATION=utf8_general_ci \</span><br><span class="line">           -DWITH_EDITLINE=bundled \</span><br><span class="line">           -DWITH_INNODB_MEMCACHED=ON \</span><br><span class="line">           -DWITH_SSL=bundled \</span><br><span class="line">           -DWITH_ZLIB=system \</span><br><span class="line">           -DWITH_DEBUG=OFF \</span><br><span class="line">           -DWITH_BOOST=../boost</span><br><span class="line">               </span><br><span class="line">           -DENABLE_DTRACE=OFF              **在8.0中弃用**</span><br><span class="line">           -DWITH_EMBEDDED_SERVER=OFF       **在5.7.17中弃用，8.0中移除**</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>– Configuring done<br>
+– Generating done</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ make -j 4</span><br><span class="line">$ make install</span><br></pre></td></tr></table></figure>
+<h3 id="configure-mysql-system-environment-variables"><a class="markdownIt-Anchor" href="#configure-mysql-system-environment-variables"></a> Configure MySQL System Environment variables</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH=$PATH:$HOME/bin:/usr/local/mysql/bin</span><br></pre></td></tr></table></figure>
+<h3 id="postinstallation-setup"><a class="markdownIt-Anchor" href="#postinstallation-setup"></a> Postinstallation setup</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /usr/<span class="built_in">local</span>/mysql</span><br><span class="line">$ mkdir data_3306</span><br><span class="line">$ vi my.cnf</span><br><span class="line">        [mysqld]</span><br><span class="line">        basedir=/usr/<span class="built_in">local</span>/mysql</span><br><span class="line">        datadir=/usr/<span class="built_in">local</span>/mysql/data_3306</span><br><span class="line">        socket=/usr/<span class="built_in">local</span>/mysql/data_3306/mysql.sock</span><br><span class="line">        port=3306</span><br><span class="line">        log_error=/usr/<span class="built_in">local</span>/mysql/data_3306/error.log</span><br><span class="line">        </span><br><span class="line">        [client]</span><br><span class="line">        socket=/usr/<span class="built_in">local</span>/mysql/data_3306/mysql.sock</span><br><span class="line"></span><br><span class="line">$ chown -R mysql:mysql data_3306</span><br><span class="line">$ chmod -R 750 data_3306</span><br><span class="line">$ chown mysql:mysql my.cnf</span><br><span class="line">$ chmod 750 my.cnf</span><br><span class="line">$ mysqld --defaults-file=/usr/<span class="built_in">local</span>/mysql/my.cnf --initialize --user=mysql</span><br><span class="line">$ mysql_ssl_rsa_setup --datadir=/usr/<span class="built_in">local</span>/mysql/data_3306</span><br><span class="line"></span><br><span class="line">$ nohup /usr/<span class="built_in">local</span>/mysql/bin/mysqld --defaults-file=/usr/<span class="built_in">local</span>/mysql/my.cnf --user=mysql &gt; /tmp/mysql.log 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+<h3 id="next-command-is-optional"><a class="markdownIt-Anchor" href="#next-command-is-optional"></a> Next command is optional</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ cp support-files/mysql.server /etc/init.d/mysql</span><br><span class="line">$ chmod +x /etc/init.d/mysql</span><br><span class="line">$ chkconfig --add mysql</span><br><span class="line">$ chkconfig --level 345 mysql on</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>修改mysql.server文件与实际安装相符。</p>
+</blockquote>
+<h3 id="change-mysql-root-password"><a class="markdownIt-Anchor" href="#change-mysql-root-password"></a> Change MySQL root password</h3>
+<blockquote>
+<p>MySQL 5.7版本中调整了安全策略，默认情况下root帐号不像5.6一样没有密码。在5.7中，数据库启动时为root帐号随机生成一个密码，存储在log_error参数指定的文件中：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ grep <span class="string">"temporary password"</span> /usr/<span class="built_in">local</span>/mysql/data_3306/error.log</span><br><span class="line">$ mysql -uroot -hlocalhost -p</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>使用该密码登录之后，5.7强制要求修性密码，同时5.7提供了一种兼容方式，在初始化数据库时可以通过指定参数–initialize-insecure来初始化，其行为就与5.6及之前版本一样了。</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; alter user 'root'@'localhost' identified by 'password';</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; show variables like '%version%';</span><br><span class="line">+<span class="comment">-------------------------+--------------------+</span></span><br><span class="line">| Variable_name           | Value              |</span><br><span class="line">+<span class="comment">-------------------------+--------------------+</span></span><br><span class="line">| innodb_version          | 5.7.20             |</span><br><span class="line">| protocol_version        | 10                 |</span><br><span class="line">| slave_type_conversions  |                    |</span><br><span class="line">| tls_version             | TLSv1,TLSv1.1      |</span><br><span class="line">| version                 | 5.7.20             |</span><br><span class="line">| version_comment         | MySQL Server (GPL) |</span><br><span class="line">| version_compile_machine | x86_64             |</span><br><span class="line">| version_compile_os      | Linux              |</span><br><span class="line">+<span class="comment">-------------------------+--------------------+</span></span><br><span class="line">8 rows in <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br></pre></td></tr></table></figure>
+<h2 id="global-security-configuration"><a class="markdownIt-Anchor" href="#global-security-configuration"></a> Global Security Configuration</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mysql_secure_installation</span><br></pre></td></tr></table></figure>
+<p><strong>Reference</strong><br>
+<a href="https://item.jd.com/12195430.html" target="_blank" rel="noopener">MySQL 运维内参</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2017/11/07/Install-MySQL-5-7-from-Source/">https://acquaai.github.io/2017/11/07/Install-MySQL-5-7-from-Source/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/11/11/SLB1/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Server Load Balancer</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/10/28/SQLAdvisor/">
+        <span class="next-text nav-default">SQLAdvisor</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2017/11/07/Install-MySQL-5-7-from-Source/';
+        this.page.identifier = '2017/11/07/Install-MySQL-5-7-from-Source/';
+        this.page.title = 'Install MySQL 5.7 from Source';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

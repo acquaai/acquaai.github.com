@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Jenkins on Kubernetes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2018/03/28/jenkins-k8s/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Jenkins on Kubernetes - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Jenkins on Kubernetes
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-28
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#部署-jenkins"><span class="toc-text"> 部署 Jenkins</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置-kubernetes-插件"><span class="toc-text"> 配置 Kubernetes 插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建pipeline-job"><span class="toc-text"> 创建Pipeline Job</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p><img src="/images/jenkinsonk8s1.png" alt></p>
+<a id="more"></a>
+<blockquote>
+<p>由于部分 Jenkins Plugins 安装需要越墙，加之 Plugins 之间的依赖关系若全手动安装会把人逼疯掉，此时使用官方 jenkinsci/blueocean 镜像成为一个明智选择，此镜像已包含官方推荐的插件。Jenkins Slave 使用 jenkins/jnlp-slave:latest 镜像。</p>
+</blockquote>
+<h2 id="部署-jenkins"><a class="markdownIt-Anchor" href="#部署-jenkins"></a> 部署 Jenkins</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">$ cat jenkins-pvc.yaml</span><br><span class="line"></span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Namespace</span><br><span class="line">metadata:</span><br><span class="line">  name: jenkins</span><br><span class="line">---</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Secret</span><br><span class="line">metadata:</span><br><span class="line">  name: ceph-secret</span><br><span class="line">  namespace: jenkins</span><br><span class="line">type: "kubernetes.io/rbd"  </span><br><span class="line">data:</span><br><span class="line">  key: QVFDd2hLZGFJYktSSHhBQVlmQ21vaitWUnNmUVhTczA3ODRLb3c9PQ==</span><br><span class="line">---</span><br><span class="line">kind: StorageClass</span><br><span class="line">apiVersion: storage.k8s.io/v1</span><br><span class="line">metadata:</span><br><span class="line">   name: ceph-jenkins</span><br><span class="line">   namespace: jenkins</span><br><span class="line">provisioner: kubernetes.io/rbd</span><br><span class="line">parameters:</span><br><span class="line">  monitors: 10.0.77.17:6789</span><br><span class="line">  adminId: admin</span><br><span class="line">  adminSecretName: ceph-secret</span><br><span class="line">  adminSecretNamespace: jenkins</span><br><span class="line">  pool: k8s</span><br><span class="line">  userId: admin</span><br><span class="line">  userSecretName: ceph-secret</span><br><span class="line">  fsType: xfs</span><br><span class="line">  imageFormat: "2"</span><br><span class="line">  imageFeatures: "layering"</span><br><span class="line">---</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">metadata:</span><br><span class="line">  name: jenkins-master-pvc</span><br><span class="line">  namespace: jenkins</span><br><span class="line">spec:</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteOnce</span><br><span class="line">  storageClassName: ceph-jenkins  </span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 50Gi</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">$ cat jenkins-svc.yaml</span><br><span class="line"></span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: ServiceAccount</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    k8s-app: jenkins</span><br><span class="line">  name: jenkins-admin</span><br><span class="line">  namespace: jenkins</span><br><span class="line">---</span><br><span class="line">kind: ClusterRole</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1beta1</span><br><span class="line">metadata:</span><br><span class="line">  name: jenkins-default</span><br><span class="line">rules:</span><br><span class="line">- apiGroups: ["","extensions","app"]</span><br><span class="line">  resources: ["pods","pods/exec","deployments","replicasets"]</span><br><span class="line">  verbs: ["get","list","watch","create","update","patch","delete"]</span><br><span class="line">---</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1beta1</span><br><span class="line">kind: ClusterRoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  name: jenkins-admin</span><br><span class="line">  labels:</span><br><span class="line">    k8s-app: jenkins</span><br><span class="line">roleRef:</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">  kind: ClusterRole</span><br><span class="line">  name: jenkins-default</span><br><span class="line">subjects:</span><br><span class="line">- kind: ServiceAccount</span><br><span class="line">  name: jenkins-admin</span><br><span class="line">  namespace: jenkins</span><br><span class="line">---</span><br><span class="line">#Generally, don't need to create a service, the service here only for jnlp connect.</span><br><span class="line">kind: Service</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    app: jenkins-master</span><br><span class="line">  name: jenkins-service</span><br><span class="line">  namespace: jenkins</span><br><span class="line">spec:</span><br><span class="line">  type: NodePort   #attention</span><br><span class="line">  ports:</span><br><span class="line">    - port: 8080</span><br><span class="line">      name: jenkins</span><br><span class="line">    - port: 50000</span><br><span class="line">      name: agent</span><br><span class="line">  selector:</span><br><span class="line">    app: jenkins-master</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Kubernetes Service Type 目前仅支持三种方式:</p>
+</blockquote>
+<ul>
+<li><code>ClusterIP</code>: k8s集群内访问</li>
+<li><code>LoadBalancer</code>: 依赖IaaS服务商（如Google Cloud、AWS）或自建负载均衡器</li>
+<li><code>NodePort</code>: 通过 nodeIP:nodePORT 来访问</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">$ cat jenkins-deployment.yaml</span><br><span class="line"></span><br><span class="line">apiVersion: extensions/v1beta1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  name: jenkins</span><br><span class="line">  namespace: jenkins</span><br><span class="line">  labels:</span><br><span class="line">    app: jenkins-master</span><br><span class="line">spec:</span><br><span class="line">  replicas: 1</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app: jenkins-master</span><br><span class="line">    spec:</span><br><span class="line">      securityContext:</span><br><span class="line">        runAsUser: 1000</span><br><span class="line">        fsGroup: 1000</span><br><span class="line">      serviceAccountName: jenkins-admin</span><br><span class="line">      containers:</span><br><span class="line">      - name: jenkins-master</span><br><span class="line">        image: 10.0.77.16/library/jenkinsci/blueocean</span><br><span class="line">        imagePullPolicy: IfNotPresent</span><br><span class="line">        ports:</span><br><span class="line">        - containerPort: 8080</span><br><span class="line">          name: jenkins</span><br><span class="line">        - containerPort: 50000</span><br><span class="line">          name: agent</span><br><span class="line">          protocol: TCP</span><br><span class="line">        resources:</span><br><span class="line">          limits:</span><br><span class="line">            cpu: 1</span><br><span class="line">            memory: 1Gi</span><br><span class="line">          requests:</span><br><span class="line">            cpu: 0.5</span><br><span class="line">            memory: 500Mi</span><br><span class="line">        volumeMounts:</span><br><span class="line">          - name: docker</span><br><span class="line">            mountPath: /var/run/docker.sock</span><br><span class="line">          - name: jenkins-persistent-storage</span><br><span class="line">            mountPath: /var/jenkins_home</span><br><span class="line">        env:</span><br><span class="line">          - name: JAVA_OPTS</span><br><span class="line">            value: "-Duser.timezone=Asia/Shanghai"</span><br><span class="line">      volumes:</span><br><span class="line">      - name: docker</span><br><span class="line">        hostPath:</span><br><span class="line">          path: /var/run/docker.sock</span><br><span class="line">      - name: jenkins-persistent-storage</span><br><span class="line">        persistentVolumeClaim:</span><br><span class="line">          claimName: jenkins-master-pvc</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get svc -n jenkins</span><br><span class="line">NAME              TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)                          AGE</span><br><span class="line">jenkins-service   NodePort   10.254.112.72   &lt;none&gt;        8080:30514/TCP,50000:32589/TCP   4h</span><br><span class="line"></span><br><span class="line">$ kubectl get pods -n jenkins</span><br><span class="line">NAME                       READY     STATUS    RESTARTS   AGE</span><br><span class="line">jenkins-5d659f6b99-nwpxk   1/1       Running   0          3m</span><br><span class="line"></span><br><span class="line">$ kubectl <span class="built_in">exec</span> -n jenkins jenkins-5d659f6b99-nwpxk -it -- bash</span><br><span class="line">bash-4.4$ cat /var/jenkins_home/secrets/initialAdminPassword</span><br><span class="line">5ad866a38c674a66a2a2fd6adc9702cd</span><br></pre></td></tr></table></figure>
+<h2 id="配置-kubernetes-插件"><a class="markdownIt-Anchor" href="#配置-kubernetes-插件"></a> 配置 Kubernetes 插件</h2>
+<p>手动下载<strong>kubernetes、kubernetes-credentials</strong>插件并安装。</p>
+<p><img src="/images/jenkinsonk8s2.png" alt></p>
+<h2 id="创建pipeline-job"><a class="markdownIt-Anchor" href="#创建pipeline-job"></a> 创建Pipeline Job</h2>
+<p>Bypass for now.</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="https://zhangchenchen.github.io/2017/12/17/achieve-cicd-in-kubernetes-with-jenkins/" target="_blank" rel="noopener">Kuberbetes-- 利用Jenkins在Kubernetes中实践CI/CD</a></li>
+<li><a href="https://kevinguo.me/2017/12/27/jenkins-on-kubernetes-with-pipeline/" target="_blank" rel="noopener">jenkins with pipeline on kubernetes</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2018/03/28/jenkins-k8s/">https://acquaai.github.io/2018/03/28/jenkins-k8s/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/03/29/spark-k8s/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Spark on Kubernetes</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/03/26/linuxperf/">
+        <span class="next-text nav-default">Linux性能分析</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2018/03/28/jenkins-k8s/';
+        this.page.identifier = '2018/03/28/jenkins-k8s/';
+        this.page.title = 'Jenkins on Kubernetes';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

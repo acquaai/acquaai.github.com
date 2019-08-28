@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Percona XtraBackup">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2018/01/31/xtrabackup/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Percona XtraBackup - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Percona XtraBackup
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-01-31
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/MySQL/">MySQL</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#install-xtrabackup"><span class="toc-text"> Install XtraBackup</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#full-backup"><span class="toc-text"> Full Backup</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#create-full-backup"><span class="toc-text"> Create Full Backup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prepare-full-backup"><span class="toc-text"> Prepare Full Backup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#restore-full-backup"><span class="toc-text"> Restore Full Backup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prepare-binlog-slave-from-full-backup"><span class="toc-text"> Prepare Binlog Slave From Full Backup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prepare-gtid-slave-from-full-backup"><span class="toc-text"> Prepare GTID Slave From Full Backup</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#incremental-backup"><span class="toc-text"> Incremental Backup</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#create-incremental-backup"><span class="toc-text"> Create incremental backup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prepare-incremental-backup"><span class="toc-text"> Prepare Incremental Backup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#restore-incremental-backup"><span class="toc-text"> Restore Incremental Backup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#differential-backup"><span class="toc-text"> Differential Backup</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#partial-backup"><span class="toc-text"> Partial Backup</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#create-partial-backup"><span class="toc-text"> Create partial backup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prepare-partial-backup"><span class="toc-text"> prepare partial backup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#restore-partial-backup"><span class="toc-text"> Restore partial backup</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>XtraBackup工具是由<a href="https://www.percona.com" target="_blank" rel="noopener">Percona</a>开发的免费开源工具，用于执行物理备份和还原操作，比使用 mysqldump 和 mysql 执行逻辑备份和还原要快得多。<a href="https://www.percona.com/doc/percona-xtrabackup/2.4/index.html" target="_blank" rel="noopener">The  latest manual document</a>.</p>
+<h2 id="install-xtrabackup"><a class="markdownIt-Anchor" href="#install-xtrabackup"></a> Install XtraBackup</h2>
+<p>XtraBackup可以选择从 Repositories 和 Source Code 安装。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ yum install -y http://www.percona.com/downloads/percona-release/redhat/0.1-4/percona-release-0.1-4.noarch.rpm</span><br><span class="line">$ yum list |grep percona-xtrabackup</span><br><span class="line">$ yum install -y libev</span><br><span class="line"></span><br><span class="line">$ yum install -y percona-xtrabackup-24</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="full-backup"><a class="markdownIt-Anchor" href="#full-backup"></a> Full Backup</h2>
+<h3 id="create-full-backup"><a class="markdownIt-Anchor" href="#create-full-backup"></a> Create Full Backup</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">$ innobackupex --user=root --password=<span class="string">'Acqua@107'</span> --no-timestamp ~/full-backup</span><br><span class="line">......</span><br><span class="line">180131 15:11:27 completed OK!</span><br><span class="line"></span><br><span class="line">$ ll full-backup/</span><br><span class="line">total 12340</span><br><span class="line">......</span><br><span class="line">-rw-r----- 1 root root       22 Jan 31 15:11 xtrabackup_binlog_info</span><br><span class="line">-rw-r----- 1 root root      113 Jan 31 15:11 xtrabackup_checkpoints</span><br><span class="line">......</span><br><span class="line"></span><br><span class="line">$ cat xtrabackup_binlog_info </span><br><span class="line"></span><br><span class="line">mysql-bin.000001        1335</span><br><span class="line">mysql-bin.000001   在备份时创建的二进制日志文件</span><br><span class="line">1335   备份到了二进制日志文件位置 191 (POS)</span><br><span class="line"></span><br><span class="line">$ cat xtrabackup_checkpoints </span><br><span class="line"></span><br><span class="line">backup_type = full-backuped</span><br><span class="line">from_lsn = 0</span><br><span class="line">to_lsn = 2551592</span><br><span class="line">last_lsn = 2551601</span><br><span class="line">compact = 0</span><br><span class="line">recover_binlog_info = 0</span><br></pre></td></tr></table></figure>
+<h3 id="prepare-full-backup"><a class="markdownIt-Anchor" href="#prepare-full-backup"></a> Prepare Full Backup</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ innobackupex --user=root --password=<span class="string">'Acqua@107'</span> --apply-log ~/full-backup</span><br></pre></td></tr></table></figure>
+<p><code>--apply-log</code><br>
+Prepare a backup in <strong>BACKUP-DIR</strong> by applying the transaction log file named “xtrabackup_logfile” located in the same directory. Also, create new transaction logs. The InnoDB configuration is read from the file “backup-my.cnf”.</p>
+<h3 id="restore-full-backup"><a class="markdownIt-Anchor" href="#restore-full-backup"></a> Restore Full Backup</h3>
+<p><code>copy back option</code>恢复全备份之前，先停止MySQL instance后执行下面操作：</p>
+<blockquote>
+<p>恢复目录不能为 非空 (/var/lib/mysql)</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl stop mysqld</span><br><span class="line">$ innobackupex --user=root --password=<span class="string">'Acqua@107'</span> --copy-back ~/full-backup</span><br><span class="line"></span><br><span class="line">$ chown -R mysql:mysql /var/lib/mysql</span><br><span class="line">$ systemctl start mysqld</span><br></pre></td></tr></table></figure>
+<p>验证数据。</p>
+<h3 id="prepare-binlog-slave-from-full-backup"><a class="markdownIt-Anchor" href="#prepare-binlog-slave-from-full-backup"></a> Prepare Binlog Slave From Full Backup</h3>
+<p>slvae复制中断从全备份重建</p>
+<p><strong>1.Restore Full Backup</strong></p>
+<p><strong>2.</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2.$ cat xtrabackup_binlog_info </span><br><span class="line">mysql-bin.000001        6225</span><br></pre></td></tr></table></figure>
+<p><strong>3.</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">slave&gt; change master to</span><br><span class="line">       MASTER_HOST='master_ip',</span><br><span class="line">       MASTER_PORT=master_port,</span><br><span class="line">       MASTER_USER='user_name',</span><br><span class="line">       MASTER_PASSWORD='password',</span><br><span class="line">       MASTER_LOG_FILE='mysql-bin.000001',</span><br><span class="line">       MASTER_LOG_POS=6225;</span><br><span class="line">       </span><br><span class="line">slave&gt; start slave;</span><br></pre></td></tr></table></figure>
+<h3 id="prepare-gtid-slave-from-full-backup"><a class="markdownIt-Anchor" href="#prepare-gtid-slave-from-full-backup"></a> Prepare GTID Slave From Full Backup</h3>
+<p>Xtrabackup v2.1.0开始支持GTID。<br>
+slvae复制中断从全备份重建。</p>
+<p><strong>1.Restore Full Backup</strong><br>
+<strong>2.Check the GTID value of the backup</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cat xtrabackup_binlog_info </span><br><span class="line">mysql-bin.000027	191		b9b4712a-df64-11e3-b391-60672090eb04:1-12</span><br></pre></td></tr></table></figure>
+<p><strong>3.Set the variable GTID_PURGED with the GTID value of the backup</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sql&gt; <span class="built_in">set</span> GTID_PURGED=<span class="string">"b9b4712a-df64-11e3-b391-60672090eb04:1-12"</span>;</span><br></pre></td></tr></table></figure>
+<p><strong>4.change master</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">slave&gt; change master to</span><br><span class="line">       MASTER_HOST=<span class="string">'master_ip'</span>,</span><br><span class="line">       MASTER_PORT=master_port,</span><br><span class="line">       MASTER_USER=<span class="string">'user_name'</span>,</span><br><span class="line">       MASTER_PASSWORD=<span class="string">'password'</span>,</span><br><span class="line">       MASTER_AUTO_POSITION = 1;</span><br><span class="line">       </span><br><span class="line">slave&gt; start slave;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>Xtrabackup full backup不能备份单个 database 或 table（MyISAM可以）。</li>
+<li>调用Xtrabackup工具的 MySQL用户 至少拥有以下权限: RELOAD, LOCK TABLES and REPLICATION)。</li>
+<li>当从slave来扩容一个 全新的slave 时，只需要在备份命令中增加<code>--slave-info &amp; --safe-slave-backup</code>选项，然后在全新的slave上恢复，最后使用备份目录下的<code>xtrabackup_slave_info</code>文件信息来change master完成操作。</li>
+<li>Prepare备份命令中，可以使用<code>--use-memory=xG</code>选项来作为内部<code>innodb_buffer_pool_size</code>的内存大小来完成备份。</li>
+<li>preparation过程包括以下两部分，在Prepare备份命令中使用<code>--apply-log</code>将执行这两部分操作：<br>
++ 应用已提交的事务<br>
++ 回滚未提交的事务</li>
+</ul>
+</blockquote>
+<h2 id="incremental-backup"><a class="markdownIt-Anchor" href="#incremental-backup"></a> Incremental Backup</h2>
+<p>增量备份可以减少备份存储空间，缩短备份时间，但恢复具有依赖关系</p>
+<h3 id="create-incremental-backup"><a class="markdownIt-Anchor" href="#create-incremental-backup"></a> Create incremental backup</h3>
+<p><strong>0级备份</strong><br>
+增量备份是在 FULL Backup 基础之上创建的，Full Backup是一个0级备份，所以在增量备份之前需要先做0级备份。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ innobackupex --user=root --password=<span class="string">'Acqua@107'</span> --no-timestamp ~/i-full-backup</span><br></pre></td></tr></table></figure>
+<p><strong>Creating the first incremental backup</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ innobackupex --user=root --password=<span class="string">'Acqua@107'</span> --no-timestamp --incremental ~/i-full-backup/inc1 --incremental-basedir=~/i-full-backup</span><br><span class="line"></span><br><span class="line">......</span><br><span class="line">180201 09:50:54 Executing UNLOCK TABLES</span><br><span class="line">180201 09:50:54 All tables unlocked</span><br><span class="line">180201 09:50:54 [00] Copying ib_buffer_pool to /root/full-backup/inc1/ib_buffer_pool</span><br><span class="line">180201 09:50:54 [00]        ...<span class="keyword">done</span></span><br><span class="line">180201 09:50:54 Backup created <span class="keyword">in</span> directory <span class="string">'/root/full-backup/inc1/'</span></span><br><span class="line">MySQL binlog position: filename <span class="string">'mysql-bin.000001'</span>, position <span class="string">'6225'</span></span><br><span class="line">180201 09:50:54 [00] Writing /root/full-backup/inc1/backup-my.cnf</span><br><span class="line">180201 09:50:54 [00]        ...<span class="keyword">done</span></span><br><span class="line">180201 09:50:54 [00] Writing /root/full-backup/inc1/xtrabackup_info</span><br><span class="line">180201 09:50:54 [00]        ...<span class="keyword">done</span></span><br><span class="line">xtrabackup: Transaction <span class="built_in">log</span> of lsn (2565316) to (2565325) was copied.</span><br><span class="line">180201 09:50:54 completed OK!</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ cat inc1/xtrabackup_checkpoints </span><br><span class="line"></span><br><span class="line">backup_type = incremental</span><br><span class="line">from_lsn = 2565316</span><br><span class="line">to_lsn = 2565316</span><br><span class="line">last_lsn = 2565325</span><br><span class="line">compact = 0</span><br><span class="line">recover_binlog_info = 0</span><br></pre></td></tr></table></figure>
+<p><strong>Creating the second incremental backup</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ innobackupex --user=root --password=<span class="string">'Acqua@107'</span> --no-timestamp --incremental ~/i-full-backup/inc2 --incremental-basedir=~/i-full-backup/inc1</span><br><span class="line"></span><br><span class="line">$ cat ~/full-backup/inc2/xtrabackup_checkpoints</span><br><span class="line"></span><br><span class="line">backup_type = incremental</span><br><span class="line">from_lsn = 2565316</span><br><span class="line">to_lsn = 2582066</span><br><span class="line">last_lsn = 2582075</span><br><span class="line">compact = 0</span><br><span class="line">recover_binlog_info = 0</span><br></pre></td></tr></table></figure>
+<h3 id="prepare-incremental-backup"><a class="markdownIt-Anchor" href="#prepare-incremental-backup"></a> Prepare Incremental Backup</h3>
+<p>如<code>Prepare Full Backup</code>备份中，准备过程由两个步骤组成（应用已提交的事务并回滚未提交的事务），使用–apply-log选项只能完成两个步骤。但在incremental backup中必须单独执行如下操作：</p>
+<p><strong>1.–redo-only选项（追加变更数据到full backup）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ innobackupex --user=root --password=<span class="string">'Acqua@107'</span> --apply-log --redo-only ~/i-full-backup</span><br></pre></td></tr></table></figure>
+<p><strong>2.在第1个增量备份中应用已提交事务</strong></p>
+<p>需要指定全备份的目录，因为全备份目录中包含已提交的事务，将增量备份的所有变更追加到全备份。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ innobackupex --user=root --password=<span class="string">'Acqua@107'</span> --apply-log --redo-only ~/i-full-backup --incremental-dir=~/i-full-backup/inc1</span><br></pre></td></tr></table></figure>
+<p><strong>3.在第2个增量备份中应用已提交事务</strong></p>
+<p>不需要指定第1个增量备份目录，所有变更已在**<code>2.(第2步)</code>**完成。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ innobackupex --user=root --password=<span class="string">'Acqua@107'</span> --apply-log --redo-only ~/i-full-backup --incremental-dir=~/i-full-backup/inc2</span><br></pre></td></tr></table></figure>
+<p><strong>4.回滚未提交事务</strong></p>
+<p>全备份目录 ~/i-full-backup 包含 (full + inc1 + inc2 ）备份，所以不需要在 inc 目录中做回滚。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ innobackupex --user=root --password=<span class="string">'Acqua@107'</span> --apply-log ~/i-full-backup</span><br></pre></td></tr></table></figure>
+<h3 id="restore-incremental-backup"><a class="markdownIt-Anchor" href="#restore-incremental-backup"></a> Restore Incremental Backup</h3>
+<p>全备份目录（~/i-full-backup）是恢复增量备份是唯一要恢复的目录（不需要增量inc目录），因为全备份目录包含所有数据，可以按全备份恢复来执行增量备份的恢复。</p>
+<blockquote>
+<ul>
+<li>在增量备份中，Xtrabackup为每个表生产两个文件“.delta”和“.meta”（如test.ibd.delta＆test.ibd.meta），.delta文件大小反映了该表自上次增量备份以来的数据变化量。单个增量备份的准备时间将取决于自上次增量以来的数据变化量。</li>
+</ul>
+</blockquote>
+<h3 id="differential-backup"><a class="markdownIt-Anchor" href="#differential-backup"></a> Differential Backup</h3>
+<p>差异备份减少了所需的备份准备步骤/时间，因为差异备份将取代之前的所有增量备份。<br>
+如果中间损坏了增量备份，差异备份可充当以前增量备份的备份。</p>
+<h2 id="partial-backup"><a class="markdownIt-Anchor" href="#partial-backup"></a> Partial Backup</h2>
+<p>前文中说过，Xtrabackup工具不能备份InnoDB存储引擎中单个数据库或表，可以使用工具中的<code>部分备份</code>方式来达到像备份 MyISAM 的单库/单表的效果，但有一些限制。</p>
+<h3 id="create-partial-backup"><a class="markdownIt-Anchor" href="#create-partial-backup"></a> Create partial backup</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ innobackupex --user=root --password=<span class="string">'Acqua@107'</span> --no-timestamp --databases=<span class="string">'sys bsdb.restore'</span> ~/partial-backup</span><br></pre></td></tr></table></figure>
+<p>–databases选项可以被下面2个选项代替：<br>
+–include=‘db.tbl’.<br>
+–tables-file=/path/to/file.txt<br>
+在file.txt文件中以每行一个符合命名规则的表名来指定多个表。</p>
+<h3 id="prepare-partial-backup"><a class="markdownIt-Anchor" href="#prepare-partial-backup"></a> prepare partial backup</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ innobackupex --user=root --password=<span class="string">'Acqua@107'</span> --apply-log --<span class="built_in">export</span> ~/partial-backup</span><br></pre></td></tr></table></figure>
+<p>对于Xtrabackup不能备份的InnoDB存储引擎中单个库或表，会提示并创建相应的<code>.exp</code>文件在导入（恢复）时使用。<br>
+现在部分备份已准备好被恢复。</p>
+<h3 id="restore-partial-backup"><a class="markdownIt-Anchor" href="#restore-partial-backup"></a> Restore partial backup</h3>
+<ul>
+<li>与恢复全备份和增量备份不同，恢复部分备份时，等恢复主机上MySQL实例不能停止。</li>
+<li>在等恢复主机上新建表的结构应与在部分备份源表时的结构相同，然后丢弃表空间。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">soure&gt; show create table restore;</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">target&gt; create table bsdb.restore (...) ENGINE=INNODB;</span><br><span class="line">target&gt; alter table bsdb.restore discard tablespace;</span><br></pre></td></tr></table></figure>
+<p>从备份中复制要恢复的表( .ibd &amp; .exp )文件到相应 DB目录下，并授权</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/partial-backup/bsdb/</span><br><span class="line">$ cp restore.ibd restore.exp  /var/lib/mysql/bsdb/</span><br><span class="line">$ chown -R mysql:mysql /var/lib/mysql/bsdb</span><br></pre></td></tr></table></figure>
+<p>使用新的表空间</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">target&gt; alter table bsdb.restore import tablespace;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>The streaming feature is not available in the partial backup.</li>
+</ul>
+</blockquote>
+<ul>
+<li><strong>Restoring/importing individual tables or databases from a partial backup is not applicable unless the destination server is <code>Percona Server</code></strong>.</li>
+<li>在源/目标主机上必须开启 <code>innodb_file_per_table</code> 选项。</li>
+<li>仅能在使用 Percona server中的目标主机上开启 <code>innodb_expand_import</code> 选项。这就是为什么只能在Percona server中恢复部分备份的原因。</li>
+</ul>
+<p><strong>Reference</strong><br>
+<a href="http://fromdual.com/node/835" target="_blank" rel="noopener">FROMDUAL</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2018/01/31/xtrabackup/">https://acquaai.github.io/2018/01/31/xtrabackup/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/02/01/inception/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Inception</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/01/30/binlog-vs-gtid/">
+        <span class="next-text nav-default">Binlog VS GTID Replication</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2018/01/31/xtrabackup/';
+        this.page.identifier = '2018/01/31/xtrabackup/';
+        this.page.title = 'Percona XtraBackup';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

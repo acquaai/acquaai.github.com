@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Binlog VS GTID Replication">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2018/01/30/binlog-vs-gtid/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Binlog VS GTID Replication - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Binlog VS GTID Replication
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-01-30
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/MySQL/">MySQL</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#replication"><span class="toc-text"> Replication</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#skip-or-ignore-statement"><span class="toc-text"> SKIP OR IGNORE STATEMENT</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#skip-or-ignore-statement处理方法"><span class="toc-text"> SKIP OR IGNORE STATEMENT处理方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#binlog复制"><span class="toc-text"> Binlog复制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#gtid复制"><span class="toc-text"> GTID复制</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#re-initialize-re-build-a-slave"><span class="toc-text"> RE-INITIALIZE/ RE-BUILD A SLAVE</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#re-initialize-re-build-a-slave处理方法"><span class="toc-text"> RE-INITIALIZE/ RE-BUILD A SLAVE处理方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#binlog复制-2"><span class="toc-text"> Binlog复制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#gtid复制-2"><span class="toc-text"> GTID复制</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="replication"><a class="markdownIt-Anchor" href="#replication"></a> Replication</h2>
+<ul>
+<li>异步复制</li>
+</ul>
+<p>主库将事务Binlog事件写入Binlog文件中，主库只会通知一下Dump线程发送这些新的Binlog文件后就继续处理提交操作，并不保证任何一个slave都收到了。</p>
+<ul>
+<li>全同步复制</li>
+</ul>
+<p>主库提交事务后，在所有的slave都必须收到、并应用且提交这些事务后主库才继续后续操作。</p>
+<ul>
+<li>半同步复制</li>
+</ul>
+<p>介于全异步与全同步复制之间，主库只需等待至少一个slave收到且 Flush Binlog 到 Relay-log 文件即可，master无需等待所有slave反馈，且只是一个收到的反馈，不是已经完全执行并提交的反馈。</p>
+<p>MySQL复制有基于binary logs的<a href="https://acquaai.github.io/2017/12/02/binlog-rep/">Classic Replication</a> 和基于 <a href="https://acquaai.github.io/2017/12/03/gtid-rep/">Transaction-based Replication</a>的GTID。</p>
+<a id="more"></a>
+<p>配置 Replication 时，有2个主要的操作需要做：</p>
+<ul>
+<li>Skip or ignore a statement that causes the replication to stop.</li>
+<li>Re-initialize a slave when the Replication is broke and could not be started anymore.</li>
+</ul>
+<h2 id="skip-or-ignore-statement"><a class="markdownIt-Anchor" href="#skip-or-ignore-statement"></a> SKIP OR IGNORE STATEMENT</h2>
+<p>某些情况下，如忘记将slave设置为<code>read_only</code>模式，master插入了已经存在于slave中的数据，或要更新、删除的数据在slave中未存储，会引发主/从冲突复制停止。<br>
+在slave上使用<code>SHOW SLAVE STATUS</code>命令将输出类似如下信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Last_SQL_Error: Could not execute Write_rows event on table test.t1; Duplicate entry <span class="string">'4'</span> <span class="keyword">for</span> key <span class="string">'PRIMARY'</span>, Error_code: 1062; handler error HA_ERR_FOUND_DUPP_KEY; the event<span class="string">'s master log mysql-bin.000304, end_log_pos 285</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Last_SQL_Error: Could not execute Update_rows event on table test.t1; Can'</span>t find record <span class="keyword">in</span> <span class="string">'t1'</span>, Error_code: 1032; handler error HA_ERR_KEY_NOT_FOUND; the event<span class="string">'s master log mysql-bin.000304, end_log_pos 492</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Last_SQL_Error: Could not execute Delete_rows event on table test.t1; Can'</span>t find record <span class="keyword">in</span> <span class="string">'t1'</span>, Error_code: 1032; handler error HA_ERR_KEY_NOT_FOUND; the event<span class="string">'s master log mysql-bin.000304, end_log_pos 688</span></span><br></pre></td></tr></table></figure>
+<h3 id="skip-or-ignore-statement处理方法"><a class="markdownIt-Anchor" href="#skip-or-ignore-statement处理方法"></a> SKIP OR IGNORE STATEMENT处理方法</h3>
+<h4 id="binlog复制"><a class="markdownIt-Anchor" href="#binlog复制"></a> Binlog复制</h4>
+<p>Binlog方式下只需要在slave上跳过该文件的POS继续复制。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">slave&gt; set global sql_slave_skip_counter = 1;</span><br><span class="line">slave&gt; start slave;</span><br></pre></td></tr></table></figure>
+<h4 id="gtid复制"><a class="markdownIt-Anchor" href="#gtid复制"></a> GTID复制</h4>
+<p>在处理GTID复制中断时，设置 sql_slave_skip_counter 参数是无效的，而是要<a href="https://dev.mysql.com/doc/refman/5.7/en/replication-gtids-failover.html#replication-gtids-failover-empty" target="_blank" rel="noopener">产生一个空事务</a>。</p>
+<ul>
+<li>检查问题事务</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">slave&gt; show slave status\G</span><br><span class="line">			.</span><br><span class="line">			.</span><br><span class="line">           Retrieved_Gtid_Set: b9b4712a-df64-11e3-b391-60672090eb04:1-7</span><br><span class="line">           Executed_Gtid_Set: 4f6d62ed-df65-11e3-b395-60672090eb04:1,</span><br><span class="line">                              b9b4712a-df64-11e3-b391-60672090eb04:1-6</span><br><span class="line">           Auto_Position: 1</span><br></pre></td></tr></table></figure>
+<p><strong>Retrieved_Gtid_Set:</strong> 从master获取的GTIDs<br>
+<strong>Executed_Gtid_Set:</strong> slave要执行的GTIDs<br>
+<strong>1-7 VS 1-6:</strong> <code>7</code>号事务没有执行，导致复制中断</p>
+<ul>
+<li>产生空事务</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">slave&gt; set gtid_next = 'b9b4712a-df64-11e3-b391-60672090eb04:7';</span><br><span class="line">slave&gt; begin;</span><br><span class="line">slave&gt; cmmmit;</span><br><span class="line">slave&gt; set gtid_next = 'AUTOMATIC';</span><br><span class="line">slave&gt; start slave;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Executed_Gtid_Set：中，<code>4f6d62ed-df65-11e3-b395-60672090eb04:1</code>是本地（slave）执行的GTIDs，不是从master获取的。 <code>b9b4712a-df64-11e3-b391-60672090eb04:1-6</code>是从master中获取并执行的GTIDs。（获取master UUID的方法：1、检查master上<code>Retrieved_Gtid_Set</code>中的UUID值；2、master&gt; show variables like ‘server_uuid’;）<br>
+故，要使用master的 UUID 来产生空事务，否则问题依然存在，slave不会启动。</p>
+</blockquote>
+<p>在binlog或GTID复制中，slave恢复后，可能需要Percona的<a href="https://www.percona.com/doc/percona-toolkit/2.2/pt-table-checksum.html" target="_blank" rel="noopener">pt-table-checksum</a>和<a href="https://www.percona.com/doc/percona-toolkit/2.2/pt-table-sync.html" target="_blank" rel="noopener">pt-table-sync</a>工具来修复数据不一致的问题。</p>
+<h2 id="re-initialize-re-build-a-slave"><a class="markdownIt-Anchor" href="#re-initialize-re-build-a-slave"></a> RE-INITIALIZE/ RE-BUILD A SLAVE</h2>
+<p>由于许多原因，我们最终只能重建slave服务器来恢复数据复制。例如，slave停止了一段时间，master清除了slave需要的二进制日志文件，或者重复数据太多pt-table-checksum和pt-table-sync工具无法修复，就必须使用master的备份重新初始化slave，恢复slave的复制。</p>
+<h3 id="re-initialize-re-build-a-slave处理方法"><a class="markdownIt-Anchor" href="#re-initialize-re-build-a-slave处理方法"></a> RE-INITIALIZE/ RE-BUILD A SLAVE处理方法</h3>
+<h4 id="binlog复制-2"><a class="markdownIt-Anchor" href="#binlog复制-2"></a> Binlog复制</h4>
+<p>类似错误信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Last_IO_Errno: 1236</span><br><span class="line">Last_IO_Error: Got fatal error 1236 from master when reading data from binary log: &apos;Could not find first log file name in binary log index file&apos;</span><br></pre></td></tr></table></figure>
+<p>处理步骤：</p>
+<ul>
+<li>Backup on master（可用<a href="https://acquaai.github.io/2018/01/31/xtrabackup/">Xtrabackup</a>代替mysqldump）</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">master$ mysqldump -u root -p --all-databases --flush-privileges --single-transaction --master-data=2 --flush-logs --triggers --routines --events --hex-blob &gt;/path/to/backupdir/full_backup-<span class="variable">$TIMESTAMP</span>.sql</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Restore on slave</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slave$ mysql -u root -p &lt; /path/to/backupdir/full_backup-<span class="variable">$TIMESTAMP</span>.sql</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Get binary log info from backup</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">slave$ head -n 50 /path/to/backupdir/full_backup-<span class="variable">$TIMESTAMP</span>.sql|grep <span class="string">"CHANGE MASTER TO"</span></span><br><span class="line"></span><br><span class="line">CHANGE MASTER TO MASTER_LOG_FILE=<span class="string">'mysql-bin.000011'</span>, MASTER_LOG_POS=120;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Change master</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slave&gt; change master to MASTER_LOG_FILE='mysql-bin.000011', MASTER_LOG_POS=120;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Start slave</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slave&gt; start slave;</span><br></pre></td></tr></table></figure>
+<h4 id="gtid复制-2"><a class="markdownIt-Anchor" href="#gtid复制-2"></a> GTID复制</h4>
+<p>类似错误信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Last_IO_Errno: 1236</span><br><span class="line">Last_IO_Error: Got fatal error 1236 from master when reading data from binary log: &apos;The slave is connecting using CHANGE MASTER TO MASTER_AUTO_POSITION = 1, but the master has purged binary logs containing GTIDs that the slave requires.&apos;</span><br></pre></td></tr></table></figure>
+<p>处理步骤：</p>
+<ul>
+<li>Backup on master</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">master$ mysqldump -u root -p --all-databases --flush-privileges --single-transaction --flush-logs --triggers --routines --events --hex-blob &gt;/path/to/backupdir/full_backup-<span class="variable">$TIMESTAMP</span>.sql</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Check GTID value from backup</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">slave$ head -n 50 /path/to/backupdir/full_backup-<span class="variable">$TIMESTAMP</span>.sql|grep PURGED</span><br><span class="line"></span><br><span class="line">SET @@GLOBAL.GTID_PURGED=<span class="string">'b9b4712a-df64-11e3-b391-60672090eb04:1-8'</span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Reset the GTID_EXECUTED and GTID_PURGED values on the slave:</li>
+</ul>
+<p>GTID_EXECUTED为只读参数，<code>reset master</code>非常重要。使用<a href="https://acquaai.github.io/2018/01/31/xtrabackup/">Xtrabackup</a>工具备份可以代替reset master操作。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slave&gt; reset master;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Restore on slave</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slave$ mysql -u root -p &lt; /path/to/backupdir/full_backup-<span class="variable">$TIMESTAMP</span>.sql</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Check GTID_EXEUCTED &amp; GTID_PURGED values</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">slave&gt; show variables like'gtid_executed';</span><br><span class="line">+<span class="comment">---------------+------------------------------------------+</span></span><br><span class="line">| Variable_name | Value                                    |</span><br><span class="line">+<span class="comment">---------------+------------------------------------------+</span></span><br><span class="line">| gtid_executed | b9b4712a-df64-11e3-b391-60672090eb04:1-8 |</span><br><span class="line">+<span class="comment">---------------+------------------------------------------+</span></span><br><span class="line"></span><br><span class="line">slave&gt; show variables like 'gtid_purged';</span><br><span class="line">+<span class="comment">---------------+------------------------------------------+</span></span><br><span class="line">| Variable_name | Value                                    |</span><br><span class="line">+<span class="comment">---------------+------------------------------------------+</span></span><br><span class="line">| gtid_purged   | b9b4712a-df64-11e3-b391-60672090eb04:1-8 |</span><br><span class="line">+<span class="comment">---------------+------------------------------------------+</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Start slave</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slave&gt; start slave;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>虽然使用GTID进行数据复制比Binlog具有更多优势，但在修复复制中断的策略是不一样的，没有谁比谁好，只有更适合。</p>
+</blockquote>
+<p><strong>Reference</strong><br>
+<a href="http://fromdual.com/replication-troubleshooting-classic-vs-gtid" target="_blank" rel="noopener">FROMDUAL</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2018/01/30/binlog-vs-gtid/">https://acquaai.github.io/2018/01/30/binlog-vs-gtid/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/01/31/xtrabackup/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Percona XtraBackup</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/01/30/masterha/">
+        <span class="next-text nav-default">MHA - MySQL High Available</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2018/01/30/binlog-vs-gtid/';
+        this.page.identifier = '2018/01/30/binlog-vs-gtid/';
+        this.page.title = 'Binlog VS GTID Replication';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

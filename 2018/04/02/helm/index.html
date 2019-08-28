@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Helm on Kubernetes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2018/04/02/helm/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Helm on Kubernetes - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Helm on Kubernetes
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-04-02
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#helm"><span class="toc-text"> Helm</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#helm-components"><span class="toc-text"> Helm Components</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#install-helm"><span class="toc-text"> Install Helm</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#helm-chart-repository"><span class="toc-text"> Helm Chart Repository</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#artifactory-on-k8s"><span class="toc-text"> Artifactory on K8s</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#persistent-storage"><span class="toc-text"> Persistent Storage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#database-driver"><span class="toc-text"> Database Driver</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mysql-database"><span class="toc-text"> MySQL Database</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#artifactory-pro"><span class="toc-text"> Artifactory Pro</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#nginx-option"><span class="toc-text"> Nginx (option)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#accessing-artifactory-pro"><span class="toc-text"> Accessing Artifactory Pro</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#config-artifactory-repository"><span class="toc-text"> Config Artifactory Repository</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#helm-client-registry-repository"><span class="toc-text"> Helm Client Registry Repository</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="helm"><a class="markdownIt-Anchor" href="#helm"></a> Helm</h2>
+<p><a href="https://helm.sh" target="_blank" rel="noopener">Helm</a> 作为 Kubernetes 的包管理平台，类似 CentOS 的 yum 或 Ubuntu 的 apt-get 来部署管理 k8s 的应用。Helm Charts 能够帮你定义、安装、升级最复杂的 Kubernetes 应用集合，它容易创建，做版本化，共享和发布。在K8s上部署一些通用应用（组件）时，利用 Helm 可以获得业界统一的<code>最佳实践</code>的配置，从而减少时间成本。</p>
+<p>Helm Dictionary (概念):</p>
+<ul>
+<li>chart: a package; bundle of Kubernetes <a href="https://github.com/kubernetes/charts" target="_blank" rel="noopener">resources</a> (能够描述最复杂的应用，提供可重复，幂等性的安装，以及提供统一的认证中心服务。)</li>
+<li>Release: a chart instance is loaded into Kubernetes (提供实时的镜像升级，以及自定义 webhook，解决镜像升级的痛点。)
+<ul>
+<li>same chart can be installed several times into the same cluster; each will have it’s own Release</li>
+</ul>
+</li>
+<li>Repository: a repository of published Charts (版本化、共享、Heml 私有仓库。)</li>
+<li>Template: a Kubernetes configuration file mixed with Go/Sprig template</li>
+</ul>
+<a id="more"></a>
+<h3 id="helm-components"><a class="markdownIt-Anchor" href="#helm-components"></a> Helm Components</h3>
+<ul>
+<li>
+<p>Helm Client: Helm 是用户命令行工具，常与 CI/CD 部署在一起。它用来创建，拉取，搜索和验证 Charts，初始化 Tiller 服务。</p>
+</li>
+<li>
+<p>Tiller: 是一个部署在Kubernetes集群内部的 Server，与 Helm client、Kubernetes APIServer 进行交互，管理这些应用的发布。</p>
+</li>
+</ul>
+<p><a href="https://www.slideshare.net/alexLM/helm-application-deployment-management-for-kubernetes" target="_blank" rel="noopener">Alexei Ledenev’s Helm - Application deployment management for Kubernetes</a></p>
+<p><img src="/images/helm-arch.png" alt></p>
+<h3 id="install-helm"><a class="markdownIt-Anchor" href="#install-helm"></a> Install Helm</h3>
+<p><strong>安装 Client:</strong></p>
+<p>4Mac:</p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ brew install kubernetes-helm</span><br></pre></td></tr></table></figure>
+<p>4Linux:</p>
+<p><a href="https://github.com/kubernetes/helm" target="_blank" rel="noopener">下载</a> Helm</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://storage.googleapis.com/kubernetes-helm/helm-v2.8.2-linux-amd64.tar.gz</span><br><span class="line">$ tar xzvf helm-v2.8.2-linux-amd64.tar.gz</span><br><span class="line">$ mv linux-amd64/helm /usr/<span class="built_in">local</span>/bin/</span><br><span class="line"></span><br><span class="line">$ helm version</span><br><span class="line">Client: &amp;version.Version&#123;SemVer:<span class="string">"v2.8.2"</span>, GitCommit:<span class="string">"a80231648a1473929271764b920a8e346f6de844"</span>, GitTreeState:<span class="string">"clean"</span>&#125;</span><br><span class="line">Error: cannot connect to Tiller</span><br></pre></td></tr></table></figure>
+<p><strong>安装 Tiller:</strong></p>
+<p><code>$ helm init</code></p>
+<blockquote>
+<p>在安装 tiller 之前，需要在 10.0.77.16(ss,u know) 上配置好 kubectl 工具和 kubeconfig 文件，并确保可以正常访问 Kubernetes APIServer。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ scp root@n1.k8s.com:/usr/<span class="built_in">local</span>/bin/kubectl /usr/<span class="built_in">local</span>/bin/</span><br><span class="line">$ mkdir <span class="variable">$HOME</span>/.kube/config</span><br><span class="line">$ scp root@n1.k8s.com:/root/.kube/config /root/.kube/</span><br><span class="line"></span><br><span class="line">$ kubectl get cs</span><br><span class="line">NAME                 STATUS    MESSAGE             ERROR</span><br><span class="line">scheduler            Healthy   ok                  </span><br><span class="line">controller-manager   Healthy   ok                  </span><br><span class="line">etcd-0               Healthy   &#123;<span class="string">"health"</span>:<span class="string">"true"</span>&#125;   </span><br><span class="line">etcd-1               Healthy   &#123;<span class="string">"health"</span>:<span class="string">"true"</span>&#125;   </span><br><span class="line">etcd-2               Healthy   &#123;<span class="string">"health"</span>:<span class="string">"true"</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>因为 k8s cluster(v1.9.2) 中开启了 <code>RBAC</code> 访问控制，所以需要创建 <code>service account: tiller</code> 并分配合适的角色。详情请参考 <a href="https://docs.helm.sh/using_helm/#tiller-and-role-based-access-control" target="_blank" rel="noopener">TILLER AND ROLE-BASED ACCESS CONTROL</a>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl create serviceaccount tiller --namespace kube-system</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">$ cat helm-rbac.yaml</span><br><span class="line"></span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: ServiceAccount</span><br><span class="line">metadata:</span><br><span class="line">  name: tiller</span><br><span class="line">  namespace: kube-system</span><br><span class="line">---</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1beta1</span><br><span class="line">kind: ClusterRoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  name: tiller</span><br><span class="line">roleRef:</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">  kind: ClusterRole</span><br><span class="line">  name: cluster-admin</span><br><span class="line">subjects:</span><br><span class="line">  - kind: ServiceAccount</span><br><span class="line">    name: tiller</span><br><span class="line">    namespace: kube-system</span><br><span class="line">    </span><br><span class="line">$ kubectl create -f helm-rbac.yaml</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ helm init --service-account tiller --skip-refresh</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>GFW again，可以使用 <code>--tiller-image</code> 或<code>-i</code>参数来指定 tiller 要使用到的镜像。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gcr.io/kubernetes-helm/tiller:v2.8.2</span><br><span class="line">---&gt;</span><br><span class="line">10.0.77.16/library/tiller:v2.8.2</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">$ helm init --service-account tiller --tiller-image 10.0.77.16/library/tiller:v2.8.2 --skip-refresh [--kube-context string]</span><br><span class="line"></span><br><span class="line">Creating /root/.helm </span><br><span class="line">Creating /root/.helm/repository </span><br><span class="line">Creating /root/.helm/repository/cache </span><br><span class="line">Creating /root/.helm/repository/<span class="built_in">local</span> </span><br><span class="line">Creating /root/.helm/plugins </span><br><span class="line">Creating /root/.helm/starters </span><br><span class="line">Creating /root/.helm/cache/archive </span><br><span class="line">Creating /root/.helm/repository/repositories.yaml </span><br><span class="line">Adding stable repo with URL: https://kubernetes-charts.storage.googleapis.com </span><br><span class="line">Adding <span class="built_in">local</span> repo with URL: http://127.0.0.1:8879/charts </span><br><span class="line"><span class="variable">$HELM_HOME</span> has been configured at /root/.helm.</span><br><span class="line"></span><br><span class="line">Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.</span><br><span class="line"></span><br><span class="line">Please note: by default, Tiller is deployed with an insecure <span class="string">'allow unauthenticated users'</span> policy.</span><br><span class="line">For more information on securing your installation see: https://docs.helm.sh/using_helm/<span class="comment">#securing-your-helm-installation</span></span><br><span class="line">Happy Helming!</span><br></pre></td></tr></table></figure>
+<p><code>--kube-context</code> - default ‘~/.kube/config’</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get pod -n kube-system -l app=helm</span><br><span class="line">NAME                            READY     STATUS    RESTARTS   AGE</span><br><span class="line">tiller-deploy-b56587494-ctd9c   1/1       Running   0          1m</span><br><span class="line"></span><br><span class="line">$ helm version</span><br><span class="line">Client: &amp;version.Version&#123;SemVer:<span class="string">"v2.8.2"</span>, GitCommit:<span class="string">"a80231648a1473929271764b920a8e346f6de844"</span>, GitTreeState:<span class="string">"clean"</span>&#125;</span><br><span class="line">Server: &amp;version.Version&#123;SemVer:<span class="string">"v2.8.2"</span>, GitCommit:<span class="string">"a80231648a1473929271764b920a8e346f6de844"</span>, GitTreeState:<span class="string">"clean"</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">更新仓库:</span><br><span class="line"></span><br><span class="line">$ helm repo update</span><br><span class="line">Hang tight <span class="keyword">while</span> we grab the latest from your chart repositories...</span><br><span class="line">...Skip <span class="built_in">local</span> chart repository</span><br><span class="line">...Successfully got an update from the <span class="string">"stable"</span> chart repository</span><br><span class="line">Update Complete. ⎈ Happy Helming!⎈ </span><br><span class="line"></span><br><span class="line">设置helm命令自动补全:</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">source</span> &lt;(helm completion zsh)</span><br><span class="line">OR</span><br><span class="line">$ <span class="built_in">source</span> &lt;(helm completion bash)</span><br></pre></td></tr></table></figure>
+<h2 id="helm-chart-repository"><a class="markdownIt-Anchor" href="#helm-chart-repository"></a> Helm Chart Repository</h2>
+<blockquote>
+<p>当研发人员达到一定数量后，Docker 原生的镜像中心或 Harbor 成为瓶颈。<a href="https://www.jfrog.com" target="_blank" rel="noopener">JFrog Artifactory</a> 提供了企业内部的高可用 Docker 注册中心集群，能够提供高并发 Docker Pull 的拉取。</p>
+</blockquote>
+<p>Artifactory 的虚拟 Helm Chart 仓库能够聚合公司本地和远程的仓库成为一个仓库，为开发者解析和安装 Charts 时提供唯一的 URL。如下图所示：</p>
+<p><img src="/images/repo.png" alt></p>
+<p>JFrog Helm Client 目前支持2个版本：</p>
+<ul>
+<li><a href="https://github.com/kubernetes/helm" target="_blank" rel="noopener">匿名访问</a> Artifactory</li>
+<li><a href="https://github.com/JFrogDev/helm" target="_blank" rel="noopener">认证访问</a> Artifactory</li>
+</ul>
+<h2 id="artifactory-on-k8s"><a class="markdownIt-Anchor" href="#artifactory-on-k8s"></a> Artifactory on K8s</h2>
+<p><img src="/images/artifactory-k8s.png" alt></p>
+<p><a href="https://github.com/JFrogDev/artifactory-docker-examples/tree/master/kubernetes" target="_blank" rel="noopener">官方参考</a></p>
+<p>Yaml 文件在<a href="https://github.com/acquaai/K8S/tree/master/yaml/JFrog-Artifactory" target="_blank" rel="noopener">这里</a>。</p>
+<h3 id="persistent-storage"><a class="markdownIt-Anchor" href="#persistent-storage"></a> Persistent Storage</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd artifactory/</span><br><span class="line">$ kubectl create secret generic ceph-secret --type=&quot;kubernetes.io/rbd&quot;   --from-literal=key=&apos;AQCwhKdaIbKRHxAAYfCmoj+VRsfQXSs0784Kow==&apos;</span><br><span class="line">$ kubectl create -f art-storageclass.yaml</span><br></pre></td></tr></table></figure>
+<h3 id="database-driver"><a class="markdownIt-Anchor" href="#database-driver"></a> Database Driver</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ docker build -t 10.0.77.16/library/artifactory-pro-mysql:5.10.1 -f Dockerfile.mysql .</span><br><span class="line">$ docker push 10.0.77.16/library/artifactory-pro-mysql:5.10.1</span><br></pre></td></tr></table></figure>
+<h3 id="mysql-database"><a class="markdownIt-Anchor" href="#mysql-database"></a> MySQL Database</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl create -f mysql.yaml</span><br></pre></td></tr></table></figure>
+<h3 id="artifactory-pro"><a class="markdownIt-Anchor" href="#artifactory-pro"></a> Artifactory Pro</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl create -f artifactory.yaml</span><br><span class="line">$ kubectl logs -f artifactory-k8s-deployment-667d8847d-mrj2m</span><br><span class="line">...</span><br><span class="line"><span class="comment">###########################################################</span></span><br><span class="line"><span class="comment">### Artifactory successfully started (93.102 seconds)   ###</span></span><br><span class="line"><span class="comment">###########################################################</span></span><br></pre></td></tr></table></figure>
+<h3 id="nginx-option"><a class="markdownIt-Anchor" href="#nginx-option"></a> Nginx (option)</h3>
+<p><strong>SSL secret</strong></p>
+<p>使用<a href="https://github.com/michaelliao/itranswarp.js/blob/master/conf/ssl/gencert.sh" target="_blank" rel="noopener">michaelliao</a>的脚本生成 demo SSL secret。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ sh gen-ssl-cert.sh </span><br><span class="line">Enter your domain [www.example.com]: artifactory</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">$ kubectl create secret tls art-tls --cert=artifactory.crt --key=artifactory.key</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl create -f nginx.yaml</span><br></pre></td></tr></table></figure>
+<h3 id="accessing-artifactory-pro"><a class="markdownIt-Anchor" href="#accessing-artifactory-pro"></a> Accessing Artifactory Pro</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get pods</span><br><span class="line">NAME                                         READY     STATUS    RESTARTS   AGE</span><br><span class="line">artifactory-k8s-deployment-667d8847d-mrj2m   1/1       Running   0          7m</span><br><span class="line">mysql-k8s-deployment-5746f95457-rpzc6        1/1       Running   0          10m</span><br><span class="line">nginx-k8s-deployment-5cb5fdb4c4-fvn4s        1/1       Running   0          2m</span><br><span class="line"></span><br><span class="line">$ kubectl get svc</span><br><span class="line">NAME                TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE</span><br><span class="line">artifactory         NodePort    10.254.85.186   &lt;none&gt;        8081:30809/TCP               8m</span><br><span class="line">kubernetes          ClusterIP   10.254.0.1      &lt;none&gt;        443/TCP                      39d</span><br><span class="line">mysql-k8s-service   ClusterIP   10.254.91.68    &lt;none&gt;        3306/TCP                     10m</span><br><span class="line">nginx-k8s-service   NodePort    10.254.131.58   &lt;none&gt;        80:30021/TCP,443:31086/TCP   3m</span><br><span class="line"></span><br><span class="line">$ kubectl describe svc/nginx-k8s-service</span><br><span class="line">Name:                     nginx-k8s-service</span><br><span class="line">Namespace:                default</span><br><span class="line">Labels:                   app=nginx-k8s-service</span><br><span class="line">                          group=artifactory-k8s</span><br><span class="line">Annotations:              &lt;none&gt;</span><br><span class="line">Selector:                 app=nginx-k8s-deployment</span><br><span class="line">Type:                     NodePort</span><br><span class="line">IP:                       10.254.131.58</span><br><span class="line">Port:                     port-1  80/TCP</span><br><span class="line">TargetPort:               80/TCP</span><br><span class="line">NodePort:                 port-1  30021/TCP</span><br><span class="line">Endpoints:                172.30.13.5:80</span><br><span class="line">Port:                     port-2  443/TCP</span><br><span class="line">TargetPort:               443/TCP</span><br><span class="line">NodePort:                 port-2  31086/TCP</span><br><span class="line">Endpoints:                172.30.13.5:443</span><br><span class="line">Session Affinity:         None</span><br><span class="line">External Traffic Policy:  Cluster</span><br><span class="line">Events:                   &lt;none&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="config-artifactory-repository"><a class="markdownIt-Anchor" href="#config-artifactory-repository"></a> Config Artifactory Repository</h3>
+<p><a href="https://jfrog.com/blog/master-helm-chart-repositories-artifactory/" target="_blank" rel="noopener">Master Your Helm Chart Repositories in Artifactory</a></p>
+<p><code>admin</code> 用户登录<code>http://10.0.77.18:30809/</code>新建：</p>
+<p><code>Local Repository</code>，<code>Remote Repository</code>，然后新建<code>Virtual Repository</code>。注意，<code>Virtual Repository</code> 包含<code>本地和远程仓库</code></p>
+<h3 id="helm-client-registry-repository"><a class="markdownIt-Anchor" href="#helm-client-registry-repository"></a> Helm Client Registry Repository</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">$ helm repo add helm-virtual http://10.0.77.17:30809/artifactory/helm-virtual admin AP412AQbN3DGPWuWXvrXvJrvzPX</span><br><span class="line"><span class="string">"helm-virtual"</span> has been added to your repositories</span><br><span class="line"></span><br><span class="line">$ helm repo update</span><br><span class="line">Hang tight <span class="keyword">while</span> we grab the latest from your chart repositories...</span><br><span class="line">...Skip <span class="built_in">local</span> chart repository</span><br><span class="line">...Successfully got an update from the <span class="string">"helm-virtual"</span> chart repository</span><br><span class="line">...Unable to get an update from the <span class="string">"stable"</span> chart repository (https://kubernetes-charts.storage.googleapis.com):</span><br><span class="line">        Get https://kubernetes-charts.storage.googleapis.com/index.yaml: dial tcp 172.217.160.112:443: i/o timeout</span><br><span class="line">Update Complete. ⎈ Happy Helming!⎈ </span><br><span class="line"></span><br><span class="line">$ helm repo list</span><br><span class="line">NAME            URL                                             </span><br><span class="line">stable          https://kubernetes-charts.storage.googleapis.com</span><br><span class="line"><span class="built_in">local</span>           http://127.0.0.1:8879/charts                    </span><br><span class="line">helm-virtual    http://10.0.77.18:30809/artifactory/helm-virtual</span><br><span class="line"></span><br><span class="line"><span class="comment">#To deploy a Helm Chart into an Artifactory repository you need to use Artifactory's REST API.</span></span><br><span class="line">$ curl -uadmin:AP412AQbN3DGPWuWXvrXvJrvzPX -T &lt;PATH_TO_FILE&gt; <span class="string">"http://10.0.77.17:30809/artifactory/helm-virtual/&lt;TARGET_FILE_PATH&gt;"</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2018/04/02/helm/">https://acquaai.github.io/2018/04/02/helm/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/04/04/helm-tidb-k8s/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Helm deploy TiDB on Kubernetes</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/03/29/spark-k8s/">
+        <span class="next-text nav-default">Spark on Kubernetes</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2018/04/02/helm/';
+        this.page.identifier = '2018/04/02/helm/';
+        this.page.title = 'Helm on Kubernetes';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

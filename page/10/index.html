@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/page/10/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  <section id="posts" class="posts">
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2017/11/29/Consistent-Network-Device-Naming/">Consistent Network Device Naming</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-29
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/ch-consistent_network_device_naming#sec-Naming_Schemes_Hierarchy" target="_blank" rel="noopener">Naming Schemes Hierarchy</a></p>
+<ul>
+<li>Add “net.ifnames=0” and “biosdevname=0” as kernel arguments to grub</li>
+<li>In ‘/etc/sysconfig/network-scripts/’ Change your configured NIC config file to ‘ifcfg-ethX’</li>
+<li>If you have multiple interfaces and want to control naming of each device rather than letting the kernel do in its own way, /etc/udev/rules.d/60-net.rules seems necessary to override /usr/lib/udev/rules.d/60-net.rules.</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/default/grub</span><br><span class="line">...</span><br><span class="line">GRUB_CMDLINE_LINUX=<span class="string">"XXX quiet net.ifnames=0 biosdevname=0"</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">$ grub2-mkconfig -o /boot/grub2/grub.cfg</span><br></pre></td></tr></table></figure>
+          <div class="read-more">
+            <a href="/2017/11/29/Consistent-Network-Device-Naming/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2017/11/23/git/">Daily use of git command</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-23
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+
+        
+          <table>
+<thead>
+<tr>
+<th>git 命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>git config --global <a href="http://user.name" target="_blank" rel="noopener">user.name</a> “xxx”</td>
+<td></td>
+</tr>
+<tr>
+<td>git config --global user.email “<a href="mailto:xxx@xxx.com" target="_blank" rel="noopener">xxx@xxx.com</a>”</td>
+<td></td>
+</tr>
+<tr>
+<td>git config <a href="http://user.name" target="_blank" rel="noopener">user.name</a></td>
+<td></td>
+</tr>
+<tr>
+<td>git config user.email</td>
+<td></td>
+</tr>
+<tr>
+<td>git init</td>
+<td></td>
+</tr>
+<tr>
+<td>git status [-s]</td>
+<td></td>
+</tr>
+<tr>
+<td>git add .</td>
+<td></td>
+</tr>
+<tr>
+<td>git commit -m “xxx”</td>
+<td></td>
+</tr>
+<tr>
+<td>git commit -am “xxx”</td>
+<td>已在管理库中的文件</td>
+</tr>
+<tr>
+<td>git log [–oneline] [–stat]</td>
+<td></td>
+</tr>
+<tr>
+<td>git diff [–cached]</td>
+<td></td>
+</tr>
+<tr>
+<td>git diff HEAD</td>
+<td></td>
+</tr>
+<tr>
+<td>git commit --amend --no-edit</td>
+<td>合并到上一次提交</td>
+</tr>
+<tr>
+<td>git reset file</td>
+<td></td>
+</tr>
+<tr>
+<td>git reset --hard HEAD</td>
+<td>移动指针</td>
+</tr>
+<tr>
+<td>git reset --hard HEAD^^ [=HEAD~2]</td>
+<td></td>
+</tr>
+<tr>
+<td>git reset --hard <code>id</code></td>
+<td></td>
+</tr>
+<tr>
+<td>git reflog [–hard <code>id</code>]</td>
+<td></td>
+</tr>
+<tr>
+<td>git reset --hard HEAD@{3}</td>
+<td></td>
+</tr>
+<tr>
+<td>git checkout <code>id</code> – file</td>
+<td></td>
+</tr>
+<tr>
+<td>git log --oneline --graph</td>
+<td></td>
+</tr>
+<tr>
+<td>git branch dev</td>
+<td></td>
+</tr>
+<tr>
+<td>git branch [-a][-r]</td>
+<td></td>
+</tr>
+<tr>
+<td>git checkout dev</td>
+<td></td>
+</tr>
+<tr>
+<td>git checkout -b dev</td>
+<td></td>
+</tr>
+<tr>
+<td>git branch master</td>
+<td></td>
+</tr>
+<tr>
+<td>git branch -d[D] dev</td>
+<td></td>
+</tr>
+<tr>
+<td>git branch --merged</td>
+<td>显示所有已合并到当前分支的分支</td>
+</tr>
+<tr>
+<td>git branch --no-merged</td>
+<td>显示所有未合并到当前分支的分支</td>
+</tr>
+<tr>
+<td>git branch -m master master_copy</td>
+<td>本地分支改名</td>
+</tr>
+<tr>
+<td>git merge --no-ff -m “keep merge info” dev</td>
+<td></td>
+</tr>
+<tr>
+<td>git rebase dev</td>
+<td></td>
+</tr>
+<tr>
+<td>git rebase [–continue][ ][ ]</td>
+<td></td>
+</tr>
+<tr>
+<td>git stash</td>
+<td></td>
+</tr>
+<tr>
+<td>git stash pop</td>
+<td></td>
+</tr>
+<tr>
+<td>git show master@{yesterday}</td>
+<td>显示master分支昨天的状态</td>
+</tr>
+<tr>
+<td>git stash</td>
+<td>暂存当前修改，将所有至为HEAD状态</td>
+</tr>
+<tr>
+<td>git stash list</td>
+<td>查看所有暂存</td>
+</tr>
+<tr>
+<td>git stash show -p stash@{0}</td>
+<td>参考第一次暂存</td>
+</tr>
+<tr>
+<td>git stash apply stash@{0}</td>
+<td>应用第一次暂存</td>
+</tr>
+</tbody>
+</table>
+<p><a href="https://git-scm.com/docs" target="_blank" rel="noopener">Reference <code>git</code></a></p>
+
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2017/11/21/SLB7/">DPVS</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-21
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p><code>There is no best, only better.</code></p>
+<p><a href="https://github.com/iqiyi/dpvs" target="_blank" rel="noopener">DPVS</a><br>
+<img src="/images/dpvs.png" alt></p>
+          <div class="read-more">
+            <a href="/2017/11/21/SLB7/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2017/11/17/SSL-with-Tomcat/">SSL with Tomcat</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-17
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="prepare-the-certificate-keystore"><a class="markdownIt-Anchor" href="#prepare-the-certificate-keystore"></a> Prepare the Certificate Keystore</h2>
+<h3 id="certificate-keystore-type"><a class="markdownIt-Anchor" href="#certificate-keystore-type"></a> Certificate Keystore Type</h3>
+<blockquote>
+<p>Tomcat当前支持 JKS，PKCS11，PKCS12（v5.0/5.0+）书格式。JKS为JAVA标准的『Java KeyStore』格式，是由JDK的keytool命令行工具生成。PKCS12是互联网标准格式，由OpenSSL与Microsoft’s Key-Manager共同维护。</p>
+</blockquote>
+<p>创建一个自签名的JKS keystore</p>
+<ul>
+<li>
+<p>Windows:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"%JAVA_HOME%\bin\keytool"</span> -genkey -<span class="built_in">alias</span> tomcat -keyalg RSA -keystore \path\to\my\keystore</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>Unix:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$JAVA_HOME</span>/bin/keytool -genkey -<span class="built_in">alias</span> tomcat -keyalg RSA -keystore /path/to/my/keystore</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<p>目前大多数云服务商都提供系统自动生成keystore。</p>
+</blockquote>
+          <div class="read-more">
+            <a href="/2017/11/17/SSL-with-Tomcat/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    
+      <a class="prev" href="/page/9/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/page/11/">
+        <span class="next-text">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+
+          </div>
+          
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

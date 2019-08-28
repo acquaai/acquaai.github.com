@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="MHA - MySQL High Available">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2018/01/30/masterha/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> MHA - MySQL High Available - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          MHA - MySQL High Available
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-01-30
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/MySQL/">MySQL</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#masterha"><span class="toc-text"> MasterHA</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#implementation-of-mha"><span class="toc-text"> Implementation of MHA</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#installation"><span class="toc-text"> Installation</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#dependencies-for-mha"><span class="toc-text"> Dependencies for MHA</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#mha-packages"><span class="toc-text"> MHA Packages</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#preparation-on-manager"><span class="toc-text"> Preparation on Manager</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#application-config-file"><span class="toc-text"> application config file</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#copy-scripts"><span class="toc-text"> Copy scripts</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#environment-preparation"><span class="toc-text"> Environment preparation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#perform-fail-over"><span class="toc-text"> Perform fail-over</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#manual-fail-over"><span class="toc-text"> Manual fail-over</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#online-master-switchingplanned-maintenance"><span class="toc-text"> Online Master Switching(Planned Maintenance)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#recovery-mastercrashed"><span class="toc-text"> Recovery Master(crashed)</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="masterha"><a class="markdownIt-Anchor" href="#masterha"></a> MasterHA</h2>
+<ol>
+<li>MHA是一个免费的开源软件。</li>
+<li>在已启用<code>MySQL复制</code>的系统中，无需改变系统和重新设计数据库即可使用MHA。</li>
+<li>MHA易于实施，使用简单。</li>
+</ol>
+<p>MHA benefits:</p>
+<ul>
+<li>Automatic fail-over</li>
+<li>Fast online master switching</li>
+</ul>
+<p>MHA（Master High Availability）是MySQL的高可用解决方案，故障切换0~30s完成，并在最大程度上保证数据一致性。MHA由管理节点（Manager）和数据节点（Node）组成。Manager可以单独部署在一台独立的主机上管理多个master-slave(Application)集群<code>[推荐]</code>，也可以部署在一台slave节点上。Node运行在所有MySQL服务器上，Manager定时probe集群中的Master节点，当master故障时，它自动将最新数据的slave提升为新的master，然后所有其它slave重新指向新的master，整个故障切换过程对应用程序完全透明。</p>
+<p>自动故障切换过程中，MHA尝试从故障主服务器上保存二进制日志，最大程度保证数据不丢失，但这并不总是可行。如，当主服务器硬件故障或无法通过SSH访问，MHA无法保存二进制日志，只进行故障转移而丢失了部分最新数据。使用MySQL的半同步复制，可在很大程度上降低数据丢失的风险。MHA与半同步复制结合，只要有一个slave已经收到最新的二进制日志，MHA可以将最新的二进制日志应用于其它所有的slave服务器上，以此保证所有节点数据一致性。</p>
+<a id="more"></a>
+<p>本实例中，4台主机如下：</p>
+<style>
+table th:nth-of-type(1) {
+    width: 110px;
+}
+table th:nth-of-type(2) {
+    width: 130px;
+}
+table th:nth-of-type(3) {
+    width: 260px;
+}
+</style>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">IP</th>
+<th style="text-align:center">Hostname</th>
+<th style="text-align:left">Roles</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">10.0.77.16</td>
+<td style="text-align:center">manager</td>
+<td style="text-align:left">MHA Manager</td>
+</tr>
+<tr>
+<td style="text-align:center">10.0.77.17</td>
+<td style="text-align:center">master</td>
+<td style="text-align:left">App1 Master</td>
+</tr>
+<tr>
+<td style="text-align:center">10.0.77.18</td>
+<td style="text-align:center">slave1</td>
+<td style="text-align:left">App1 Slave1、candidate master</td>
+</tr>
+<tr>
+<td style="text-align:center">10.0.77.19</td>
+<td style="text-align:center">slave2</td>
+<td style="text-align:left">App1 Slave2</td>
+</tr>
+</tbody>
+</table>
+<p>当master执行维护（无主机硬件故障）时，需要完成下面的流程：</p>
+<ol>
+<li>确定所有MySQL服务器的binlog都在同一位置（POS），slave的日志没有滞后。</li>
+<li>提升slave1为新的master。</li>
+<li>将slave2指向新的master（slave1）。</li>
+<li>将原master设置为slave1的slave，用来接收维护期间产生的事务日志。</li>
+<li>停止原master的服务，执行维护操作（如upgrade等）。</li>
+<li>启动原master的服务，等待接收slave1上产生的事务日志。</li>
+<li>重新提升master（当前是slave1的slave）为App1的master。</li>
+<li>重新将slave2指向App1的master。</li>
+<li>再次配置slave1作为master的slave。</li>
+</ol>
+<p>执行以上任务需要<code>master、slave1、slave2</code>已正确配置复制。MHA 0.57开始支持GTID，MHA在failover时会自动判断是否是<code>GTID based failover</code>，它需要满足3个条件：</p>
+<ul>
+<li>all nodes: gtid_mode =1</li>
+<li>all nodes: Executed_Gtid_Set <code>non empty</code></li>
+<li>at least one: Auto_Position = 1</li>
+</ul>
+<p><strong>基于 binlog 和 GTID 复制在 MHA 故障切换时的区别：</strong></p>
+<ul>
+<li>Binlog Based
+<ul>
+<li>在master宕机后会尝试从自身拷贝binlog并应用。</li>
+<li>若<code>candidate_master</code>上没有最新的relay log时，它会从拥有最新relay log的<code>slave</code>上生成差异的binlog拷贝到candidate_master并应用。</li>
+<li>新master追平的日志后（拥有最新日志），继续采用同样的方法将其它slave追平，最后做change master的操作。</li>
+</ul>
+</li>
+</ul>
+<p><code>后面的测试过程中manager上的日志完整记录了这一过程。</code></p>
+<ul>
+<li>GTID Based
+<ul>
+<li>若<code>candidate_master</code>上没有最新的relay log，candidate_master直接连上拥有最新relay log的slave获取并应用。</li>
+<li>新maste尝试从<code>binlog server</code>上获取缺少的binlog并应用。</li>
+<li>新master的数据同步到最新后，其它的slave连上新master并等待数据完成同步。为了加快切换速度，还可以给<code>masterha_master_switch</code>传递 <code>–wait_until_gtid_in_sync = 1</code>参数，不用等其它slave完成数据同步。</li>
+</ul>
+</li>
+</ul>
+<p>当配置的复制是GTID模式时，如果数据库没有执行过一条事务，show slave status \G命令输出中没有Executed_Gtid_Set:信息，那么MHA会认为是非GTID模式。此外，还需要在app1.cnf中配置binlog server。如果不配置，即使在old master SSH可达的情况下，它也不会去save binlog。这里的binlog1既可以设置master为binlog server，也可以设置其他专用的binlog server。<br>
+[binlog1]<br>
+hostname=10.0.77.17<br>
+hostname=10.0.77.18<br>
+hostname=10.0.77.19</p>
+<p>推荐配置<a href="https://acquaai.github.io/2017/12/03/gtid-rep/">GTID</a>复制来实施MHA的高可用。</p>
+<h2 id="implementation-of-mha"><a class="markdownIt-Anchor" href="#implementation-of-mha"></a> Implementation of MHA</h2>
+<h3 id="installation"><a class="markdownIt-Anchor" href="#installation"></a> Installation</h3>
+<h4 id="dependencies-for-mha"><a class="markdownIt-Anchor" href="#dependencies-for-mha"></a> Dependencies for MHA</h4>
+<p>依赖包可以从这里<a href="https://fedoraproject.org/wiki/EPEL" target="_blank" rel="noopener">下载</a>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm</span><br><span class="line">$ rpm -ivh epel-release-latest-7.noarch.rpm</span><br><span class="line">$ yum repolist |grep Extra</span><br><span class="line">epel/x86_64           Extra Packages <span class="keyword">for</span> Enterprise Linux 7 - x86_64      12,254</span><br></pre></td></tr></table></figure>
+<h4 id="mha-packages"><a class="markdownIt-Anchor" href="#mha-packages"></a> MHA Packages</h4>
+<p><strong>Manager</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">manager$ yum install -y perl-DBD-MySQL perl-Config-Tiny perl-Log-Dispatch perl-Parallel-ForkManager perl-Time-HiRes</span><br><span class="line"></span><br><span class="line">manager$ wget https://github.com/linyue515/mysql-master-ha/raw/master/mha4mysql-manager-0.57-0.el7.noarch.rpm</span><br><span class="line">manager$ wget https://github.com/linyue515/mysql-master-ha/raw/master/mha4mysql-node-0.57-0.el7.noarch.rpm</span><br><span class="line"></span><br><span class="line">manager$ rpm -ivh mha4mysql-node-0.57-0.el7.noarch.rpm</span><br><span class="line">manager$ rpm -ivh mha4mysql-manager-0.57-0.el7.noarch.rpm</span><br></pre></td></tr></table></figure>
+<p><strong>Node</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ yum install -y perl-DBD-MySQL</span><br><span class="line">$ rpm -ivh mha4mysql-node-0.57-0.el7.noarch.rpm</span><br></pre></td></tr></table></figure>
+<h3 id="preparation-on-manager"><a class="markdownIt-Anchor" href="#preparation-on-manager"></a> Preparation on Manager</h3>
+<h4 id="application-config-file"><a class="markdownIt-Anchor" href="#application-config-file"></a> application config file</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">manager$ mkdir /etc/mha</span><br><span class="line">manager$ vi /etc/mha/app1.cnf</span><br><span class="line"></span><br><span class="line">[server default]</span><br><span class="line"><span class="comment"># mysql user and password for MHA</span></span><br><span class="line">user=mha</span><br><span class="line">password=Acqua@107</span><br><span class="line">repl_password=Acqua@107</span><br><span class="line">ssh_user=root</span><br><span class="line">manager_workdir=/var/<span class="built_in">log</span>/masterha/app1</span><br><span class="line">remote_workdir=/var/<span class="built_in">log</span>/masterha/app1</span><br><span class="line">master_ip_online_change_script=/etc/mha/master_ip_online_change</span><br><span class="line">master_ip_failover_script=/etc/mha/master_ip_failover</span><br><span class="line"></span><br><span class="line">[server1]</span><br><span class="line">hostname=master</span><br><span class="line"></span><br><span class="line">[server2]</span><br><span class="line">hostname=slave1</span><br><span class="line">candidate_master=1   </span><br><span class="line"></span><br><span class="line">[server3]</span><br><span class="line">hostname=slave2</span><br><span class="line">no_master=1</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>不需要指定master，MHA自动检测确定。<br>
+candidate_master和no_master选项只在故障切换中需要，在线切换master时将指定新master主机。</p>
+</blockquote>
+<p><a href="http://wubx.net/mha-parameters/" target="_blank" rel="noopener">MHA参数列表详解</a></p>
+<h4 id="copy-scripts"><a class="markdownIt-Anchor" href="#copy-scripts"></a> Copy scripts</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">manager$ <span class="built_in">cd</span> /etc/mha</span><br><span class="line">manager$ vi master_ip_failover</span><br></pre></td></tr></table></figure>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env perl</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> strict;</span><br><span class="line"><span class="keyword">use</span> warnings <span class="string">FATAL =&gt;</span> <span class="string">'all'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> Getopt::Long;</span><br><span class="line"></span><br><span class="line"><span class="keyword">my</span>(</span><br><span class="line">    $command, $ssh_user, $orig_master_host, $orig_master_ip,</span><br><span class="line">    $orig_master_port, $new_master_host, $new_master_ip, $new_master_port</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">my</span> $vip = <span class="string">'10.0.77.20/27'</span>;</span><br><span class="line"><span class="keyword">my</span> $key = <span class="string">'1'</span>;</span><br><span class="line"><span class="keyword">my</span> $ssh_start_vip = <span class="string">"/sbin/ifconfig ens160:$key $vip"</span>;</span><br><span class="line"><span class="keyword">my</span> $ssh_stop_vip = <span class="string">"/sbin/ifconfig ens160:$key down"</span>;</span><br><span class="line"></span><br><span class="line">GetOptions(</span><br><span class="line">    <span class="string">'command=s'</span> =&gt; \$command,</span><br><span class="line">    <span class="string">'ssh_user=s'</span> =&gt; \$ssh_user,</span><br><span class="line">    <span class="string">'orig_master_host=s'</span> =&gt; \$orig_master_host,</span><br><span class="line">    <span class="string">'orig_master_ip=s'</span> =&gt; \$orig_master_ip,</span><br><span class="line">    <span class="string">'orig_master_port=i'</span> =&gt; \$orig_master_port,</span><br><span class="line">    <span class="string">'new_master_host=s'</span> =&gt; \$new_master_host,</span><br><span class="line">    <span class="string">'new_master_ip=s'</span> =&gt; \$new_master_ip,</span><br><span class="line">    <span class="string">'new_master_port=i'</span> =&gt; \$new_master_port,</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">exit</span> &amp; main();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">sub</span> <span class="title">main</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"\n\nIN SCRIPT TEST====$ssh_stop_vip==$ssh_start_vip===\n\n"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ($command eq <span class="string">"stop"</span> || $command eq <span class="string">"stopssh"</span>) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">my</span> $exit_code = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">eval</span> &#123;</span><br><span class="line">            <span class="keyword">print</span> <span class="string">"Disabling the VIP on old master: $orig_master_host \n"</span>; &amp; stop_vip();</span><br><span class="line">            $exit_code = <span class="number">0</span>;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">if</span> ($@) &#123;</span><br><span class="line">            <span class="keyword">warn</span> <span class="string">"Got Error: $@\n"</span>;</span><br><span class="line">            <span class="keyword">exit</span> $exit_code;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">exit</span> $exit_code;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">elsif</span>($command eq <span class="string">"start"</span>) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">my</span> $exit_code = <span class="number">10</span>;</span><br><span class="line">        <span class="keyword">eval</span> &#123;</span><br><span class="line">            <span class="keyword">print</span> <span class="string">"Enabling the VIP - $vip on the new master - $new_master_host \n"</span>; &amp; start_vip();</span><br><span class="line">            $exit_code = <span class="number">0</span>;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">if</span> ($@) &#123;</span><br><span class="line">            <span class="keyword">warn</span> $@;</span><br><span class="line">            <span class="keyword">exit</span> $exit_code;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">exit</span> $exit_code;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">elsif</span>($command eq <span class="string">"status"</span>) &#123;</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"Checking the Status of the script.. OK \n"</span>;</span><br><span class="line">        <span class="keyword">exit</span> <span class="number">0</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; &amp; usage();</span><br><span class="line">        <span class="keyword">exit</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">sub</span> <span class="title">start_vip</span>() </span>&#123;</span><br><span class="line">    <span class="string">`ssh $ssh_user\@$new_master_host \" $ssh_start_vip \"`</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">sub</span> <span class="title">stop_vip</span>() </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span> <span class="keyword">unless</span>($ssh_user);</span><br><span class="line">    <span class="string">`ssh $ssh_user\@$orig_master_host \" $ssh_stop_vip \"`</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">sub</span> <span class="title">usage</span> </span>&#123;</span><br><span class="line">    <span class="keyword">print</span></span><br><span class="line">        <span class="string">"Usage: master_ip_failover --command=start|stop|stopssh|status --orig_master_host=host --orig_master_ip=ip --orig_master_port=port --new_master_host=host --new_master_ip=ip --new_master_port=port\n"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">manager$ cat master_ip_failover &gt; master_ip_online_change</span><br><span class="line">manager$ chmod 755 master_ip_failover master_ip_online_change</span><br></pre></td></tr></table></figure>
+<h3 id="environment-preparation"><a class="markdownIt-Anchor" href="#environment-preparation"></a> Environment preparation</h3>
+<ul>
+<li>为MHA创建专属用户mha</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">master&gt; grant all on *.* to 'mha'@'%' identified by  'Acqua@107';</span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p>因本测试基于<a href="https://acquaai.github.io/2017/12/02/binlog-rep/">binlog</a>复制，而slave1为候选 master，除了master外，slave1还需要：[<code>slave2可选</code>]</p>
+<ul>
+<li>修改slave1的配置文件，增加log-bin参数：<code>log-bin=mysql-bin</code></li>
+<li>创建复制用户并授权</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slave1&gt; grant replication slave on *.* to 'replicator'@'%' identified by 'Acqua@107';</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将slave设置为只读模式，考虑到主、备切换，所以不写入my.cnf配置文件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mysql -uroot -p e<span class="string">"set global read_only=1"</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>配置服务器间SSH互通<br>
+All Node executed, include <code>manager, master, slave1, slave2</code>.Check hosts DNS or <code>/etc/hosts</code>.</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa</span><br><span class="line"></span><br><span class="line">master$ ssh-copy-id root@slave1</span><br><span class="line">master$ ssh-copy-id root@slave2</span><br><span class="line">master$ ssh-copy-id root@master</span><br><span class="line">master$ ssh-copy-id root@manager</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">manager$ /usr/bin/masterha_check_ssh --conf=/etc/mha/app1.cnf </span><br><span class="line">......</span><br><span class="line">Mon Jan 29 17:17:38 2018 - [info] All SSH connection tests passed successfully.</span><br></pre></td></tr></table></figure>
+<ul>
+<li>检测复制状态</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">manager$ /usr/bin/masterha_check_repl --conf=/etc/mha/app1.cnf</span><br><span class="line">......</span><br><span class="line">MySQL Replication Health is OK.</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Master上增加VIP地址</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">master$ ip addr add 10.0.77.20/27 dev ens160:1</span><br></pre></td></tr></table></figure>
+<h3 id="perform-fail-over"><a class="markdownIt-Anchor" href="#perform-fail-over"></a> Perform fail-over</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">manager$ nohup /usr/bin/masterha_manager --conf=/etc/mha/app1.cnf &gt;  /var/<span class="built_in">log</span>/masterha/app1/app1.log 2&gt;&amp;1 &amp;</span><br><span class="line"></span><br><span class="line">manager$ /usr/bin/masterha_check_status --conf=/etc/mha/app1.cnf</span><br><span class="line">app1 (pid:32394) is running(0:PING_OK), master:master</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>manager在4次尝试连接master失败后，将自动进行master切换，并停止监控。可以配置<code>secondary_check_script</code>来消除网络故障。</li>
+</ul>
+</blockquote>
+<ul>
+<li><code>shutdown_script</code>用来确保master已经关闭，防止脑裂。如果想停止master的监控，可以使用<code>masterha_stop –conf=/etc/mha/app1.cnf</code>命令。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line">----- Failover Report -----</span><br><span class="line"></span><br><span class="line">app1: MySQL Master failover master(10.0.77.17:3306) to slave1(10.0.77.18:3306) succeeded</span><br><span class="line"></span><br><span class="line">Master master(10.0.77.17:3306) is down!</span><br><span class="line"></span><br><span class="line">Check MHA Manager logs at manager <span class="keyword">for</span> details.</span><br><span class="line"></span><br><span class="line">Started automated(non-interactive) failover.</span><br><span class="line">Invalidated master IP address on master(10.0.77.17:3306)</span><br><span class="line">The latest slave slave1(10.0.77.18:3306) has all relay logs <span class="keyword">for</span> recovery.</span><br><span class="line">Selected slave1(10.0.77.18:3306) as a new master.</span><br><span class="line">slave1(10.0.77.18:3306): OK: Applying all logs succeeded.</span><br><span class="line">slave1(10.0.77.18:3306): OK: Activated master IP address.</span><br><span class="line">slave2(10.0.77.19:3306): This host has the latest relay <span class="built_in">log</span> events.</span><br><span class="line">Generating relay diff files from the latest slave succeeded.</span><br><span class="line">slave2(10.0.77.19:3306): OK: Applying all logs succeeded. Slave started, replicating from slave1(10.0.77.18:3306)</span><br><span class="line">slave1(10.0.77.18:3306): Resetting slave info succeeded.</span><br><span class="line">Master failover to slave1(10.0.77.18:3306) completed successfully.</span><br></pre></td></tr></table></figure>
+<h3 id="manual-fail-over"><a class="markdownIt-Anchor" href="#manual-fail-over"></a> Manual fail-over</h3>
+<p>手动切换不需要开启 MHA Manager 监控。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">master$ systemctl stop mysqld   **/模拟master宕机，手动切换</span><br><span class="line">manager$ /usr/bin/masterha_master_switch --master_state=dead --conf=/etc/mha/app1.cnf --dead_master_host=master</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line">Master master(10.0.77.17:3306) is dead. Proceed? (yes/NO):</span><br><span class="line">......</span><br><span class="line">----- Failover Report -----</span><br><span class="line"></span><br><span class="line">app1: MySQL Master failover master(10.0.77.17:3306) to slave1(10.0.77.18:3306) succeeded</span><br><span class="line"></span><br><span class="line">Master master(10.0.77.17:3306) is down!</span><br><span class="line"></span><br><span class="line">Check MHA Manager logs at manager <span class="keyword">for</span> details.</span><br><span class="line"></span><br><span class="line">Started manual(interactive) failover.</span><br><span class="line">Invalidated master IP address on master(10.0.77.17:3306)</span><br><span class="line">The latest slave slave1(10.0.77.18:3306) has all relay logs <span class="keyword">for</span> recovery.</span><br><span class="line">Selected slave1(10.0.77.18:3306) as a new master.</span><br><span class="line">slave1(10.0.77.18:3306): OK: Applying all logs succeeded.</span><br><span class="line">slave1(10.0.77.18:3306): OK: Activated master IP address.</span><br><span class="line">slave2(10.0.77.19:3306): This host has the latest relay <span class="built_in">log</span> events.</span><br><span class="line">Generating relay diff files from the latest slave succeeded.</span><br><span class="line">slave2(10.0.77.19:3306): OK: Applying all logs succeeded. Slave started, replicating from slave1(10.0.77.18:3306)</span><br><span class="line">slave1(10.0.77.18:3306): Resetting slave info succeeded.</span><br><span class="line">Master failover to slave1(10.0.77.18:3306) completed successfully.</span><br></pre></td></tr></table></figure>
+<h3 id="online-master-switchingplanned-maintenance"><a class="markdownIt-Anchor" href="#online-master-switchingplanned-maintenance"></a> Online Master Switching(Planned Maintenance)</h3>
+<p>关闭 MHA Manager 监控，完成后开启。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">manager$ /usr/bin/masterha_master_switch --conf=/etc/mha/app1.cnf --master_state=alive --new_master_host=slave1 --orig_master_is_new_slave</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>建议在切换master之前先用masterha_check_ssh和masterha_check_repl脚本检查SSH连接和复制运行状况。</li>
+</ul>
+</blockquote>
+<ul>
+<li>MHA在冻结master上&quot;writes&quot;操作后执行<code>FLUSH TABLES WITH READ LOCK;</code>命令。</li>
+<li><code>--orig_master_is_new_slave</code>选项将在切换过程后使用原master成为新master的slave。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line">From:</span><br><span class="line">master(10.0.77.17:3306) (current master)</span><br><span class="line"> +--slave1(10.0.77.18:3306)</span><br><span class="line"> +--slave2(10.0.77.19:3306)</span><br><span class="line"></span><br><span class="line">To:</span><br><span class="line">slave1(10.0.77.18:3306) (new master)</span><br><span class="line"> +--slave2(10.0.77.19:3306)</span><br><span class="line"> +--master(10.0.77.17:3306)</span><br><span class="line"></span><br><span class="line">Starting master switch from master(10.0.77.17:3306) to slave1(10.0.77.18:3306)? (yes/NO):</span><br><span class="line">......</span><br><span class="line">Enabling the VIP - 10.0.77.20/27 on the new master - slave1 </span><br><span class="line">Use of uninitialized value <span class="variable">$ssh_user</span> <span class="keyword">in</span> concatenation (.) or string at /etc/mha/master_ip_online_change line 74.</span><br><span class="line">Tue Jan 30 15:37:19 2018 - [warning] Proceeding.</span><br><span class="line">Tue Jan 30 15:37:19 2018 - [info] Setting read_only=0 on slave1(10.0.77.18:3306)..</span><br><span class="line">Tue Jan 30 15:37:19 2018 - [info]  ok.</span><br><span class="line">Tue Jan 30 15:37:19 2018 - [info] </span><br><span class="line">Tue Jan 30 15:37:19 2018 - [info] * Switching slaves <span class="keyword">in</span> parallel..</span><br><span class="line">Tue Jan 30 15:37:19 2018 - [info] </span><br><span class="line">Tue Jan 30 15:37:19 2018 - [info] -- Slave switch on host slave2(10.0.77.19:3306) started, pid: 1125</span><br><span class="line">Tue Jan 30 15:37:19 2018 - [info] </span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info] Log messages from slave2 ...</span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info] </span><br><span class="line">Tue Jan 30 15:37:19 2018 - [info]  Waiting to execute all relay logs on slave2(10.0.77.19:3306)..</span><br><span class="line">Tue Jan 30 15:37:19 2018 - [info]  master_pos_wait(mysql-bin.000001:1335) completed on slave2(10.0.77.19:3306). Executed 0 events.</span><br><span class="line">Tue Jan 30 15:37:19 2018 - [info]   <span class="keyword">done</span>.</span><br><span class="line">Tue Jan 30 15:37:19 2018 - [info]  Resetting slave slave2(10.0.77.19:3306) and starting replication from the new master slave1(10.0.77.18:3306)..</span><br><span class="line">Tue Jan 30 15:37:19 2018 - [info]  Executed CHANGE MASTER.</span><br><span class="line">Tue Jan 30 15:37:19 2018 - [info]  Slave started.</span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info] End of <span class="built_in">log</span> messages from slave2 ...</span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info] </span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info] -- Slave switch on host slave2(10.0.77.19:3306) succeeded.</span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info] Unlocking all tables on the orig master:</span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info] Executing UNLOCK TABLES..</span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info]  ok.</span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info] Starting orig master as a new slave..</span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info]  Resetting slave master(10.0.77.17:3306) and starting replication from the new master slave1(10.0.77.18:3306)..</span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info]  Executed CHANGE MASTER.</span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info]  Slave started.</span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info] All new slave servers switched successfully.</span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info] </span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info] * Phase 5: New master cleanup phase..</span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info] </span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info]  slave1: Resetting slave info succeeded.</span><br><span class="line">Tue Jan 30 15:37:20 2018 - [info] Switching master to slave1(10.0.77.18:3306) completed successfully.</span><br></pre></td></tr></table></figure>
+<h3 id="recovery-mastercrashed"><a class="markdownIt-Anchor" href="#recovery-mastercrashed"></a> Recovery Master(crashed)</h3>
+<p>在<strong>自动切换</strong>后，ori-master在故障修复后，加上运气不错的情况下还保存有故障前的数据，那么可以把该主机配置为 new-master 的 slave。在 MHA 的日志中找到发生自动切换的时间点和以下信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">manager$ grep -i <span class="string">"All other slaves should start"</span> /var/<span class="built_in">log</span>/masterha/app1/app1.log</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Tue Jan 30 16:53:00 2018 - [info]  All other slaves should start replication from here. Statement should be: </span><br><span class="line">CHANGE MASTER TO MASTER_HOST=<span class="string">'slave1 or 10.0.77.18'</span>, MASTER_PORT=3306, MASTER_LOG_FILE=<span class="string">'mysql-bin.000002'</span>, MASTER_LOG_POS=595, MASTER_USER=<span class="string">'replicator'</span>, MASTER_PASSWORD=<span class="string">'xxx'</span>;</span><br></pre></td></tr></table></figure>
+<p><strong>Reference</strong><br>
+<a href="https://mysqlstepbystep.com/2015/06/01/mysql-high-available-with-mha-2/" target="_blank" rel="noopener">MySQL High Available with MHA</a><br>
+<a href="http://www.ywnds.com/?p=8129" target="_blank" rel="noopener">MySQL基于MHA高可用部署篇（GTID模式）</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2018/01/30/masterha/">https://acquaai.github.io/2018/01/30/masterha/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/01/30/binlog-vs-gtid/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Binlog VS GTID Replication</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/01/27/docker-consul/">
+        <span class="next-text nav-default">Consul服务发现</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2018/01/30/masterha/';
+        this.page.identifier = '2018/01/30/masterha/';
+        this.page.title = 'MHA - MySQL High Available';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

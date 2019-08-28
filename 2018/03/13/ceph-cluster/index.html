@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Ceph Distributed Storage System">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2018/03/13/ceph-cluster/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Ceph Distributed Storage System - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Ceph Distributed Storage System
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-13
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ceph-介绍"><span class="toc-text"> Ceph 介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#部署-ceph-集群"><span class="toc-text"> 部署 Ceph 集群</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ceph-yum-源"><span class="toc-text"> Ceph yum 源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-ceph-deploy"><span class="toc-text"> 安装 ceph-deploy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置-ceph-用户"><span class="toc-text"> 配置 Ceph 用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置-ssh-免密登录"><span class="toc-text"> 配置 SSH 免密登录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置-ntp-服务"><span class="toc-text"> 配置 NTP 服务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-ceph"><span class="toc-text"> 安装 Ceph</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#操作集群"><span class="toc-text"> 操作集群</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#对象存储测试"><span class="toc-text"> 对象存储测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件系统测试"><span class="toc-text"> 文件系统测试</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="ceph-介绍"><a class="markdownIt-Anchor" href="#ceph-介绍"></a> Ceph 介绍</h2>
+<p>Ceph 是一个符合 POSIX 的开源分布式存储系统，能提供 Ceph Object、Ceph RBD 和 Ceph FS 的存储能力。Ceph Cluster至少需要一个<code>Ceph Monitor</code> 和两个<code>OSD Daemon</code>，当运行 Ceph 文件系统客户端时，还必须要有元数据服务器（MDS）。</p>
+<p>Components:</p>
+<ul>
+<li>Monitors: 基于 PAXOS 算法维护集群状态的各种图表，包括监视器图、OSD图、PG图、CRUSH图。Ceph 保存( <code>epoch</code> )发生在 Monitor、OSD 和 PG 上的每一次状态变更的历史信息。</li>
+<li>OSDs: 存储数据，处理数据的复制、恢复、回填、再均衡，并通过检查其它 OSD 守护进程的心跳来向 Monitors 提供监控信息。当存储集群设定为 2个副本 时，至少需要 2个OSD守护进程，集群才能达到<code>active + clean</code>的状态，Ceph 默认为 3副本。</li>
+<li>MDSs: 存储 Ceph FS 元数据。（针对 Object/RBD 存储不需要 MDS）MDS也可以在多节点部署实现冗余。MDS守护进程可以被配置为活跃或者被动状态，活跃的MDS为主MDS，其他的MDS处于备用状态，当主MDS节点故障时，备用MDS节点会接管其工作并被提升为主节点。</li>
+</ul>
+<a id="more"></a>
+<p><img src="/images/cephstack.png" alt></p>
+<p><img src="/images/cepharch.png" alt></p>
+<p><strong>RADOS</strong></p>
+<p>RADOS (Reliable Autonomic Distributed Object Store)自身就是一套完整的对象存储系统，包括 Ceph 的基础服务（Monitor、OSD、MDS），存储应用数据，同时提供 Ceph 的高可用性、高扩展性和高自动化特性。</p>
+<p><strong>LibRados</strong></p>
+<p>对 RADOS 进行抽象和封装，向上层提供不同的 API（RGW、RBD、FS）。提供 C/C++ 原生 API。</p>
+<p><strong>APP的接口</strong></p>
+<p>抽象 LibRados，便于应用和客户端使用。</p>
+<ul>
+<li>RGW: 提供与 S3 和 Swift 兼容的 RESTful API 的 gateway。通过 RGW 可以将 RADOS 响应转化为 HTTP 响应，反之亦然。</li>
+<li>RBD: 提供一个标准的块设备接口服务。</li>
+<li>CephFS: 提供一个 POSIX 兼容的分布式文件系统。</li>
+</ul>
+<p><strong>Client</strong></p>
+<p>Ceph 应用接口的应用方式，如基于 LibRados 直接开发的对象存储应用，基于 RGW 开发的对象存储应用，基于RBD实现的云硬盘等。</p>
+<p>一个 Ceph Cluster 逻辑上可以划分为多个 Pool，一个 Pool 由若干个逻辑 PG 组成。</p>
+<p>一个文件会被切分为多个 Object，每个 Object 被映射到一个 PG，每个 PG 会根据 CRUSH 算法映射到一组 OSD（根据副本数），其中第一个 OSD（Primary OSD）为主，其它为备，OSD之间通过心跳来互相监控存活状态。一般来讲增加 PG 的数量能降低 OSD 负载，每个OSD大约分配 50～100 PG。</p>
+<p>CRUSH: 是 Ceph 使用的数据分布算法，类似一致性哈希，使数据分配到预期的地方。</p>
+<h2 id="部署-ceph-集群"><a class="markdownIt-Anchor" href="#部署-ceph-集群"></a> 部署 Ceph 集群</h2>
+<table>
+<thead>
+<tr>
+<th>IP</th>
+<th>Hostname</th>
+<th style="text-align:right">Roles</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10.0.77.16</td>
+<td><a href="http://repo.k8s.com" target="_blank" rel="noopener">repo.k8s.com</a></td>
+<td style="text-align:right">admin-node, deploy-node</td>
+</tr>
+<tr>
+<td>10.0.77.17</td>
+<td><a href="http://n1.k8s.com" target="_blank" rel="noopener">n1.k8s.com</a></td>
+<td style="text-align:right">mon</td>
+</tr>
+<tr>
+<td>10.0.77.18</td>
+<td><a href="http://n2.k8s.com" target="_blank" rel="noopener">n2.k8s.com</a></td>
+<td style="text-align:right">osd.1</td>
+</tr>
+<tr>
+<td>10.0.77.19</td>
+<td><a href="http://n3.k8s.com" target="_blank" rel="noopener">n3.k8s.com</a></td>
+<td style="text-align:right">osd.2</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ceph-yum-源"><a class="markdownIt-Anchor" href="#ceph-yum-源"></a> Ceph yum 源</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ~]# cat /etc/yum.repos.d/ceph.repo</span><br><span class="line"></span><br><span class="line">[ceph-noarch]</span><br><span class="line">name=Ceph noarch packages</span><br><span class="line">baseurl=https://download.ceph.com/rpm-jewel/el7/noarch</span><br><span class="line">enabled=1</span><br><span class="line">priority=2</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=https://download.ceph.com/keys/release.asc</span><br></pre></td></tr></table></figure>
+<h3 id="安装-ceph-deploy"><a class="markdownIt-Anchor" href="#安装-ceph-deploy"></a> 安装 ceph-deploy</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ~]<span class="comment"># yum update -y &amp;&amp; yum -y install ceph-deploy</span></span><br></pre></td></tr></table></figure>
+<h3 id="配置-ceph-用户"><a class="markdownIt-Anchor" href="#配置-ceph-用户"></a> 配置 Ceph 用户</h3>
+<p><code>every node</code>新建 ceph 集群 k8sceph 用户，并确保该用户具有sudo权限。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ useradd -d /home/k8sceph -m k8sceph</span><br><span class="line">$ passwd k8sceph</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">"k8sceph ALL = (root) NOPASSWD:ALL"</span> | tee /etc/sudoers.d/k8sceph</span><br><span class="line">$ chmod 0440 /etc/sudoers.d/k8sceph</span><br><span class="line"></span><br><span class="line"><span class="comment">#禁用 TTY</span></span><br><span class="line">在 CentOS 和 RHEL 上执行 ceph-deploy 命令时可能会报错。如果你的 Ceph 节点默认设置了 requiretty ，执行 sudo visudo 禁用它，并找到 Defaults requiretty 选项，把它改为 Defaults:ceph !requiretty 或者直接注释掉，这样 ceph-deploy 就可以用之前创建的用户连接了。</span><br><span class="line"></span><br><span class="line">$ visudo -f /etc/sudoers</span><br><span class="line"></span><br><span class="line">Defaults:k8sceph     !requiretty</span><br><span class="line"></span><br><span class="line"><span class="comment">#优先级/首选项</span></span><br><span class="line">$ yum -y install yum-plugin-priorities</span><br></pre></td></tr></table></figure>
+<h3 id="配置-ssh-免密登录"><a class="markdownIt-Anchor" href="#配置-ssh-免密登录"></a> 配置 SSH 免密登录</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ~]<span class="comment"># ssh-keygen</span></span><br><span class="line">[root@repo ~]<span class="comment"># ssh-copy-id k8sceph@n1.k8s.com</span></span><br><span class="line">[root@repo ~]<span class="comment"># ssh-copy-id k8sceph@n2.k8s.com</span></span><br><span class="line">[root@repo ~]<span class="comment"># ssh-copy-id k8sceph@n3.k8s.com</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#修改 repo.k8s.com 控制节点上 ~/.ssh/config 文件，设置当不指定用户时登录到 n1~n3 的用户为 k8sceph.</span></span><br><span class="line">[root@repo ~]<span class="comment"># vi ~/.ssh/config</span></span><br><span class="line">Host c1</span><br><span class="line">   Hostname c1</span><br><span class="line">   User sdsceph</span><br><span class="line">Host c2</span><br><span class="line">   Hostname c2</span><br><span class="line">   User sdsceph</span><br><span class="line">Host c3</span><br><span class="line">   Hostname c3</span><br><span class="line">   User sdsceph</span><br><span class="line"></span><br><span class="line"><span class="comment">#repo.k8s.com 控制节点上 ssh 无密登录到 n1~n3 的测试</span></span><br><span class="line">[root@repo ~]<span class="comment"># ssh n1.k8s.com</span></span><br></pre></td></tr></table></figure>
+<h3 id="配置-ntp-服务"><a class="markdownIt-Anchor" href="#配置-ntp-服务"></a> 配置 NTP 服务</h3>
+<p><code>every node:</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ ntpstat </span><br><span class="line">synchronised to NTP server (192.168.0.118) at stratum 4 </span><br><span class="line">   time correct to within 56 ms</span><br><span class="line">   polling server every 1024 s</span><br></pre></td></tr></table></figure>
+<h2 id="安装-ceph"><a class="markdownIt-Anchor" href="#安装-ceph"></a> 安装 Ceph</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ceph-cluster]<span class="comment"># mkdir ceph-cluster &amp;&amp; cd ceph-cluster</span></span><br></pre></td></tr></table></figure>
+<p>在管理节点上，进入刚创建的放置配置文件的目录，用 ceph-deploy 执行如下步骤。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ceph-cluster]<span class="comment"># ceph-deploy new n1.k8s.com</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#生成下面3个文件：</span></span><br><span class="line">[root@repo ceph-cluster]<span class="comment"># ls</span></span><br><span class="line">ceph.conf  ceph-deploy-ceph.log  ceph.mon.keyring</span><br></pre></td></tr></table></figure>
+<p>把Ceph 配置文件里的ceph.conf里的默认副本数从 3 改成 2， 这样只有两个 OSD 也可以达到 active + clean 状态。把下面这行加入 [global] 段：</p>
+<p><code>osd pool default size = 2</code></p>
+<p>从管理节点执行各节点安装ceph：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ceph-cluster]<span class="comment"># ceph-deploy install repo.k8s.com n1.k8s.com n2.k8s.com n3.k8s.com</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#各个节点安装完后显示：</span></span><br><span class="line">Complete!</span><br><span class="line">Running <span class="built_in">command</span>: sudo ceph --version</span><br><span class="line">ceph version 10.2.10 (5dc1e4c05cb68dbf62ae6fce3f0700e4654fdbbe)</span><br></pre></td></tr></table></figure>
+<p>ceph-deploy 将在各节点安装 Ceph 。 注：如果你执行过 ceph-deploy purge ，你必须重新执行这一步来安装 Ceph 。</p>
+<p>配置初始 monitor(s)、并收集所有密钥，这里只有 n1：</p>
+<blockquote>
+<p>没有识别完整的主机名 <a href="http://n1.k8s.com" target="_blank" rel="noopener">n1.k8s.com</a>，无赖在/etc/hosts文中增加了 n1。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ceph-cluster]# ceph-deploy mon create-initial</span><br></pre></td></tr></table></figure>
+<p>完成上述操作后，当前目录里应该会出现这些密钥环：</p>
+<ul>
+<li>ceph.bootstrap-mds.keyring</li>
+<li>ceph.bootstrap-mgr.keyring</li>
+<li>ceph.bootstrap-osd.keyring</li>
+<li>ceph.bootstrap-rgw.keyring</li>
+<li>ceph.client.admin.keyring</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ceph-cluster]# ll</span><br><span class="line">total 268</span><br><span class="line">-rw------- 1 root root    113 Mar 13 16:02 ceph.bootstrap-mds.keyring</span><br><span class="line">-rw------- 1 root root     71 Mar 13 16:02 ceph.bootstrap-mgr.keyring</span><br><span class="line">-rw------- 1 root root    113 Mar 13 16:02 ceph.bootstrap-osd.keyring</span><br><span class="line">-rw------- 1 root root    113 Mar 13 16:02 ceph.bootstrap-rgw.keyring</span><br><span class="line">-rw------- 1 root root    129 Mar 13 16:02 ceph.client.admin.keyring</span><br><span class="line">-rw-r--r-- 1 root root    215 Mar 13 15:26 ceph.conf</span><br><span class="line">-rw-r--r-- 1 root root 245513 Mar 13 16:02 ceph-deploy-ceph.log</span><br><span class="line">-rw------- 1 root root     73 Mar 13 15:23 ceph.mon.keyring</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>只有在安装 Hammer 或更高版时才会创建 bootstrap-rgw 密钥环。<br>
+如果此步失败并输出类似于如下信息 “Unable to find /etc/ceph/ceph.client.admin.keyring”，请确认 ceph.conf 中为 monitor 指定的 IP 是 Public IP，而不是 Private IP。</p>
+</blockquote>
+<p>n1.k8s.com上看到ceph monitor进程已经启动:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@n1 ~]<span class="comment"># ps -ef|grep ceph-mon|grep -v grep</span></span><br><span class="line">ceph     17915     1  0 15:58 ?        00:00:00 /usr/bin/ceph-mon -f --cluster ceph --id n1 --setuser ceph --setgroup ceph</span><br></pre></td></tr></table></figure>
+<p>接下来添加两个OSD到n2和n3。OSD是存储数据的节点，实际上需要为OSD提供独立的存储空间，如一个独立的磁盘。为 OSD 及其日志使用独立硬盘或分区，请参考<a href="http://docs.ceph.org.cn/rados/deployment/ceph-deploy-osd" target="_blank" rel="noopener">ceph-deploy osd</a>。</p>
+<p>本学习使用系统本地磁盘创建目录提供给OSD使用。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ceph-cluster]<span class="comment"># ssh n2.k8s.com</span></span><br><span class="line">[k8sceph@n2 ~]$ sudo mkdir -p /ceph/osd0</span><br><span class="line">[k8sceph@n2 ~]$ sudo chown -R ceph:ceph /ceph/osd0</span><br><span class="line">[k8sceph@n2 ~]$ <span class="built_in">exit</span></span><br><span class="line"></span><br><span class="line">[root@repo ceph-cluster]<span class="comment"># ssh n3.k8s.com</span></span><br><span class="line">[k8sceph@n3 ~]$ sudo mkdir -p /ceph/osd1</span><br><span class="line">[k8sceph@n3 ~]$ sudo chown -R ceph:ceph /ceph/osd1</span><br><span class="line">[k8sceph@n3 ~]$ <span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
+<p>从管理节点执行 ceph-deploy 来准备 OSD :</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ceph-cluster]<span class="comment"># ceph-deploy osd prepare n2.k8s.com:/ceph/osd0 n3.k8s.com:/ceph/osd1</span></span><br></pre></td></tr></table></figure>
+<p>激活 OSD :</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ceph-cluster]<span class="comment"># ceph-deploy osd activate n2.k8s.com:/ceph/osd0 n3.k8s.com:/ceph/osd1</span></span><br></pre></td></tr></table></figure>
+<p>用 ceph-deploy 把配置文件和 admin 密钥拷贝到管理节点和 Ceph 节点，这样你每次执行 Ceph 命令行时就无需指定 monitor 地址和 ceph.client.admin.keyring 了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ceph-cluster]# chmod +r /etc/ceph/ceph.client.admin.keyring</span><br><span class="line">[root@repo ceph-cluster]# ceph-deploy admin repo.k8s.com n1.k8s.com n2.k8s.com n3.k8s.com</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>ceph-deploy 和本地管理主机（ admin-node ）通信时，必须通过主机名可达。必要时可修改 /etc/hosts ，加入管理主机的名字。</p>
+</blockquote>
+<p>确保对 ceph.client.admin.keyring 有正确的操作权限:<br>
+$ sudo chmod +r /etc/ceph/ceph.client.admin.keyring</p>
+<p>查看ceph集群中OSD节点的状态：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ceph-cluster]<span class="comment"># ceph osd tree</span></span><br><span class="line">ID WEIGHT  TYPE NAME     UP/DOWN REWEIGHT PRIMARY-AFFINITY </span><br><span class="line">-1 0.35339 root default                                    </span><br><span class="line">-2 0.17670     host n2                                     </span><br><span class="line"> 0 0.17670         osd.0      up  1.00000          1.00000 </span><br><span class="line">-3 0.17670     host n3                                     </span><br><span class="line"> 1 0.17670         osd.1      up  1.00000          1.00000</span><br></pre></td></tr></table></figure>
+<p>查看集群健康状态:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ceph-cluster]<span class="comment"># ceph health</span></span><br><span class="line">HEALTH_OK</span><br></pre></td></tr></table></figure>
+<p>如果在某些地方碰到麻烦，想从头再来，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">可以用下列命令清除配置：</span><br><span class="line">ceph-deploy purgedata &#123;ceph-node&#125; [&#123;ceph-node&#125;]</span><br><span class="line">ceph-deploy forgetkeys</span><br><span class="line"></span><br><span class="line">用下列命令可以连 Ceph 安装包一起清除：</span><br><span class="line">ceph-deploy purge &#123;ceph-node&#125; [&#123;ceph-node&#125;]</span><br></pre></td></tr></table></figure>
+<h2 id="操作集群"><a class="markdownIt-Anchor" href="#操作集群"></a> 操作集群</h2>
+<h3 id="对象存储测试"><a class="markdownIt-Anchor" href="#对象存储测试"></a> 对象存储测试</h3>
+<p>要把对象存入 Ceph 存储集群，客户端必须做到：</p>
+<ul>
+<li>指定对象名</li>
+<li>指定存储池</li>
+</ul>
+<p>查看集群中的存储池：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ceph-cluster]<span class="comment"># ceph osd lspools</span></span><br><span class="line">0 rbd,</span><br></pre></td></tr></table></figure>
+<p>集群上只有rbd一个存储池，创建名为 k8s 的存储池:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ceph-cluster]<span class="comment"># ceph osd pool create k8s 100   # 100个 PG</span></span><br><span class="line">pool <span class="string">'k8s'</span> created</span><br></pre></td></tr></table></figure>
+<p>先创建一个对象，用 rados put 命令加上对象名、一个有数据的测试文件路径、并指定存储池:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ~]<span class="comment"># echo &#123;Test-data&#125; &gt; testfile.txt</span></span><br><span class="line"></span><br><span class="line">rados put &#123;object-name&#125; &#123;file-path&#125; --pool=&#123;pool-name&#125;</span><br><span class="line"></span><br><span class="line">[root@repo ~]<span class="comment"># rados put test-object-1 testfile.txt --pool=k8s</span></span><br></pre></td></tr></table></figure>
+<p>确认 Ceph 存储集群存储了此对象:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ~]<span class="comment"># rados -p k8s ls</span></span><br><span class="line"><span class="built_in">test</span>-object-1</span><br></pre></td></tr></table></figure>
+<p>定位对象:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ceph osd map &#123;pool-name&#125; &#123;object-name&#125;</span><br><span class="line"></span><br><span class="line">[root@repo ~]<span class="comment"># ceph osd map k8s test-object-1</span></span><br><span class="line">osdmap e12 pool <span class="string">'k8s'</span> (1) object <span class="string">'test-object-1'</span> -&gt; pg 1.74dc35e2 (1.62) -&gt; up ([0,1], p0) acting ([0,1], p0)</span><br></pre></td></tr></table></figure>
+<p>删除对象:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@repo ~]<span class="comment"># rados rm test-object-1 --pool=k8s</span></span><br></pre></td></tr></table></figure>
+<h3 id="文件系统测试"><a class="markdownIt-Anchor" href="#文件系统测试"></a> 文件系统测试</h3>
+<p><a href="http://docs.ceph.org.cn/rados/deployment/ceph-deploy-mds/" target="_blank" rel="noopener"><strong>Important:</strong></a> 必须部署至少一个元数据服务器才能使用 CephFS 文件系统，多个元数据服务器并行运行仍处于实验阶段，不要在生产环境下运行多个元数据服务器。</p>
+<p>在 Ceph 管理节点上执行如下命令为集群增加一个MDS:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mds create &#123;host-name&#125;[:&#123;daemon-name&#125;] [&#123;host-name&#125;[:&#123;daemon-name&#125;] ...]</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ceph-deploy --overwrite-conf mds create n1.k8s.com</span><br></pre></td></tr></table></figure>
+<p>1.创建 CephFS</p>
+<p>CephFS需要使用两个Pool来分别存储数据和元数据，分别创建fs_data和fs_metadata两个Pool。</p>
+<blockquote>
+<p>PG 数量指定一般遵循的公式：</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>集群 PG 总数 = ( OSD总数 * 100 ) / 数据最大副本数</li>
+<li>单个存储池 PG 数 = ( OSD总数 * 100 ) / 数据最大副本数 / 存储池数</li>
+</ul>
+</blockquote>
+<p>PG 的最终结果以最接近上述公式的 2<sup>N</sup> 向上取值，如：<br>
+PG = 2 * 100 / 2 / 2 = 50，向上取 2<sup>6</sup> 为 64，最接近 50，故 <code>PG = 64</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ ceph osd pool create fs_data 128</span><br><span class="line">pool <span class="string">'fs_data'</span> created</span><br><span class="line"></span><br><span class="line">$ ceph osd pool create fs_metadata 128</span><br><span class="line">pool <span class="string">'fs_metadata'</span> created</span><br><span class="line"></span><br><span class="line">$ ceph osd lspools</span><br><span class="line">0 rbd,1 k8s,2 fs_data,3 fs_metadata,</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ ceph fs new cephfs fs_metadata fs_data</span><br><span class="line">new fs with metadata pool 3 and data pool 2</span><br><span class="line"></span><br><span class="line">$ ceph fs ls</span><br><span class="line">name: cephfs, metadata pool: fs_metadata, data pools: [fs_data ]</span><br></pre></td></tr></table></figure>
+<p>2.Mount CephFS</p>
+<p>客户端访问Ceph FS有两种方式：</p>
+<ul>
+<li>Kernel内核驱动：Linux内核从2.6.34版本开始加入对CephFS的原声支持</li>
+<li>Ceph FS FUSE： FUSE即Filesystem in Userspace</li>
+</ul>
+<p>3.用内核驱动挂载 Ceph 文件系统</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@mysql01 ~]$ uname -r</span><br><span class="line">3.10.0-693.5.2.el7.x86_64</span><br><span class="line"></span><br><span class="line">[root@mysql01 ~]$ mkdir /mnt/cephfs</span><br><span class="line">[root@mysql01 ~]$ mkdir /etc/ceph</span><br><span class="line"></span><br><span class="line">[root@mysql01 ~]$ scp -P 8086 root@10.0.77.16:/root/ceph-cluster/ceph.client.admin.keyring /etc/ceph</span><br><span class="line"></span><br><span class="line">[root@mysql01 ceph]$ mv ceph.client.admin.keyring admin.secret</span><br><span class="line">[root@mysql01 ceph]$ cat admin.secret</span><br><span class="line">AQCwhKdaIbKRHxAAYfCmoj+VRsfQXSs0784Kow==</span><br><span class="line"></span><br><span class="line">[root@mysql01 ~]$ mount -t ceph 10.0.77.17:6789,10.0.77.18:6789,10.0.77.19:6789:/ /mnt/cephfs -o name=admin,secretfile=admin.secret</span><br><span class="line"></span><br><span class="line">Filesystem                                         Size  Used Avail Use% Mounted on</span><br><span class="line">10.0.77.17:6789,10.0.77.18:6789,10.0.77.19:6789:/  362G   30G  333G   9% /mnt/cephfs</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>secretfile= option</code>时，CentOS7.3 - 3.10.0-693.5.2.el7.x86_64有bug，CentOS7.4 - 3.10.0-514.el7.x86_64时正常，直接使用<code>secret= option</code>时都正常。</p>
+</blockquote>
+<p><strong>Reference</strong></p>
+<ul>
+<li><a href="http://docs.ceph.org.cn/start/" target="_blank" rel="noopener">Ceph Documentation</a></li>
+<li><a href="http://docs.ceph.com/docs/master/start/quick-cephfs/#" target="_blank" rel="noopener">CEPH FS QUICK START</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2018/03/13/ceph-cluster/">https://acquaai.github.io/2018/03/13/ceph-cluster/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/03/23/sonar/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">SonarQube on Kubernetes</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/03/10/k8s-pv/">
+        <span class="next-text nav-default">K8S持久化卷</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2018/03/13/ceph-cluster/';
+        this.page.identifier = '2018/03/13/ceph-cluster/';
+        this.page.title = 'Ceph Distributed Storage System';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

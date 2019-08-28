@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Hello World">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2017/10/24/hello-world/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Hello World - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Hello World
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-10-24
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/Hexo/">Hexo</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#配置git"><span class="toc-text"> 配置git</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#github上创建仓库并clone到本地"><span class="toc-text"> GitHub上创建仓库并clone到本地</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装nvm"><span class="toc-text"> 安装nvm</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#配置环境变量"><span class="toc-text"> 配置环境变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看nvm信息"><span class="toc-text"> 查看nvm信息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装node"><span class="toc-text"> 安装Node</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装hexo"><span class="toc-text"> 安装hexo</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#部署网站"><span class="toc-text"> 部署网站</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生成静态页面"><span class="toc-text"> 生成静态页面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#运行hexo"><span class="toc-text"> 运行hexo</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装发布插件"><span class="toc-text"> 安装发布插件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#网站发布"><span class="toc-text"> 网站发布</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装主题"><span class="toc-text"> 安装主题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hexo-renderer-markdown-it-plus"><span class="toc-text"> hexo-renderer-markdown-it-plus</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hexo分支提交源码文件"><span class="toc-text"> hexo分支提交源码文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#master分支提交网站静态文件"><span class="toc-text"> master分支提交网站静态文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gitignore"><span class="toc-text"> .gitignore</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#local-gitignore"><span class="toc-text"> local .gitignore</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#global-gitignore"><span class="toc-text"> global .gitignore</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#explicit-repository-excludes"><span class="toc-text"> Explicit repository excludes</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多台电脑上编辑-发布文章"><span class="toc-text"> 多台电脑上编辑、发布文章</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <blockquote>
+<p>7年前使用<a href="https://wordpress.com" target="_blank" rel="noopener">WordPress</a>记录了学习Oracle、IBM的不少文章，后来慢慢变懒了，再后来就只有一个.sql文件静静躺在移动硬盘里。为了加深对知识的理解，<br>
+so，keep moving forward!</p>
+</blockquote>
+<h2 id="配置git"><a class="markdownIt-Anchor" href="#配置git"></a> 配置git</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ git config --global user.name <span class="string">"username"</span></span><br><span class="line">➜  ~ git config --global user.email <span class="string">"username@users.noreply.github.com"</span></span><br><span class="line">➜  ~ ssh-keygen -t rsa -b 4096 -C <span class="string">"your_email@example.com"</span></span><br><span class="line">➜  ~ ssh-agent -s</span><br><span class="line">➜  ~ ssh-add ~/.ssh/id_rsa</span><br><span class="line">➜  ~ pbcopy &lt; ~/.ssh/id_rsa.pub</span><br><span class="line">在GitHub <span class="string">"Settings"</span>左侧菜单中选择<span class="string">"SSH and GPG keys"</span>，再选择右上角的<span class="string">"New SSH Key"</span>，粘贴key。</span><br><span class="line">测试：</span><br><span class="line">➜  ~ ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="github上创建仓库并clone到本地"><a class="markdownIt-Anchor" href="#github上创建仓库并clone到本地"></a> GitHub上创建仓库并clone到本地</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ git <span class="built_in">clone</span> https://github.com/acquaai/acquaai.github.com.git</span><br><span class="line">➜  ~ <span class="built_in">cd</span> acquaai.github.com</span><br><span class="line">➜  acquaai.github.com git:(master) git add .</span><br><span class="line">➜  acquaai.github.com git:(master) git commit -m <span class="string">"first commit"</span></span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with <span class="string">'origin/master'</span>.</span><br><span class="line">nothing to commit, working tree clean</span><br><span class="line">➜  acquaai.github.com git:(master) git push origin master</span><br><span class="line">Everything up-to-date</span><br><span class="line">➜  acquaai.github.com git:(master) git checkout -b hexo</span><br><span class="line">Switched to a new branch <span class="string">'hexo'</span></span><br><span class="line">➜  acquaai.github.com git:(hexo) git branch -a</span><br><span class="line">* hexo</span><br><span class="line">  master</span><br><span class="line">  remotes/origin/HEAD -&gt; origin/master</span><br><span class="line">  remotes/origin/master</span><br><span class="line">  </span><br><span class="line">➜  acquaai.github.com git:(hexo) git add .</span><br><span class="line">➜  acquaai.github.com git:(hexo) git commit -m <span class="string">"hexo first commit"</span></span><br><span class="line">On branch hexo</span><br><span class="line">nothing to commit, working tree clean</span><br><span class="line">➜  acquaai.github.com git:(hexo) git push origin hexo</span><br><span class="line">Total 0 (delta 0), reused 0 (delta 0)</span><br><span class="line">To https://github.com/acquaai/acquaai.github.com.git</span><br><span class="line"> * [new branch]      hexo -&gt; hexo</span><br></pre></td></tr></table></figure>
+<h2 id="安装nvm"><a class="markdownIt-Anchor" href="#安装nvm"></a> 安装nvm</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash</span><br><span class="line">or</span><br><span class="line">➜  ~ wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash</span><br></pre></td></tr></table></figure>
+<h3 id="配置环境变量"><a class="markdownIt-Anchor" href="#配置环境变量"></a> 配置环境变量</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">nvm默认安装在~/.nvm，自动在shell配置文件（oh-my-zsh -&gt; ~/.zshrc）尾增加如下内容：</span><br><span class="line">➜  ~ cat .zshrc</span><br><span class="line">...</span><br><span class="line"><span class="built_in">export</span> NVM_DIR=<span class="string">"<span class="variable">$HOME</span>/.nvm"</span></span><br><span class="line">[ -s <span class="string">"<span class="variable">$NVM_DIR</span>/nvm.sh"</span> ] &amp;&amp; \. <span class="string">"<span class="variable">$NVM_DIR</span>/nvm.sh"</span>  <span class="comment"># This loads nvm</span></span><br><span class="line">[ -s <span class="string">"<span class="variable">$NVM_DIR</span>/bash_completion"</span> ] &amp;&amp; \. <span class="string">"<span class="variable">$NVM_DIR</span>/bash_completion"</span>  <span class="comment"># This loads nvm bash_completion</span></span><br></pre></td></tr></table></figure>
+<h3 id="查看nvm信息"><a class="markdownIt-Anchor" href="#查看nvm信息"></a> 查看nvm信息</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ <span class="built_in">source</span> ~/.zshrc</span><br><span class="line">➜  ~ nvm --version</span><br></pre></td></tr></table></figure>
+<h2 id="安装node"><a class="markdownIt-Anchor" href="#安装node"></a> 安装<a href="https://github.com/creationix/nvm" target="_blank" rel="noopener">Node</a></h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ nvm ls-remote         <span class="comment">#查看Node的版本信息</span></span><br><span class="line">➜  ~ nvm install 8.9.4</span><br></pre></td></tr></table></figure>
+<p>如果身在墙内，可以使用国内镜像资源</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node nvm install 8.9.4</span><br></pre></td></tr></table></figure>
+<h2 id="安装hexo"><a class="markdownIt-Anchor" href="#安装hexo"></a> 安装hexo</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ <span class="built_in">cd</span> acquaai.github.com</span><br><span class="line">➜  acquaai.github.com npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+<h3 id="部署网站"><a class="markdownIt-Anchor" href="#部署网站"></a> 部署网站</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  acquaai.github.com hexo init  <span class="comment">#初始化时要求目录为空，init完成后再CP回来</span></span><br><span class="line">➜  acquaai.github.com npm install</span><br></pre></td></tr></table></figure>
+<h3 id="生成静态页面"><a class="markdownIt-Anchor" href="#生成静态页面"></a> 生成静态页面</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  acquaai.github.com hexo clean</span><br><span class="line">➜  acquaai.github.com hexo g	<span class="comment">#generate</span></span><br></pre></td></tr></table></figure>
+<h3 id="运行hexo"><a class="markdownIt-Anchor" href="#运行hexo"></a> 运行hexo</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  acquaai.github.com hexo s	<span class="comment">#server</span></span><br><span class="line">localhost:4000	<span class="comment">#在浏览器中查看效果</span></span><br></pre></td></tr></table></figure>
+<h2 id="安装发布插件"><a class="markdownIt-Anchor" href="#安装发布插件"></a> 安装发布插件</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  acquaai.github.com git:(hexo) npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+<h3 id="网站发布"><a class="markdownIt-Anchor" href="#网站发布"></a> 网站发布</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">➜  acquaai.github.com git:(hexo) vi _config.yml</span><br><span class="line"></span><br><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/deployment.html</span></span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: git</span><br><span class="line">  repo: https://github.com/acquaai/acquaai.github.com</span><br><span class="line">  branch: [master]</span><br><span class="line"></span><br><span class="line">➜  acquaai.github.com hexo d	<span class="comment">#deploy</span></span><br></pre></td></tr></table></figure>
+<h2 id="安装主题"><a class="markdownIt-Anchor" href="#安装主题"></a> 安装主题</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">➜  acquaai.github.com git:(hexo) npm install hexo-renderer-scss --save    <span class="comment">#安装主题插件</span></span><br><span class="line">➜  acquaai.github.com git:(hexo) git <span class="built_in">clone</span> https://github.com/ahonn/hexo-theme-even themes/even</span><br><span class="line">➜  acquaai.github.com git:(hexo) vi _config.yml	<span class="comment">#修改网站配置文件theme</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Extensions</span></span><br><span class="line"><span class="comment">## Plugins: https://hexo.io/plugins/</span></span><br><span class="line"><span class="comment">## Themes: https://hexo.io/themes/</span></span><br><span class="line">theme: even</span><br></pre></td></tr></table></figure>
+<p>如果需要配置RSS，安装插件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  acquaai.github.com git:(hexo) npm install hexo-generator-feed --save</span><br></pre></td></tr></table></figure>
+<h2 id="hexo-renderer-markdown-it-plus"><a class="markdownIt-Anchor" href="#hexo-renderer-markdown-it-plus"></a> <a href="https://github.com/CHENXCHEN/HEXO-RENDERER-MARKDOWN-IT-PLUS" target="_blank" rel="noopener">hexo-renderer-markdown-it-plus</a></h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  acquaai.github.com git:(hexo) npm un hexo-renderer-marked --save</span><br><span class="line">➜  acquaai.github.com git:(hexo) npm i hexo-renderer-markdown-it-plus --save</span><br></pre></td></tr></table></figure>
+<h2 id="hexo分支提交源码文件"><a class="markdownIt-Anchor" href="#hexo分支提交源码文件"></a> hexo分支提交源码文件</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">➜  acquaai.github.com git:(hexo) cat .npmignore &gt; .gitignore</span><br><span class="line">➜  acquaai.github.com git:(hexo) cat .gitignore</span><br><span class="line">.DS_Store</span><br><span class="line">Thumbs.db</span><br><span class="line">db.json</span><br><span class="line">*.<span class="built_in">log</span></span><br><span class="line">node_modules/</span><br><span class="line">public/</span><br><span class="line">.deploy*/%</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">➜  acquaai.github.com git:(hexo) hexo clean</span><br><span class="line">➜  acquaai.github.com git:(hexo) hexo g</span><br><span class="line">➜  acquaai.github.com git:(hexo) hexo s</span><br><span class="line">➜  acquaai.github.com git:(hexo) git add .</span><br><span class="line">➜  acquaai.github.com git:(hexo) git commit -m <span class="string">"hexo configured"</span></span><br><span class="line">➜  acquaai.github.com git:(hexo) git push origin hexo</span><br></pre></td></tr></table></figure>
+<h2 id="master分支提交网站静态文件"><a class="markdownIt-Anchor" href="#master分支提交网站静态文件"></a> master分支提交网站静态文件</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  acquaai.github.com git:(hexo) hexo d</span><br></pre></td></tr></table></figure>
+<h2 id="gitignore"><a class="markdownIt-Anchor" href="#gitignore"></a> .gitignore</h2>
+<p>设定 Git 提交时忽略的文件和目录。建义将 .gitignore 文件也提交到仓库中，以便其他人克隆仓库后共享此忽略规则。</p>
+<h3 id="local-gitignore"><a class="markdownIt-Anchor" href="#local-gitignore"></a> local .gitignore</h3>
+<ul>
+<li>在终端中进入到 /path/ git仓库目录</li>
+<li>touch .gitignore</li>
+<li>增加**<a href="https://github.com/github/gitignore" target="_blank" rel="noopener">忽略规则</a>**到 .gitignore 文件中。</li>
+</ul>
+<p>在 .gitignore 文件创建之后增加新的忽略规则(file)，必须先从暂存区中删除此 file，再次使用<code>git add .</code>命令时，.gitignore中新增的忽略file才生效。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  git rm --cached FILENAME</span><br></pre></td></tr></table></figure>
+<h3 id="global-gitignore"><a class="markdownIt-Anchor" href="#global-gitignore"></a> global .gitignore</h3>
+<p>创建全局 .gitignore 文件，用于忽略本机中所有Git仓库的规则列表。在用户home目录中创建<code>.gitignore_global</code>文件，并添加规则。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">➜  git config --global core.excludesfile ~/.gitignore_global</span><br><span class="line"></span><br><span class="line">➜  cat ~/.gitconfig</span><br><span class="line">...</span><br><span class="line">[core]</span><br><span class="line">	excludesfile = /Users/acqua/.gitignore_global</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">➜  cat ~/.gitignore_global</span><br><span class="line"></span><br><span class="line"><span class="comment">###MacOS files</span></span><br><span class="line">.DS_Store</span><br><span class="line">.DS_Store?</span><br><span class="line">._*</span><br><span class="line">.Spotlight-V100</span><br><span class="line">.Trashes</span><br><span class="line">ehthumbs.db</span><br><span class="line">Thumbs.db</span><br></pre></td></tr></table></figure>
+<h3 id="explicit-repository-excludes"><a class="markdownIt-Anchor" href="#explicit-repository-excludes"></a> Explicit repository excludes</h3>
+<p>如果不想创建.gitignore文件与他人共享，则可以创建不与仓库一同提交的规则。<br>
+Git仓库根目录下<code>.git/info/exclude</code>文件中添加的任何规则都不会被提交，且仅忽略本地仓库中的文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">➜  <span class="built_in">cd</span> /git-repo-path/</span><br><span class="line">➜  cat .git/info/exclude</span><br><span class="line"></span><br><span class="line"><span class="comment"># git ls-files --others --exclude-from=.git/info/exclude</span></span><br><span class="line"><span class="comment"># Lines that start with '#' are comments.</span></span><br><span class="line"><span class="comment"># For a project mostly in C, the following would be a good set of</span></span><br><span class="line"><span class="comment"># exclude patterns (uncomment them if you want to use them):</span></span><br><span class="line"><span class="comment"># *.[oa]</span></span><br><span class="line"><span class="comment"># *~</span></span><br><span class="line">.DS_Store</span><br></pre></td></tr></table></figure>
+<h2 id="多台电脑上编辑-发布文章"><a class="markdownIt-Anchor" href="#多台电脑上编辑-发布文章"></a> 多台电脑上编辑、发布文章</h2>
+<ul>
+<li>安装、配置git</li>
+<li>clone网站仓库，git checkout hexo</li>
+<li>安装nvm、Node</li>
+<li>安装hexo (do not init)</li>
+<li>npm install</li>
+<li>安装所需插件</li>
+<li>编写博客</li>
+<li>部署hexo d</li>
+<li>git push origin hexo</li>
+</ul>
+<p><strong>Reference</strong><br>
+<a href="http://whuhan2013.github.io/blog/2015/09/19/markdown-simple-grammar/" target="_blank" rel="noopener">语法</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2017/10/24/hello-world/">https://acquaai.github.io/2017/10/24/hello-world/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/10/28/ntpd-vs-ntpdate/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">ntpd vs ntpdate</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2017/10/24/hello-world/';
+        this.page.identifier = '2017/10/24/hello-world/';
+        this.page.title = 'Hello World';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

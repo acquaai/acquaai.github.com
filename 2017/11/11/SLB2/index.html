@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Install HAProxy + Keepalived">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2017/11/11/SLB2/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Install HAProxy + Keepalived - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Install HAProxy + Keepalived
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-11
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#preconfiguration-setup"><span class="toc-text"> Preconfiguration setup</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#install-haproxy"><span class="toc-text"> Install HAProxy</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#install-keepalived"><span class="toc-text"> Install Keepalived</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="preconfiguration-setup"><a class="markdownIt-Anchor" href="#preconfiguration-setup"></a> Preconfiguration setup</h2>
+<ul>
+<li>关闭防火墙</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ sudo cat /etc/redhat-release </span><br><span class="line">  CentOS Linux release 7.3.1611 (Core)</span><br><span class="line"></span><br><span class="line">$ sudo systemctl stop firewalld</span><br><span class="line">$ sudo systemctl <span class="built_in">disable</span> firewalld</span><br><span class="line">$ sudo sed -i <span class="string">'s#^SELINUX=.*#SELINUX=disabled#'</span> /etc/sysconfig/selinux</span><br><span class="line">$ sudo setenfore 0</span><br></pre></td></tr></table></figure>
+<ul>
+<li>修改主机名</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo hostnamectl</span><br><span class="line">$ sudo yum install -y ntp</span><br></pre></td></tr></table></figure>
+<ul>
+<li>配置NTP服务</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo systemctl start ntpd</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="install-haproxy"><a class="markdownIt-Anchor" href="#install-haproxy"></a> Install HAProxy</h2>
+<ul>
+<li>创建用户、组</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo useradd haproxy -s /usr/sbin/nologin</span><br><span class="line">$ sudo groupadd haproxy</span><br></pre></td></tr></table></figure>
+<ul>
+<li>安装系统包</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum install -y gcc net-snmp net-snmp-devel net-snmp-agent-libs net-snmp-libs  pcre-static pcre-devel</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Download <a href="http://www.haproxy.org/" target="_blank" rel="noopener">HAProxy</a></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ tar xzvf haproxy-x.x.x.tar.gz</span><br><span class="line">$ <span class="built_in">cd</span> haproxy-x.x.x</span><br></pre></td></tr></table></figure>
+<ul>
+<li>编译安装</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ more README</span><br><span class="line">$ sudo make TARGET=linux2628 PREFIX=/usr/<span class="built_in">local</span>/haproxy</span><br><span class="line">$ sudo make install PREFIX=/usr/<span class="built_in">local</span>/haproxy</span><br></pre></td></tr></table></figure>
+<ul>
+<li>errorfile错误文件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo cp -r examples/errorfiles/  /usr/<span class="built_in">local</span>/haproxy/</span><br></pre></td></tr></table></figure>
+<ul>
+<li>haproxy日志文件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo mkdir -p /usr/<span class="built_in">local</span>/haproxy/<span class="built_in">log</span></span><br><span class="line">$ sudo touch /usr/<span class="built_in">local</span>/haproxy/<span class="built_in">log</span>/haproxy.log</span><br><span class="line">$ sudo ln -s /usr/<span class="built_in">local</span>/haproxy/<span class="built_in">log</span>/haproxy.log  /var/<span class="built_in">log</span>/</span><br></pre></td></tr></table></figure>
+<ul>
+<li>etc中的haproxy文件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo mkdir -p /etc/haproxy</span><br><span class="line">$ sudo ln -s /usr/<span class="built_in">local</span>/haproxy/haproxy.cfg /etc/haproxy/</span><br></pre></td></tr></table></figure>
+<ul>
+<li>设置全局启动文件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo ln -s /usr/<span class="built_in">local</span>/haproxy/sbin/haproxy  /usr/sbin/haproxy</span><br></pre></td></tr></table></figure>
+<ul>
+<li>配置HAProxy服务</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ sudo cp examples/haproxy.init /etc/rc.d/init.d/haproxy</span><br><span class="line">$ sudo chmod 755 /etc/rc.d/init.d/haproxy</span><br><span class="line">$ sudo systemctl daemon-reload</span><br><span class="line">$ sudo chkconfig --add haproxy</span><br><span class="line">$ sudo chkconfig haproxy on</span><br><span class="line">$ sudo systemctl start haproxy</span><br><span class="line">$ sudo systemctl status haproxy</span><br></pre></td></tr></table></figure>
+<h2 id="install-keepalived"><a class="markdownIt-Anchor" href="#install-keepalived"></a> Install Keepalived</h2>
+<ul>
+<li>创建用户、组</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo useradd keepalived -s /usr/sbin/nologin</span><br><span class="line">$ sudo groupadd keepalived</span><br></pre></td></tr></table></figure>
+<ul>
+<li>开启系统网络转发功能</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo <span class="built_in">echo</span> <span class="string">"net.ipv4.ip_nonlocal_bind = 1"</span> &gt;&gt; /etc/sysctl.conf</span><br><span class="line">$ sudo <span class="built_in">echo</span> <span class="string">"net.ipv4.ip_forward = 1"</span> &gt;&gt; /etc/sysctl.conf</span><br><span class="line">$ sudo sysctl -p</span><br></pre></td></tr></table></figure>
+<ul>
+<li>安装系统包</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum install -y openssl-devel libnl3-devel ipset-devel iptables-devel libnfnetlink-devel</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Download <a href="http://keepalived.org/" target="_blank" rel="noopener">Keepalived</a></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ tar xzvf keepalived-x.x.x.tar.gz</span><br><span class="line">$ <span class="built_in">cd</span> keepalived-x.x.x</span><br><span class="line">$ more INSTALL</span><br></pre></td></tr></table></figure>
+<ul>
+<li>编译安装</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo ./configure</span><br><span class="line">$ sudo make</span><br><span class="line">$ sudo make install</span><br></pre></td></tr></table></figure>
+<ul>
+<li>配置Keepalived服务</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ sudo cp keepalived/etc/init.d/keepalived.rh.init  /etc/init.d/keepalived</span><br><span class="line">$ sudo chmod +x /etc/init.d/keepalived</span><br><span class="line">$ sudo systemctl daemon-reload</span><br><span class="line">$ sudo chkconfig --add keepalived</span><br><span class="line">$ sudo chkconfig keepalived on</span><br><span class="line">$ sudo systemctl start keepalived</span><br><span class="line">$ sudo systemctl status keepalived</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2017/11/11/SLB2/">https://acquaai.github.io/2017/11/11/SLB2/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/11/11/SLB3/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">HAProxy + Keepalived Configuration Examples(1)</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/11/11/SLB1/">
+        <span class="next-text nav-default">Server Load Balancer</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2017/11/11/SLB2/';
+        this.page.identifier = '2017/11/11/SLB2/';
+        this.page.title = 'Install HAProxy + Keepalived';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>
