@@ -175,6 +175,107 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/05/04/bootable-usb/">Create a bootable USB using macOS</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-05-04
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+
+        
+          <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ ls CentOS-7*</span><br><span class="line">CentOS-7-x86_64-DVD-1708.iso</span><br><span class="line"></span><br><span class="line">➜  ~ hdiutil convert -format UDRW -o CentOS74.img CentOS-7-x86_64-DVD-1708.iso</span><br><span class="line"></span><br><span class="line">➜  ~ diskutil list</span><br><span class="line">/dev/disk0 (internal, physical):</span><br><span class="line">   #:      TYPE NAME                   SIZE       IDENTIFIER</span><br><span class="line">   0:      GUID_partition_scheme        *1.0 TB   disk0</span><br><span class="line">   1:      EFI EFI                     209.7 MB   disk0s1</span><br><span class="line">   2:      Apple_HFS Macintosh HD      999.3 GB   disk0s2</span><br><span class="line">   3:      Apple_Boot Recovery HD      650.0 MB   disk0s3</span><br><span class="line"></span><br><span class="line">/dev/disk1 (external, physical):</span><br><span class="line">   #:      TYPE NAME                     SIZE       IDENTIFIER</span><br><span class="line">   0:      GUID_partition_scheme         *15.5 GB   disk1</span><br><span class="line">   1:      EFI EFI                       209.7 MB   disk1s1</span><br><span class="line">   2:      Microsoft Basic Data KINGSTON  15.3 GB   disk1s2</span><br><span class="line">   </span><br><span class="line">➜  ~ diskutil unmountDisk /dev/disk1</span><br><span class="line">Unmount of all volumes on disk1 was successful</span><br><span class="line"></span><br><span class="line">➜  ~ sudo dd if=CentOS74.img.dmg of=/dev/disk1 bs=1m</span><br></pre></td></tr></table></figure>
+
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2018/04/04/helm-tidb-k8s/">Helm deploy TiDB on Kubernetes</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-04-04
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h1 id="tldr"><a class="markdownIt-Anchor" href="#tldr"></a> tl;dr</h1>
+<p>本文将使用 <code>Helm</code> 包管理器在 <code>Kubernetes</code> 集群上部署 <code>TiDB</code>。</p>
+<h2 id="tidb-chart"><a class="markdownIt-Anchor" href="#tidb-chart"></a> TiDB Chart</h2>
+<blockquote>
+<p><a href="https://pingcap.com" target="_blank" rel="noopener">TiDB</a> 是新一代开源分布式 NewSQL 数据库，模型受 Google Spanner / F1 论文的启发，实现了自动的水平伸缩，强一致性的分布式事务，基于 Raft 算法的多副本复制等重要 NewSQL 特性。TiDB 结合了 RDBMS 和 NoSQL 的优点，部署简单，在线弹性扩容和异步表结构变更不影响业务， 真正的异地多活及自动故障恢复保障数据安全，同时兼容 MySQL 协议，使迁移使用成本降到极低。</p>
+</blockquote>
+          <div class="read-more">
+            <a href="/2018/04/04/helm-tidb-k8s/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/04/02/helm/">Helm on Kubernetes</a>
         
       </h1>
@@ -274,106 +375,6 @@
 <p><a href="https://github.com/acquaai/K8S/tree/master/yaml/Spark-K8s" target="_blank" rel="noopener">YAML Files</a></p>
           <div class="read-more">
             <a href="/2018/03/29/spark-k8s/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/03/28/jenkins-k8s/">Jenkins on Kubernetes</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-03-28
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p><img src="/images/jenkinsonk8s1.png" alt></p>
-          <div class="read-more">
-            <a href="/2018/03/28/jenkins-k8s/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/03/26/linuxperf/">Linux性能分析</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-03-26
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p><img src="http://p564fpez5.bkt.clouddn.com/image/linuxlinux_perf_tools_full.png" alt></p>
-          <div class="read-more">
-            <a href="/2018/03/26/linuxperf/" class="read-more-link">Read more..</a>
           </div>
         
       

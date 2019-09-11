@@ -175,6 +175,59 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2017/12/21/mysql-router/">MySQL Router</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-12-21
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/MySQL/">MySQL</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <blockquote>
+<p>MySQL Router是轻量级的中间件，提供数据库访问的Load Balance（负载均衡）、Failover（故障切换）、读写分离等高可用性服务。Router自身的高可用需要借助类Keepalived来实现。</p>
+</blockquote>
+<p><img src="/images/router_arch.png" alt></p>
+          <div class="read-more">
+            <a href="/2017/12/21/mysql-router/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2017/12/17/mgr-single-m-example/">MGR单主复制配置实例</a>
         
       </h1>
@@ -331,91 +384,6 @@
 <p>The server creates a new binary log file when you flush the logs. However, it just closes and reopens the general and slow query log files. To cause new files to be created on Unix, rename the current log files before flushing them. At flush time, the server opens new log files with the original names. For example, if the general and slow query log files are named mysql.log and mysql-slow.log, you can use a series of commands like this:</p>
           <div class="read-more">
             <a href="/2017/12/15/mysql-log-maintenance/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/12/03/gtid-rep/">GTID - MySQL Replication</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-12-03
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/MySQL/">MySQL</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p>Binlog replication is <a href="https://acquaai.github.io/2017/12/02/binlog-rep/">here</a>.</p>
-<h2 id="mysql-gtid"><a class="markdownIt-Anchor" href="#mysql-gtid"></a> MySQL GTID</h2>
-<p>MySQL <code>5.6.6</code>开始支持GTID的新特性，但是需要离线配置，从<code>5.7.6</code>开始支持在线。</p>
-<h3 id="enable-gtid-conditions"><a class="markdownIt-Anchor" href="#enable-gtid-conditions"></a> Enable GTID conditions</h3>
-<ul>
-<li>
-<p>MySQL 5.6</p>
-</li>
-<li>
-<p>gtid_mode = ON (required)</p>
-</li>
-<li>
-<p>enforce_gtid_consistency = ON (required)</p>
-</li>
-<li>
-<p>log_bin = ON (required)</p>
-</li>
-<li>
-<p>log_slave_updates = ON (required)</p>
-</li>
-<li>
-<p>MySQL 5.7.13 or higher</p>
-</li>
-<li>
-<p>gtid_mode = ON (required)</p>
-</li>
-<li>
-<p>enforce_gtid_consistency = ON (required)</p>
-</li>
-<li>
-<p>log_bin = ON (option – 高可用切换)</p>
-</li>
-<li>
-<p>log_slave_updates = ON (option – 高可用切换)</p>
-</li>
-</ul>
-          <div class="read-more">
-            <a href="/2017/12/03/gtid-rep/" class="read-more-link">Read more..</a>
           </div>
         
       

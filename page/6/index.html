@@ -175,6 +175,69 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/01/30/binlog-vs-gtid/">Binlog VS GTID Replication</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-01-30
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/MySQL/">MySQL</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="replication"><a class="markdownIt-Anchor" href="#replication"></a> Replication</h2>
+<ul>
+<li>异步复制</li>
+</ul>
+<p>主库将事务Binlog事件写入Binlog文件中，主库只会通知一下Dump线程发送这些新的Binlog文件后就继续处理提交操作，并不保证任何一个slave都收到了。</p>
+<ul>
+<li>全同步复制</li>
+</ul>
+<p>主库提交事务后，在所有的slave都必须收到、并应用且提交这些事务后主库才继续后续操作。</p>
+<ul>
+<li>半同步复制</li>
+</ul>
+<p>介于全异步与全同步复制之间，主库只需等待至少一个slave收到且 Flush Binlog 到 Relay-log 文件即可，master无需等待所有slave反馈，且只是一个收到的反馈，不是已经完全执行并提交的反馈。</p>
+<p>MySQL复制有基于binary logs的<a href="https://acquaai.github.io/2017/12/02/binlog-rep/">Classic Replication</a> 和基于 <a href="https://acquaai.github.io/2017/12/03/gtid-rep/">Transaction-based Replication</a>的GTID。</p>
+          <div class="read-more">
+            <a href="/2018/01/30/binlog-vs-gtid/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/01/30/masterha/">MHA - MySQL High Available</a>
         
       </h1>
@@ -350,57 +413,6 @@
 </table>
           <div class="read-more">
             <a href="/2018/01/26/docker-app2/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/01/25/docker-ci/">Docker CI</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-01-25
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p><img src="/images/j_CI.png" alt><br>
-图片来源Google</p>
-          <div class="read-more">
-            <a href="/2018/01/25/docker-ci/" class="read-more-link">Read more..</a>
           </div>
         
       

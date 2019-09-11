@@ -175,6 +175,57 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2017/11/11/SLB4/">HAProxy + Keepalived Configuration Examples(2)</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-11
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="keepalived-2-vips-configure"><a class="markdownIt-Anchor" href="#keepalived-2-vips-configure"></a> Keepalived 2 VIPs Configure</h2>
+<h3 id="node1s-keepalivedconf-file"><a class="markdownIt-Anchor" href="#node1s-keepalivedconf-file"></a> Node1’s keepalived.conf file</h3>
+          <div class="read-more">
+            <a href="/2017/11/11/SLB4/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2017/11/11/SLB3/">HAProxy + Keepalived Configuration Examples(1)</a>
         
       </h1>
@@ -333,68 +384,6 @@
 <p>HAProxy是一个单线程/多线程(v1.8支持)、事件驱动，给予优先级调度非阻塞的I/O的程序，设计理念源自于数据转发，可以快速移动数据并减少数据的操作时间。因此它实现了分层模式，在每个级别提供旁路机制，从而确保数据不会去往更高层。HAProxy大多数情况下是在内核中完成处理。当haproxy启动后，它只做三件事情：</p>
           <div class="read-more">
             <a href="/2017/11/11/SLB1/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/11/07/Install-MySQL-5-7-from-Source/">Install MySQL 5.7 from Source</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-11-07
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/MySQL/">MySQL</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="source-installation-requirements"><a class="markdownIt-Anchor" href="#source-installation-requirements"></a> Source Installation Requirements</h2>
-<ul>
-<li><a href="http://www.cmake.org" target="_blank" rel="noopener">CMake</a>: as the build framework on all platforms.</li>
-<li><a href="http://www.gnu.org/software/make/" target="_blank" rel="noopener">make</a>: it’s highly recommended that you use GNU make3.75 or higher.</li>
-<li>A working ANSI C++ compiler. See the description of the FORCE_UNSUPPORTED_COMPILER. option for some guidelines.</li>
-<li>The Boost C++ libraries are required to build MySQL (but not to use it). Boost 1.59.0 must be installed.</li>
-<li><a href="https://www.gnu.org/software/ncurses/ncurses.html" target="_blank" rel="noopener">ncurses</a> library.</li>
-<li>Sufficient free memory.</li>
-<li>Perl is needed if you intend to run test scripts.</li>
-<li><a href="http://www.gnu.org/software/bison/" target="_blank" rel="noopener">bison</a> 2.1 or higher, (Version 1 is no longer supported.)</li>
-</ul>
-<h3 id="preconfiguration-setup"><a class="markdownIt-Anchor" href="#preconfiguration-setup"></a> Preconfiguration setup</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ cat /etc/redhat-release </span><br><span class="line">  CentOS Linux release 7.3.1611 (Core)</span><br><span class="line">  </span><br><span class="line">$ yum install cmake gcc gcc-c++ bison libaio-devel ncurses-devel openssl openssl-devel</span><br><span class="line">$ groupadd mysql</span><br><span class="line">$ useradd -r -g mysql -s /bin/<span class="literal">false</span> mysql</span><br></pre></td></tr></table></figure>
-          <div class="read-more">
-            <a href="/2017/11/07/Install-MySQL-5-7-from-Source/" class="read-more-link">Read more..</a>
           </div>
         
       

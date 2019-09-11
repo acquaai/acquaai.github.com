@@ -175,6 +175,66 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2017/11/29/Prometheus-Monitoring/">Prometheus Monitoring</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-29
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="prometheus简介"><a class="markdownIt-Anchor" href="#prometheus简介"></a> Prometheus简介</h2>
+<blockquote>
+<p><a href="https://prometheus.io" target="_blank" rel="noopener">Prometheus</a>是一套开源的监控&amp;报警&amp;时间序列数据库的组合，源于 Google Borgmon 的一个开源监控系统，用 Golang 开发，被称为下一代监控系统。Prometheus 基本原理是通过 HTTP 协议周期性抓取被监控组件的状态，这样做的好处是任意组件只要提供 HTTP 接口就可以接入监控系统，不需要任何 SDK 或者其他的集成过程。这样做非常适合虚拟化环境比如 VM 或者 Docker 。Prometheus 应该是为数不多的适合 Docker、Mesos 、Kubernetes 环境的监控系统之一。输出被监控组件信息的 HTTP 接口被叫做 exporter 。</p>
+</blockquote>
+<h3 id="prometheus-的特性"><a class="markdownIt-Anchor" href="#prometheus-的特性"></a> Prometheus 的特性</h3>
+<ul>
+<li>自定义多维度的数据模型</li>
+<li>非常高效的存储，平均一个采样数据占 ~3.5 bytes左右，320万的时间序列，每30秒采样，保持60天，消耗磁盘大概228G。</li>
+<li>强大的查询语句</li>
+<li>轻松实现数据可视化</li>
+</ul>
+          <div class="read-more">
+            <a href="/2017/11/29/Prometheus-Monitoring/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2017/11/29/Consistent-Network-Device-Naming/">Consistent Network Device Naming</a>
         
       </h1>
@@ -482,74 +542,6 @@
 <img src="/images/dpvs.png" alt></p>
           <div class="read-more">
             <a href="/2017/11/21/SLB7/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/11/17/SSL-with-Tomcat/">SSL with Tomcat</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-11-17
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="prepare-the-certificate-keystore"><a class="markdownIt-Anchor" href="#prepare-the-certificate-keystore"></a> Prepare the Certificate Keystore</h2>
-<h3 id="certificate-keystore-type"><a class="markdownIt-Anchor" href="#certificate-keystore-type"></a> Certificate Keystore Type</h3>
-<blockquote>
-<p>Tomcat当前支持 JKS，PKCS11，PKCS12（v5.0/5.0+）书格式。JKS为JAVA标准的『Java KeyStore』格式，是由JDK的keytool命令行工具生成。PKCS12是互联网标准格式，由OpenSSL与Microsoft’s Key-Manager共同维护。</p>
-</blockquote>
-<p>创建一个自签名的JKS keystore</p>
-<ul>
-<li>
-<p>Windows:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"%JAVA_HOME%\bin\keytool"</span> -genkey -<span class="built_in">alias</span> tomcat -keyalg RSA -keystore \path\to\my\keystore</span><br></pre></td></tr></table></figure>
-</li>
-<li>
-<p>Unix:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$JAVA_HOME</span>/bin/keytool -genkey -<span class="built_in">alias</span> tomcat -keyalg RSA -keystore /path/to/my/keystore</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<blockquote>
-<p>目前大多数云服务商都提供系统自动生成keystore。</p>
-</blockquote>
-          <div class="read-more">
-            <a href="/2017/11/17/SSL-with-Tomcat/" class="read-more-link">Read more..</a>
           </div>
         
       

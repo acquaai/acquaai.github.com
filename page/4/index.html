@@ -175,6 +175,115 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/03/10/k8s-pv/">K8S持久化卷</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-10
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <blockquote>
+<p>声明：本文来自<a href="https://jimmysong.io/posts/kubernetes-persistent-volume/" target="_blank" rel="noopener">jimmysong</a>的文章，整理记录在此仅为加深对 K8S PV 学习和理解。</p>
+</blockquote>
+<p>在 K8S 中没有使用<strong>持久化卷</strong>是不完整的，PV作为子系统为管理员和用户提供了API。</p>
+<h2 id="apis"><a class="markdownIt-Anchor" href="#apis"></a> APIs</h2>
+<p><code>PersistentVolume</code>（PV）管理员配置的存储，作为 K8S 群集的一部分。类似节点是集群中的资源一样，PV 也是集群中的资源。 PV 是 Volume 之类的卷插件，具有独立于 使用PV的Pod 的生命周期。卷的生命比 Pod 中的所有容器都长，当容器重启时数据仍然得以保存。只有当 Pod 消亡时，卷将不复存在。Kubernetes 支持多种类型的卷，Pod 可以同时使用任意数量的卷。该API对象包含存储实现的细节，即 NFS、RBD 或云厂商的存储系统。</p>
+<p><code>PersistentVolumeClaim</code>（PVC）用户对存储的请求，与 Pod 类似。Pod 消耗节点资源，PVC 消耗 PV 资源。PVC 请求特定的大小和访问模式。</p>
+<h2 id="卷和声明claim的生命周期"><a class="markdownIt-Anchor" href="#卷和声明claim的生命周期"></a> 卷和声明(claim)的生命周期</h2>
+<p>PV作为集群中的一项资源，PVC消费PV资源，也作为对资源的消费检查。</p>
+          <div class="read-more">
+            <a href="/2018/03/10/k8s-pv/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2018/03/10/nfs/">NFS Share</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-10
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="server"><a class="markdownIt-Anchor" href="#server"></a> Server</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ setsebool -P virt_use_nfs 1 (OR SELinux status: disabled)</span><br><span class="line">$ yum -y install nfs-utils libnfsidmap</span><br><span class="line">$ systemctl <span class="built_in">enable</span> rpcbind nfs-server</span><br><span class="line">$ systemctl start rpcbind nfs-server rpc-statd nfs-idmapd</span><br><span class="line"></span><br><span class="line">$ cat /etc/expots</span><br><span class="line">/nfs/sonar/conf 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line">/nfs/sonar/data 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line">/nfs/sonar/extensions 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line">/nfs/sonar/logs 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line"></span><br><span class="line">$ chmod -R 777 /nfs</span><br><span class="line">$ exportfs -r</span><br></pre></td></tr></table></figure>
+          <div class="read-more">
+            <a href="/2018/03/10/nfs/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/03/10/vnc/">VNC Server</a>
         
       </h1>
@@ -261,120 +370,6 @@
 <p><img src="/images/k8s-arch.png" alt></p>
           <div class="read-more">
             <a href="/2018/02/09/k8s-cluster/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/02/09/harbor/">Harbor</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-02-09
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p>Harbor是由VMware公司开源的基于Docker的企业级容器注册服务器，它包括权限管理(RBAC)、LDAP、日志审核、管理界面、自我注册、镜像复制和中文支持等功能。</p>
-<h2 id="安装docker"><a class="markdownIt-Anchor" href="#安装docker"></a> <a href="https://docs.docker.com/install/" target="_blank" rel="noopener">安装Docker</a></h2>
-<p>Docker从<code>v17.03</code>开始分为 CE（<a href="https://docs.docker.com/release-notes/docker-ce/" target="_blank" rel="noopener">Community Edition</a>）和 EE（Enterprise Edition）。</p>
-<p><strong>1. 配置Repository</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum install -y yum-utils device-mapper-persistent-data lvm2</span><br><span class="line">$ sudo yum-config-manager</span><br><span class="line">   --add-repo https://download.docker.com/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
-          <div class="read-more">
-            <a href="/2018/02/09/harbor/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/02/09/k8s-sec1/">Kubernetes Security</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-02-09
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p><strong>Reference</strong></p>
-<ol>
-<li><a href="https://docs.docker.com/engine/security/security/" target="_blank" rel="noopener">Docker security</a></li>
-<li><a href="http://www.freebuf.com/column/152398.html" target="_blank" rel="noopener">Docker容器全面的安全防护</a></li>
-</ol>
-<h2 id="docker宿主机安全"><a class="markdownIt-Anchor" href="#docker宿主机安全"></a> Docker宿主机安全</h2>
-<ul>
-<li>Minimal Install</li>
-<li>sudo yum update -y</li>
-<li>按需安装附加包/服务</li>
-</ul>
-          <div class="read-more">
-            <a href="/2018/02/09/k8s-sec1/" class="read-more-link">Read more..</a>
           </div>
         
       

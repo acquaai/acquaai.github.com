@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Harbor (Updated)">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2019/08/06/harbor/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> Harbor (Updated) - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Harbor (Updated)
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-08-06
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#install-docker"><span class="toc-text"> Install Docker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#install-docker-compose"><span class="toc-text"> Install Docker Compose</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#install-harbor-with-https"><span class="toc-text"> Install Harbor with https</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#gen-harbor-ssl"><span class="toc-text"> Gen Harbor SSL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#configure-harbor"><span class="toc-text"> Configure Harbor</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#access-harbor"><span class="toc-text"> Access Harbor</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#client-access"><span class="toc-text"> Client Access</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#kubernetes-access"><span class="toc-text"> Kubernetes Access</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#maintain-harbor"><span class="toc-text"> Maintain Harbor</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#projects"><span class="toc-text"> Projects</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>Harbor是由VMware公司开源的基于Docker的企业级容器注册服务器，它包括权限管理(RBAC)、LDAP、日志审核、管理界面、自我注册、镜像复制和中文支持等功能。</p>
+<h2 id="install-docker"><a class="markdownIt-Anchor" href="#install-docker"></a> Install Docker</h2>
+<p><strong>Pass it over</strong>.</p>
+<h2 id="install-docker-compose"><a class="markdownIt-Anchor" href="#install-docker-compose"></a> <a href="https://docs.docker.com/compose/install/#install-compose" target="_blank" rel="noopener">Install Docker Compose</a></h2>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo curl -L <span class="string">"https://github.com/docker/compose/releases/download/1.24.1/docker-compose-<span class="variable">$(uname -s)</span>-<span class="variable">$(uname -m)</span>"</span> -o /usr/<span class="built_in">local</span>/bin/docker-compose</span><br><span class="line">$ sudo chmod +x /usr/<span class="built_in">local</span>/bin/docker-compose</span><br><span class="line">$ docker-compose --version</span><br><span class="line">docker-compose version 1.24.1, build 4667896b</span><br></pre></td></tr></table></figure>
+<h2 id="install-harbor-with-https"><a class="markdownIt-Anchor" href="#install-harbor-with-https"></a> Install Harbor with https</h2>
+<p><a href="http://github.com/vmware/harbor" target="_blank" rel="noopener">Prerequisites for the Harbor</a></p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://storage.googleapis.com/harbor-releases/release-1.8.0/harbor-offline-installer-v1.8.2.tgz</span><br><span class="line">$ sudo tar xzvf harbor-offline-installer-v1.8.2.tgz  -C /</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h3 id="gen-harbor-ssl"><a class="markdownIt-Anchor" href="#gen-harbor-ssl"></a> Gen Harbor SSL</h3>
+<p><a href="https://github.com/fishdrowned/ssl" target="_blank" rel="noopener">自签泛域名证书</a></p>
+<h3 id="configure-harbor"><a class="markdownIt-Anchor" href="#configure-harbor"></a> Configure Harbor</h3>
+<p><strong>ssl</strong>:</p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ ls -l /data/cert/</span><br><span class="line">total 8</span><br><span class="line">-rw-r--r-- 1 root root 2863 Sep 11 17:07 xxx.com.bundle.crt</span><br><span class="line">-rw------- 1 root root 1675 Sep 11 17:08 xxx.com.key.pem</span><br><span class="line">-rw-r--r-- 1 root root 1350 Sep 11 17:12 root.crt</span><br></pre></td></tr></table></figure>
+<p><strong>configuration</strong>:</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">$</span> <span class="string">grep</span> <span class="bullet">-Ev</span> <span class="string">"^$|#"</span> <span class="string">/harbor/harbor.yml</span></span><br><span class="line"><span class="attr">hostname:</span> <span class="string">reg.xxx.com</span></span><br><span class="line"><span class="attr">http:</span></span><br><span class="line"><span class="attr">  port:</span> <span class="number">80</span></span><br><span class="line"><span class="attr">https:</span></span><br><span class="line"><span class="attr">  port:</span> <span class="number">443</span></span><br><span class="line"><span class="attr">  certificate:</span> <span class="string">/data/cert/xxx.com.bundle.crt</span></span><br><span class="line"><span class="attr">  private_key:</span> <span class="string">/data/cert/xxx.com.key.pem</span></span><br><span class="line"><span class="attr">harbor_admin_password:</span> <span class="string">Harbor12345</span></span><br><span class="line"><span class="attr">database:</span></span><br><span class="line"><span class="attr">  password:</span> <span class="string">root123</span></span><br><span class="line"><span class="attr">data_volume:</span> <span class="string">/data</span></span><br><span class="line"><span class="attr">clair:</span></span><br><span class="line"><span class="attr">  updaters_interval:</span> <span class="number">12</span></span><br><span class="line"><span class="attr">  http_proxy:</span></span><br><span class="line"><span class="attr">  https_proxy:</span></span><br><span class="line"><span class="attr">  no_proxy:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">,localhost,core,registry</span></span><br><span class="line"><span class="attr">jobservice:</span></span><br><span class="line"><span class="attr">  max_job_workers:</span> <span class="number">10</span></span><br><span class="line"><span class="attr">chart:</span></span><br><span class="line"><span class="attr">  absolute_url:</span> <span class="string">disabled</span></span><br><span class="line"><span class="attr">log:</span></span><br><span class="line"><span class="attr">  level:</span> <span class="string">info</span></span><br><span class="line"><span class="attr">  rotate_count:</span> <span class="number">50</span></span><br><span class="line"><span class="attr">  rotate_size:</span> <span class="number">200</span><span class="string">M</span></span><br><span class="line"><span class="attr">  location:</span> <span class="string">/var/log/harbor</span></span><br><span class="line"><span class="attr">_version:</span> <span class="number">1.8</span><span class="number">.0</span></span><br><span class="line"><span class="attr">uaa:</span></span><br><span class="line"><span class="attr">  ca_file:</span> <span class="string">/data/cert/root.crt</span></span><br></pre></td></tr></table></figure>
+<p><strong>installing</strong>:</p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo -E env <span class="string">"PATH=<span class="variable">$PATH</span>"</span> ./install.sh --with-notary --with-clair --with-chartmuseum</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">...... installing log ......</span><br><span class="line">✔ ----Harbor has been installed and started successfully.----</span><br><span class="line"></span><br><span class="line">Now you should be able to visit the admin portal at https://x.x.x.x.</span><br><span class="line">For more details, please visit https://github.com/goharbor/harbor .</span><br></pre></td></tr></table></figure>
+<p><strong>–with-notary</strong>: 镜像签名<br>
+<strong>–with-clair</strong>: 漏扫<br>
+<strong>–with-chartmuseum</strong>: Helm chart</p>
+<h2 id="access-harbor"><a class="markdownIt-Anchor" href="#access-harbor"></a> Access Harbor</h2>
+<h3 id="client-access"><a class="markdownIt-Anchor" href="#client-access"></a> Client Access</h3>
+<p>将自签名的 <code>root.crt</code> 证书拷贝到需要访问 Harbor 的 docker 主机的 /etc/docker/certs.d/<code>reg.xxx.com</code>/。</p>
+<blockquote>
+<p>If the Docker registry is accessed without a port number, do not add the port to the directory name. The following shows the configuration for a registry on default port 443 which is accessed with:</p>
+</blockquote>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ ll /etc/docker/certs.d/reg.xxx.com/</span><br><span class="line">root.crt</span><br><span class="line"></span><br><span class="line">$ docker login -u admin reg.xxx.com</span><br><span class="line">Password:</span><br><span class="line">WARNING! Your password will be stored unencrypted <span class="keyword">in</span> /home/k8s/.docker/config.json.</span><br><span class="line">Configure a credential helper to remove this warning. See</span><br><span class="line">https://docs.docker.com/engine/reference/commandline/login/<span class="comment">#credentials-store</span></span><br><span class="line"></span><br><span class="line">Login Succeeded</span><br></pre></td></tr></table></figure>
+<h3 id="kubernetes-access"><a class="markdownIt-Anchor" href="#kubernetes-access"></a> Kubernetes Access</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl create secret docker-registry registrykey --docker-server=reg.xxx.com --docker-username=acqua --docker-password=Harbor12345 --docker-email=acqua@acqua.ai</span><br><span class="line">secret <span class="string">"registrykey"</span> created</span><br><span class="line"></span><br><span class="line">$ kubectl get secret</span><br><span class="line">NAME                  TYPE                                  DATA      AGE</span><br><span class="line">registrykey           kubernetes.io/dockerconfigjson        1         33s</span><br><span class="line"></span><br><span class="line">$ kubectl describe pods nginx-65486cc689-t6f7b</span><br><span class="line">...</span><br><span class="line">Events:</span><br><span class="line">  Type    Reason                 Age   From                 Message</span><br><span class="line">  ----    ------                 ----  ----                 -------</span><br><span class="line">  ......</span><br><span class="line">  Normal  Scheduled              2m    default-scheduler    10.0.77.17  pulling image <span class="string">"reg.xxx.com/acqua/nginx:1.9"</span></span><br><span class="line">  Normal  Pulled                 2m    kubelet, 10.0.77.17  Successfully pulled image <span class="string">"reg.xxx.com/acqua/nginx:1.9"</span></span><br><span class="line">  ......</span><br></pre></td></tr></table></figure>
+<h2 id="maintain-harbor"><a class="markdownIt-Anchor" href="#maintain-harbor"></a> Maintain Harbor</h2>
+<p>使用 docker-compose <a href="https://github.com/vmware/harbor/blob/master/docs/installation_guide.md" target="_blank" rel="noopener">管理 Harbor</a> 时必须在<code>docker-compose.yml</code>文件目录运行。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /harbor/</span><br><span class="line">$ sudo docker-compose stop</span><br><span class="line">$ sudo docker-compose start</span><br></pre></td></tr></table></figure>
+<p>Harbor 修改配置流程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo docker-compose down -v</span><br><span class="line">$ sudo vim harbor.yml</span><br><span class="line">$ sudo ./prepare</span><br><span class="line">$ sudo docker-compose up -d</span><br></pre></td></tr></table></figure>
+<p>删除 Harbor 的容器，但保留镜像和 Harbor 的数据库文件在文件系统上：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo docker-compose down -v</span><br></pre></td></tr></table></figure>
+<p>删除 Harbor 的数据库和镜像数据(重新安装的环境)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo rm -r /data/database</span><br><span class="line">$ sudo rm -r /data/registry</span><br></pre></td></tr></table></figure>
+<h2 id="projects"><a class="markdownIt-Anchor" href="#projects"></a> Projects</h2>
+<p><strong>Project: acqua</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ docker tag SOURCE_IMAGE[:TAG] reg.xxx.com/acqua/IMAGE[:TAG]</span><br><span class="line">$ docker push reg.xxx.com/acqua/IMAGE[:TAG]</span><br></pre></td></tr></table></figure>
+<p><strong>Ref</strong></p>
+<ul>
+<li><a href="https://github.com/goharbor/harbor/blob/master/docs/configure_https.md" target="_blank" rel="noopener">configure_https</a></li>
+<li><a href="https://coreos.com/os/docs/latest/generate-self-signed-certificates.html" target="_blank" rel="noopener">Generate self-signed certificates</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2019/08/06/harbor/">https://acquaai.github.io/2019/08/06/harbor/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2019/08/28/k8s-ha-with-kubeadm/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Creating Kubernetes HA cluster with kubeadm</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2019/08/06/nexus-docker-registry/">
+        <span class="next-text nav-default">Nexus Docker Registry</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2019/08/06/harbor/';
+        this.page.identifier = '2019/08/06/harbor/';
+        this.page.title = 'Harbor (Updated)';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

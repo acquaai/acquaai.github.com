@@ -175,6 +175,74 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2017/11/17/SSL-with-Tomcat/">SSL with Tomcat</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-17
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="prepare-the-certificate-keystore"><a class="markdownIt-Anchor" href="#prepare-the-certificate-keystore"></a> Prepare the Certificate Keystore</h2>
+<h3 id="certificate-keystore-type"><a class="markdownIt-Anchor" href="#certificate-keystore-type"></a> Certificate Keystore Type</h3>
+<blockquote>
+<p>Tomcat当前支持 JKS，PKCS11，PKCS12（v5.0/5.0+）书格式。JKS为JAVA标准的『Java KeyStore』格式，是由JDK的keytool命令行工具生成。PKCS12是互联网标准格式，由OpenSSL与Microsoft’s Key-Manager共同维护。</p>
+</blockquote>
+<p>创建一个自签名的JKS keystore</p>
+<ul>
+<li>
+<p>Windows:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"%JAVA_HOME%\bin\keytool"</span> -genkey -<span class="built_in">alias</span> tomcat -keyalg RSA -keystore \path\to\my\keystore</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>Unix:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$JAVA_HOME</span>/bin/keytool -genkey -<span class="built_in">alias</span> tomcat -keyalg RSA -keystore /path/to/my/keystore</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<p>目前大多数云服务商都提供系统自动生成keystore。</p>
+</blockquote>
+          <div class="read-more">
+            <a href="/2017/11/17/SSL-with-Tomcat/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2017/11/13/Install-MySQL-8-0-from-Source/">Install MySQL 8.0 from Source</a>
         
       </h1>
@@ -327,57 +395,6 @@
 <h3 id="3nodes-haproxy-config-files-are-same"><a class="markdownIt-Anchor" href="#3nodes-haproxy-config-files-are-same"></a> 3Node’s haproxy config files are same</h3>
           <div class="read-more">
             <a href="/2017/11/11/SLB5/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/11/11/SLB4/">HAProxy + Keepalived Configuration Examples(2)</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-11-11
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="keepalived-2-vips-configure"><a class="markdownIt-Anchor" href="#keepalived-2-vips-configure"></a> Keepalived 2 VIPs Configure</h2>
-<h3 id="node1s-keepalivedconf-file"><a class="markdownIt-Anchor" href="#node1s-keepalivedconf-file"></a> Node1’s keepalived.conf file</h3>
-          <div class="read-more">
-            <a href="/2017/11/11/SLB4/" class="read-more-link">Read more..</a>
           </div>
         
       
