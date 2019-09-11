@@ -1,304 +1,193 @@
 ---
-title: Harbor
-date: 2018-02-09 11:05:45
+title: Harbor (Updated)
+date: 2019-08-06 15:05:45
 categories: DevOps
 ---
 Harbor是由VMware公司开源的基于Docker的企业级容器注册服务器，它包括权限管理(RBAC)、LDAP、日志审核、管理界面、自我注册、镜像复制和中文支持等功能。
 
-## [安装Docker](https://docs.docker.com/install/)
+## Install Docker
 
-Docker从`v17.03`开始分为 CE（[Community Edition](https://docs.docker.com/release-notes/docker-ce/)）和 EE（Enterprise Edition）。
+**Pass it over**.
 
-**1. 配置Repository**
 
-```bash
-$ sudo yum install -y yum-utils device-mapper-persistent-data lvm2
-$ sudo yum-config-manager
-   --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-```
-<!-- more -->
+## [Install Docker Compose](https://docs.docker.com/compose/install/#install-compose)
 
-**Optional**
-
-```bash
-$ sudo yum-config-manager --enable docker-ce-edge/docker-ce-test
-```
-
-**2. Install Docker CE**
-
-```bash
-$ yum list docker-ce --showduplicates | sort -r
-$ sudo yum install docker-ce 最新版本
-$ sudo yum install docker-ce-17.06.1.ce 指定版本
-```
-
-`Docker is installed but not started. The docker group is created, but no users are added to the group.`
-
-**3. Add User to Docker Group**
-
-docker组内用户执行命令的时候会自动在所有命令前添加`sudo`.
-
-```bash
-$ sudo usermod -aG docker $(whoami)
-```
-
-Re-login:
-
-```
-$ sudo systemctl start docker
-$ docker run hello-world
-$ sudo systemctl enable docker
-```
-
-## 安装Docker Compose
-
-[Install Docker Compose](https://docs.docker.com/compose/install/#install-compose)
-
-```bash
-$ sudo curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+```zsh
+$ sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 $ sudo chmod +x /usr/local/bin/docker-compose
-
 $ docker-compose --version
-docker-compose version 1.19.0, build 9e633ef
+docker-compose version 1.24.1, build 4667896b
 ```
 
-## 安装Harbor启用https
+
+## Install Harbor with https
 
 [Prerequisites for the Harbor](http://github.com/vmware/harbor)
 
-```bash
-$ wget https://storage.googleapis.com/harbor-releases/release-1.4.0/harbor-offline-installer-v1.4.0.tgz
-$ sudo tar xvf harbor-offline-installer-v1.4.0.tgz  -C /
+```zsh
+$ wget https://storage.googleapis.com/harbor-releases/release-1.8.0/harbor-offline-installer-v1.8.2.tgz
+$ sudo tar xzvf harbor-offline-installer-v1.8.2.tgz  -C /
 ```
 
-### 安装CFSSL
+<!-- more -->
 
-```bash
-$ sudo yum install -y git gcc
-$ wget https://dl.google.com/go/go1.9.4.linux-amd64.tar.gz
-$ sudo tar xzvf go1.9.4.linux-amd64.tar.gz -C /usr/local/
+### Gen Harbor SSL
 
-$ sudo vi /etc/profile
-export GOPATH=/usr/local
-export PATH=$PATH:/usr/local/go/bin
+[自签泛域名证书](https://github.com/fishdrowned/ssl)
+
+
+### Configure Harbor
+
+**ssl**:
+
+```zsh
+$ ls -l /data/cert/
+total 8
+-rw-r--r-- 1 root root 2863 Sep 11 17:07 xxx.com.bundle.crt
+-rw------- 1 root root 1675 Sep 11 17:08 xxx.com.key.pem
+-rw-r--r-- 1 root root 1350 Sep 11 17:12 root.crt
 ```
 
-```bash
-$ sudo go get -u github.com/cloudflare/cfssl/cmd/...
-$ sudo ls /usr/local/bin
-cfssl  cfssl-bundle  cfssl-certinfo  cfssljson  cfssl-newkey  cfssl-scan  mkbundle  multirootca
+**configuration**:
+
+```yml
+$ grep -Ev "^$|#" /harbor/harbor.yml
+hostname: reg.xxx.com
+http:
+  port: 80
+https:
+  port: 443
+  certificate: /data/cert/xxx.com.bundle.crt
+  private_key: /data/cert/xxx.com.key.pem
+harbor_admin_password: Harbor12345
+database:
+  password: root123
+data_volume: /data
+clair:
+  updaters_interval: 12
+  http_proxy:
+  https_proxy:
+  no_proxy: 127.0.0.1,localhost,core,registry
+jobservice:
+  max_job_workers: 10
+chart:
+  absolute_url: disabled
+log:
+  level: info
+  rotate_count: 50
+  rotate_size: 200M
+  location: /var/log/harbor
+_version: 1.8.0
+uaa:
+  ca_file: /data/cert/root.crt
 ```
 
-### 创建Harbor证书
+**installing**:
 
-**创建ca-config.json文件**
-
-```json
-$ sudo mkdir /root/cfssl && cd /root/cfssl
-$ sudo vi ca-config.json
-{
-    "signing": {
-        "default": {
-            "expiry": "8760h"
-        }, 
-        "profiles": {
-            "kubernetes": {
-                "usages": [
-                    "signing", 
-                    "key encipherment", 
-                    "server auth", 
-                    "client auth"
-                ], 
-                "expiry": "8760h"
-            }
-        }
-    }
-}
+```zsh
+$ sudo -E env "PATH=$PATH" ./install.sh --with-notary --with-clair --with-chartmuseum
 ```
 
-**创建文件ca-csr.json文件**
-
-```json
-$ sudo vi ca-csr.json
-{
-    "CN": "kubernetes", 
-    "key": {
-        "algo": "rsa", 
-        "size": 2048
-    }, 
-    "names": [
-        {
-            "C": "CN", 
-            "ST": "Shenzhen", 
-            "L": "Shenzhen", 
-            "O": "k8s", 
-            "OU": "System"
-        }
-    ]
-}
-```
-
-**生成CA证书和私钥**
-
-```bash
-$ sudo cfssl gencert -initca ca-csr.json | cfssljson -bare ca
-$ sudo ls ca*
-ca-config.json  ca.csr  ca-csr.json  ca-key.pem  ca.pem
-```
-
-**创建harbor-csr.json**
-
-```json
-$ sudo vi harbor-csr.json
-{
-    "CN": "kubernetes", 
-    "hosts": [
-        "127.0.0.1", 
-        "10.0.77.16"
-    ], 
-    "key": {
-        "algo": "rsa", 
-        "size": 2048
-    }, 
-    "names": [
-        {
-            "L": "Shenzhen", 
-            "O": "k8s", 
-            "OU": "System"
-        }
-    ]
-}
-```
-
-```bash
-$ sudo cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes harbor-csr.json | cfssljson -bare harbor
-$ sudo ls harbor*
-harbor.csr  harbor-csr.json  harbor-key.pem  harbor.pem
-
-$ mkdir -p /data/cert
-$ sudo mv harbor*.pem /data/cert/
-```
-
-### 修改harbor.cfg文件
-
-```bash
-$ cd /harbor/
-$ sudo vi harbor.cfg
-
-hostname = 
-db_password = 
-harbor_admin_password = 
-auth_mode = db_auth = 
-self_registration =
-project_creation_restriction =
-
-**https**
-ui_url_protocol = https
-ssl_cert = /data/cert/harbor.pem
-ssl_cert_key = /data/cert/harbor-key.pem
-```
-
-```bash
-$ sudo -E env "PATH=$PATH" ./install.sh --with-notary
-...
+```log
+...... installing log ......
 ✔ ----Harbor has been installed and started successfully.----
 
-Now you should be able to visit the admin portal at https://10.0.77.16. 
-For more details, please visit https://github.com/vmware/harbor.
+Now you should be able to visit the admin portal at https://x.x.x.x.
+For more details, please visit https://github.com/goharbor/harbor .
 ```
 
-将自签名的 CA 证书拷贝到需要访问 Harbor 仓库的 docker 主机的 /etc/docker/certs.d/`registry-hostname`/下。
+**--with-notary**: 镜像签名
+**--with-clair**: 漏扫
+**--with-chartmuseum**: Helm chart
+
+
+## Access Harbor
+
+### Client Access
+
+将自签名的 `root.crt` 证书拷贝到需要访问 Harbor 的 docker 主机的 /etc/docker/certs.d/`reg.xxx.com`/。
 
 > If the Docker registry is accessed without a port number, do not add the port to the directory name. The following shows the configuration for a registry on default port 443 which is accessed with:
 
-```bash
-shell> mkdir -p /etc/docker/certs.d/10.0.77.16
-shell> cp /etc/kubernetes/ssl/ca.pem /etc/docker/certs.d/10.0.77.16/ca.crt
+```zsh
+$ ll /etc/docker/certs.d/reg.xxx.com/
+root.crt
+
+$ docker login -u admin reg.xxx.com
+Password:
+WARNING! Your password will be stored unencrypted in /home/k8s/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
 ```
 
-**Client Access 1/3 Ways**
+
+### Kubernetes Access
 
 ```bash
-shell> kubectl create secret docker-registry registrykey --docker-server=10.0.77.16 --docker-username=acqua --docker-password=Harbor12345 --docker-email=acqua@acqua.ai
+$ kubectl create secret docker-registry registrykey --docker-server=reg.xxx.com --docker-username=acqua --docker-password=Harbor12345 --docker-email=acqua@acqua.ai
 secret "registrykey" created
 
-shell> kubectl get secret
+$ kubectl get secret
 NAME                  TYPE                                  DATA      AGE
 registrykey           kubernetes.io/dockerconfigjson        1         33s
 
-shell> kubectl describe pods nginx-65486cc689-t6f7b
+$ kubectl describe pods nginx-65486cc689-t6f7b
 ...
 Events:
   Type    Reason                 Age   From                 Message
   ----    ------                 ----  ----                 -------
-  Normal  Scheduled              2m    default-scheduler    Successfully assigned nginx-65486cc689-t6f7b to 10.0.77.17
-  Normal  SuccessfulMountVolume  2m    kubelet, 10.0.77.17  MountVolume.SetUp succeeded for volume "default-token-ctbfl"
-  Normal  Pulling                2m    kubelet, 10.0.77.17  pulling image "10.0.77.16/acquaai/nginx:1.9"
-  Normal  Pulled                 2m    kubelet, 10.0.77.17  Successfully pulled image "10.0.77.16/acquaai/nginx:1.9"
-  Normal  Created                2m    kubelet, 10.0.77.17  Created container
-  Normal  Started                2m    kubelet, 10.0.77.17  Started container
+  ......
+  Normal  Scheduled              2m    default-scheduler    10.0.77.17  pulling image "reg.xxx.com/acqua/nginx:1.9"
+  Normal  Pulled                 2m    kubelet, 10.0.77.17  Successfully pulled image "reg.xxx.com/acqua/nginx:1.9"
+  ......
 ```
 
-**Client Access 2/3 Ways**
 
-如果10.0.88.16主机访问Harbor仓库，需要将Harbor的证书拷贝过来：
+## Maintain Harbor
 
-```bash
-$ mkdir -p /etc/docker/certs.d/10.0.77.16 && cd /etc/docker/certs.d/10.0.77.16
-$ scp -P 8086 root@10.0.77.16:/etc/docker/certs.d/10.0.77.16/ca.crt ./
-$ docker login 10.0.77.16 
-Username: acqua
-Password: 
-Login Succeeded
-```
-
-**参考**
-
-+ [configure_https](https://github.com/vmware/harbor/blob/master/docs/configure_https.md)
-+ [配置Harbor启用https和外部数据库](https://blog.frognew.com/2017/06/config-harbor-with-https-and-external-db.html)
-+ [Kubernetes从Private Registry中拉取容器镜像的方法](https://tonybai.com/2016/11/16/how-to-pull-images-from-private-registry-on-kubernetes-cluster/)
-
-## 管理Harbor
-
-使用docker-compose[管理Harbor](https://github.com/vmware/harbor/blob/master/docs/installation_guide.md)时必须在`docker-compose.yml`文件目录运行。
+使用 docker-compose [管理 Harbor](https://github.com/vmware/harbor/blob/master/docs/installation_guide.md) 时必须在`docker-compose.yml`文件目录运行。
 
 ```bash
 $ cd /harbor/
-$ docker-compose stop
-$ docker-compose start
+$ sudo docker-compose stop
+$ sudo docker-compose start
 ```
 
-Harbor修改配置流程：
+Harbor 修改配置流程：
 
 ```bash
-$ docker-compose down -v
-$ sudo vim harbor.cfg
+$ sudo docker-compose down -v
+$ sudo vim harbor.yml
 $ sudo ./prepare
-$ docker-compose up -d
+$ sudo docker-compose up -d
 ```
 
-删除Harbor的容器，但保留镜像和Harbor的数据库文件在文件系统上：
+删除 Harbor 的容器，但保留镜像和 Harbor 的数据库文件在文件系统上：
 
 ```bash
-$ docker-compose down -v
+$ sudo docker-compose down -v
 ```
 
-删除Harbor的数据库和镜像数据(重新安装的环境)：
+删除 Harbor 的数据库和镜像数据(重新安装的环境)：
 
 ```bash
 $ sudo rm -r /data/database
 $ sudo rm -r /data/registry
 ```
 
-### 创建私有项目
+## Projects
 
-新建私有项目`acquaai`
-
-Push Image到该项目的命令：
+**Project: acqua**
 
 ```bash
-shell> docker tag SOURCE_IMAGE[:TAG] 10.0.77.16/acquaai/IMAGE[:TAG]
-shell> docker push 10.0.77.16/acquaai/IMAGE[:TAG]
+$ docker tag SOURCE_IMAGE[:TAG] reg.xxx.com/acqua/IMAGE[:TAG]
+$ docker push reg.xxx.com/acqua/IMAGE[:TAG]
 ```
 
 
+**Ref**
+
++ [configure_https](https://github.com/goharbor/harbor/blob/master/docs/configure_https.md)
++ [Generate self-signed certificates](https://coreos.com/os/docs/latest/generate-self-signed-certificates.html)
