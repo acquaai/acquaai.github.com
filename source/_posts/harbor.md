@@ -50,34 +50,44 @@ total 8
 
 **configuration**:
 
-```yml
+```zsh
 $ grep -Ev "^$|#" /harbor/harbor.yml
+```
+
+```yml
+# Required parameters
 hostname: reg.xxx.com
+
+data_volume: /data
+
+harbor_admin_password: Harbor12345
+
+database:
+  password: root123
+
+jobservice:
+  max_job_workers: 10
+
+log:
+  level: info
+  rotate_count: 50
+  rotate_size: 200M
+  location: /var/log/harbor
+
+# optional parameters
 http:
   port: 80
 https:
   port: 443
   certificate: /data/cert/xxx.com.bundle.crt
   private_key: /data/cert/xxx.com.key.pem
-harbor_admin_password: Harbor12345
-database:
-  password: root123
-data_volume: /data
 clair:
   updaters_interval: 12
-  http_proxy:
-  https_proxy:
+  http_proxy: http://10.30.1.99:1080
+  https_proxy: http://10.30.1.99:1080
   no_proxy: 127.0.0.1,localhost,core,registry
-jobservice:
-  max_job_workers: 10
 chart:
-  absolute_url: disabled
-log:
-  level: info
-  rotate_count: 50
-  rotate_size: 200M
-  location: /var/log/harbor
-_version: 1.8.0
+  absolute_url: enabled
 uaa:
   ca_file: /data/cert/root.crt
 ```
@@ -85,7 +95,7 @@ uaa:
 **installing**:
 
 ```zsh
-$ sudo -E env "PATH=$PATH" ./install.sh --with-notary --with-clair --with-chartmuseum
+$ sudo ./install.sh --with-notary --with-clair --with-chartmuseum
 ```
 
 ```log
@@ -123,71 +133,91 @@ Login Succeeded
 ```
 
 
-### Kubernetes Access
-
-```bash
-$ kubectl create secret docker-registry registrykey --docker-server=reg.xxx.com --docker-username=acqua --docker-password=Harbor12345 --docker-email=acqua@acqua.ai
-secret "registrykey" created
-
-$ kubectl get secret
-NAME                  TYPE                                  DATA      AGE
-registrykey           kubernetes.io/dockerconfigjson        1         33s
-
-$ kubectl describe pods nginx-65486cc689-t6f7b
-...
-Events:
-  Type    Reason                 Age   From                 Message
-  ----    ------                 ----  ----                 -------
-  ......
-  Normal  Scheduled              2m    default-scheduler    10.0.77.17  pulling image "reg.xxx.com/acqua/nginx:1.9"
-  Normal  Pulled                 2m    kubelet, 10.0.77.17  Successfully pulled image "reg.xxx.com/acqua/nginx:1.9"
-  ......
-```
+### [Kubernetes Access](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
 
 
-## Maintain Harbor
+## Managing Harbor's lifecycle
 
-使用 docker-compose [管理 Harbor](https://github.com/vmware/harbor/blob/master/docs/installation_guide.md) 时必须在`docker-compose.yml`文件目录运行。
+Stopping/Starting Harbor:
 
-```bash
+```zsh
 $ cd /harbor/
 $ sudo docker-compose stop
 $ sudo docker-compose start
 ```
 
-Harbor 修改配置流程：
+To change Harbor's configuration:
 
-```bash
+```zsh
 $ sudo docker-compose down -v
 $ sudo vim harbor.yml
-$ sudo ./prepare
+$ sudo ./prepare --with-notary --with-clair --with-chartmuseum
 $ sudo docker-compose up -d
 ```
 
-删除 Harbor 的容器，但保留镜像和 Harbor 的数据库文件在文件系统上：
+Removing Harbor's containers while keeping the image data and Harbor's database files on the file system:
 
-```bash
+```zsh
 $ sudo docker-compose down -v
 ```
 
-删除 Harbor 的数据库和镜像数据(重新安装的环境)：
+Removing Harbor's database and image data (for a clean re-installation):
 
-```bash
-$ sudo rm -r /data/database
-$ sudo rm -r /data/registry
+```zsh
+$ rm -r /data/database
+$ rm -r /data/registry
 ```
+
 
 ## Projects
 
 **Project: acqua**
 
-```bash
+```zsh
 $ docker tag SOURCE_IMAGE[:TAG] reg.xxx.com/acqua/IMAGE[:TAG]
 $ docker push reg.xxx.com/acqua/IMAGE[:TAG]
+```
+
+
+## How to process that forget Harbor's admin password
+
+```zsh
+$ docker exec -it harbor-db bash
+
+root [ / ]# psql -h postgresql -d postgres -U postgres
+Password for user postgres: 
+psql (9.6.14)
+Type "help" for help.
+
+postgres=#
+```
+
+```sql
+postgres=# \l
+postgres=# \c registry
+You are now connected to database "registry" as user "postgres".
+
+registry=# \d
+
+registry=# select user_id, username, password, realname, salt from harbor_user;
+ user_id | username  |             password             |    realname    |               salt               
+---------+-----------+----------------------------------+----------------+----------------------------------
+       2 | anonymous |                                  | anonymous user | 
+       3 | ybcard    | f5f92a94bfc48c36a539a644167476e0 | ybcard         | uc6dbjkwh178i1aycisi26q8y8mo593v
+       1 | admin     | 4f16b74b68178d0c83d00af80ddb7d10 | system admin   | vsq9qbd0jgu3236iz0beat43yl9av11a
+
+# pbkdf2 algorithm, "Admin123"
+
+update harbor_user set password='e7c0331ebb021d64713c0515f6dad38f', salt='pa4mmop0v9lhnv2vpvmkuv941it72ku6' where username='admin';
+
+registry=# \q
+root [ / ]# exit
 ```
 
 
 **Ref**
 
 + [configure_https](https://github.com/goharbor/harbor/blob/master/docs/configure_https.md)
++ [User Guide](https://github.com/goharbor/harbor/blob/master/docs/user_guide.md#user-guide)
 + [Generate self-signed certificates](https://coreos.com/os/docs/latest/generate-self-signed-certificates.html)
++ [pbkdf2](https://github.com/mitsuhiko/python-pbkdf2/blob/master/pbkdf2.py)
