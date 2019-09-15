@@ -83,8 +83,8 @@ https:
   private_key: /data/cert/xxx.com.key.pem
 clair:
   updaters_interval: 12
-  http_proxy: http://10.30.1.99:1080
-  https_proxy: http://10.30.1.99:1080
+  http_proxy:
+  https_proxy:
   no_proxy: 127.0.0.1,localhost,core,registry
 chart:
   absolute_url: enabled
@@ -95,7 +95,8 @@ uaa:
 **installing**:
 
 ```zsh
-$ sudo ./install.sh --with-notary --with-clair --with-chartmuseum
+$ cd /harbor
+$ sudo ./install.sh --with-clair
 ```
 
 ```log
@@ -164,9 +165,12 @@ $ sudo docker-compose down -v
 Removing Harbor's database and image data (for a clean re-installation):
 
 ```zsh
-$ rm -r /data/database
-$ rm -r /data/registry
+$ sudo rm -r /data/database
+$ sudo rm -r /data/registry
 ```
+
+* [x] Clair 同步更新时注意容器 DNS 的配置 (/etc/resolv.conf)
+* [x] [Notray](https://github.com/theupdateframework/notary) 目前并不好用，删除已经签名的镜像时仍需要借助`Notary CLI`
 
 
 ## Projects
