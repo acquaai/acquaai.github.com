@@ -137,7 +137,7 @@ Login Succeeded
 ### [Kubernetes Access](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
 
 
-## Managing Harbor's lifecycle
+## Managing Harbors lifecycle
 
 Stopping/Starting Harbor:
 
@@ -183,7 +183,7 @@ $ docker push reg.xxx.com/acqua/IMAGE[:TAG]
 ```
 
 
-## How to process that forget Harbor's admin password
+## How to process that forget Harbors admin password
 
 ```zsh
 $ docker exec -it harbor-db bash

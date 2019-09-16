@@ -1,0 +1,106 @@
+---
+title: Using Ceph RBD for persistent storage
+date: 2019-09-16 22:34:02
+categories: DevOps
+---
+## Overview
+
+This topic provides a complete example of using an existing Ceph cluster for OKD persistent storage. It is assumed that a working Ceph cluster is already set up. If not, consult the [Overview of Red Hat Ceph Storage](https://access.redhat.com/products/red-hat-ceph-storage).
+
+Persistent Storage Using Ceph Rados Block Device provides an explanation of persistent volumes (PVs), persistent volume claims (PVCs), and using Ceph RBD as persistent storage.
+
+
+## Using an existing Ceph cluster for persistent storage
+
+<!-- more -->
+
+* Install the latest ceph-common package:
+
+```yaml
+    - name: update apt cache
+      apt:
+         update_cache=yes
+
+    - name: install ceph-common
+      apt:
+        name: ceph-common
+      state: present
+```
+
+`NOTE`: The **ceph-common** library must be installed on **all nodes**.
+
+* Create the keyring for the client: **(On Ceph Node)**
+
+```zsh
+$ ceph auth get-or-create client.qemu mon 'allow *' osd 'allow rwx pool=rbd' -o /etc/ceph/ceph.client.qemu.keyring
+```
+
+* Convert the keyring to base64: **(On Ceph Node)**
+
+```zsh
+$ grep key /etc/ceph/ceph.client.qemu.keyring | awk '{printf "%s", $NF}' | base64
+```
+
+`NOTE`: This base64 key is generated on one of the Ceph MON nodes using the **ceph auth get-key client.admin | base64** command, then copying the output and pasting it as the secret key’s value.
+
+
+## Create StorageClass(`Dynamic Volume Provisioning`) using Ceph RBD:
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: elk
+---
+# define admin secret on cluster level, create PV
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ceph-secret-admin
+  namespace: kube-system
+data:
+  key: QVFEQUNWWmRmTUxBSkJBQXlSV88rUm11RzJSb0J2Tk9SVllSaGc9PQ==
+---
+# define user secret on namespace level, create PVC
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ceph-secret-qemu
+  namespace: elk
+data:
+  key: QVFCNldYTmRtZ29iREJBQSt4dXorNHp0Wi33RWluR1J4U1hWcnc9PQ==
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ceph-rbd
+  namespace: elk
+provisioner: ceph.com/rbd
+parameters:
+  monitors: 192.168.0.2:6789,192.168.0.3:6789
+  pool: rbd
+  adminId: admin
+  adminSecretNamespace: kube-system
+  adminSecretName: ceph-secret-admin
+  userId: qemu
+  userSecretName: ceph-secret-qemu
+  userSecretNamespace: elk
+  fsType: ext4
+  imageFormat: "2"
+  imageFeatures: "layering"
+```
+
+```zsh
+$ kubectl apply -f elastic-sc.yaml
+```
+
+**[bug & fix](
+https://github.com/kubernetes/kubernetes/issues/38923#issuecomment-315255075)**:
+
+```text
+Warning ProvisioningFailed 31s (x16 over 19m) persistentvolume-controller Failed to provision volume with StorageClass "ceph-elk": failed to create rbd image: executable file not found in $PATH, command output:
+```
+
+**Ref**
+
++ [静态PV](https://acquaai.github.io/2018/03/23/sonar/#持久卷-pv)
