@@ -175,6 +175,57 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2017/11/11/SLB5/">HAProxy + Keepalived Configuration Examples(3)</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-11
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="3nodes-haproxy-keepalived"><a class="markdownIt-Anchor" href="#3nodes-haproxy-keepalived"></a> 3Nodes HAProxy + Keepalived</h2>
+<h3 id="3nodes-haproxy-config-files-are-same"><a class="markdownIt-Anchor" href="#3nodes-haproxy-config-files-are-same"></a> 3Node’s haproxy config files are same</h3>
+          <div class="read-more">
+            <a href="/2017/11/11/SLB5/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2017/11/11/SLB4/">HAProxy + Keepalived Configuration Examples(2)</a>
         
       </h1>
@@ -322,68 +373,6 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo systemctl start ntpd</span><br></pre></td></tr></table></figure>
           <div class="read-more">
             <a href="/2017/11/11/SLB2/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/11/11/SLB1/">Server Load Balancer</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-11-11
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="主流负载均衡器"><a class="markdownIt-Anchor" href="#主流负载均衡器"></a> 主流负载均衡器</h2>
-<h3 id="haproxy特性"><a class="markdownIt-Anchor" href="#haproxy特性"></a> HAProxy特性</h3>
-<ul>
-<li>支持两种代理模式：<strong>TCP（OSI四层）<strong>和</strong>HTTP（OSI七层）</strong>，且HAProxy支持虚拟主机。</li>
-<li>HAProxy做七层代理的话，一般需要和stunnel结合起来使用，stunnel把接收的HTTPS请求转发到HAProxy，然后再由HAProxy转发到后端服务器。</li>
-<li>HAProxy可以隐藏后端服务器信息。</li>
-<li>支持url检测后端的服务器是否故障。</li>
-<li>与LVS一样，本身仅仅就只是一款负载均衡软件，单纯从效率上来讲HAProxy比Nginx有更出色的负载均衡速度，在并发处理上也优于Nginx。</li>
-<li>HAProxy可以对MySQL读进行负载均衡，对后端的MySQL节点进行检测和负载均衡，但在后端的MySQL slaves数量超过10台时性能不如LVS。</li>
-<li>HAProxy 负载均衡策略非常多：Round-robin（轮循）、Weight-round-robin（带权轮循）、source（原地址保持）、RI（请求URL）、rdp-cookie（根据cookie）。</li>
-</ul>
-<h3 id="haproxy工作原理"><a class="markdownIt-Anchor" href="#haproxy工作原理"></a> HAProxy工作原理</h3>
-<p>HAProxy是一个单线程/多线程(v1.8支持)、事件驱动，给予优先级调度非阻塞的I/O的程序，设计理念源自于数据转发，可以快速移动数据并减少数据的操作时间。因此它实现了分层模式，在每个级别提供旁路机制，从而确保数据不会去往更高层。HAProxy大多数情况下是在内核中完成处理。当haproxy启动后，它只做三件事情：</p>
-          <div class="read-more">
-            <a href="/2017/11/11/SLB1/" class="read-more-link">Read more..</a>
           </div>
         
       

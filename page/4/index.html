@@ -175,6 +175,63 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/03/13/ceph-cluster/">Ceph Distributed Storage System</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-13
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="ceph-介绍"><a class="markdownIt-Anchor" href="#ceph-介绍"></a> Ceph 介绍</h2>
+<p>Ceph 是一个符合 POSIX 的开源分布式存储系统，能提供 Ceph Object、Ceph RBD 和 Ceph FS 的存储能力。Ceph Cluster至少需要一个<code>Ceph Monitor</code> 和两个<code>OSD Daemon</code>，当运行 Ceph 文件系统客户端时，还必须要有元数据服务器（MDS）。</p>
+<p>Components:</p>
+<ul>
+<li>Monitors: 基于 PAXOS 算法维护集群状态的各种图表，包括监视器图、OSD图、PG图、CRUSH图。Ceph 保存( <code>epoch</code> )发生在 Monitor、OSD 和 PG 上的每一次状态变更的历史信息。</li>
+<li>OSDs: 存储数据，处理数据的复制、恢复、回填、再均衡，并通过检查其它 OSD 守护进程的心跳来向 Monitors 提供监控信息。当存储集群设定为 2个副本 时，至少需要 2个OSD守护进程，集群才能达到<code>active + clean</code>的状态，Ceph 默认为 3副本。</li>
+<li>MDSs: 存储 Ceph FS 元数据。（针对 Object/RBD 存储不需要 MDS）MDS也可以在多节点部署实现冗余。MDS守护进程可以被配置为活跃或者被动状态，活跃的MDS为主MDS，其他的MDS处于备用状态，当主MDS节点故障时，备用MDS节点会接管其工作并被提升为主节点。</li>
+</ul>
+          <div class="read-more">
+            <a href="/2018/03/13/ceph-cluster/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/03/10/k8s-pv/">K8S持久化卷</a>
         
       </h1>
@@ -317,59 +374,6 @@
           <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ yum -y install tigervnc-server</span><br><span class="line">$ su - acqua</span><br><span class="line">$ vncpasswd</span><br><span class="line">$ cp /lib/systemd/system/vncserver@.service  /etc/systemd/system/vncserver@:1.service</span><br><span class="line"></span><br><span class="line"><span class="comment"># port 5900+display</span></span><br><span class="line">$ vi /etc/systemd/system/vncserver@\:1.service</span><br><span class="line"></span><br><span class="line"><span class="comment"># Quick HowTo:</span></span><br><span class="line"><span class="comment"># 1. Copy this file to /etc/systemd/system/vncserver@.service</span></span><br><span class="line"><span class="comment"># 2. Replace &lt;USER&gt; with the actual user name and edit vncserver</span></span><br><span class="line"><span class="comment">#    parameters appropriately</span></span><br><span class="line"><span class="comment">#   ("User=&lt;USER&gt;" and "/home/&lt;USER&gt;/.vnc/%H%i.pid")</span></span><br><span class="line"><span class="comment"># 3. Run `systemctl daemon-reload`</span></span><br><span class="line"><span class="comment"># 4. Run `systemctl enable vncserver@:&lt;display&gt;.service`</span></span><br></pre></td></tr></table></figure>
           <div class="read-more">
             <a href="/2018/03/10/vnc/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/02/09/k8s-cluster/">K8S集群部署</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-02-09
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="what-is-kubernetes"><a class="markdownIt-Anchor" href="#what-is-kubernetes"></a> What is Kubernetes?</h2>
-<p><a href="https://kubernetes.io" target="_blank" rel="noopener">Kubernetes</a>是一个为容器应用自动部署、扩展和管理的开源系统（容器编排系统）。</p>
-<p><strong>Architecture</strong></p>
-<p><img src="/images/k8s-arch.png" alt></p>
-          <div class="read-more">
-            <a href="/2018/02/09/k8s-cluster/" class="read-more-link">Read more..</a>
           </div>
         
       

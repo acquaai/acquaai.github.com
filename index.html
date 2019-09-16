@@ -175,6 +175,59 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2019/09/16/using-ceph-rbd-persistent-storage/">Using Ceph RBD for persistent storage</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-09-16
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="overview"><a class="markdownIt-Anchor" href="#overview"></a> Overview</h2>
+<p>This topic provides a complete example of using an existing Ceph cluster for OKD persistent storage. It is assumed that a working Ceph cluster is already set up. If not, consult the <a href="https://access.redhat.com/products/red-hat-ceph-storage" target="_blank" rel="noopener">Overview of Red Hat Ceph Storage</a>.</p>
+<p>Persistent Storage Using Ceph Rados Block Device provides an explanation of persistent volumes (PVs), persistent volume claims (PVCs), and using Ceph RBD as persistent storage.</p>
+<h2 id="using-an-existing-ceph-cluster-for-persistent-storage"><a class="markdownIt-Anchor" href="#using-an-existing-ceph-cluster-for-persistent-storage"></a> Using an existing Ceph cluster for persistent storage</h2>
+          <div class="read-more">
+            <a href="/2019/09/16/using-ceph-rbd-persistent-storage/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2019/08/28/k8s-ha-with-kubeadm/">Creating Kubernetes HA cluster with kubeadm</a>
         
       </h1>
@@ -318,58 +371,6 @@
 <figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -dti \</span><br><span class="line">        --net=host \</span><br><span class="line">        --name=nexus \</span><br><span class="line">        --privileged=<span class="literal">true</span> \</span><br><span class="line">        --restart=always \</span><br><span class="line">        -e INSTALL4J_ADD_VM_PARAMS=<span class="string">"-Xms16g -Xmx16g -XX:MaxDirectMemorySize=24g"</span> \</span><br><span class="line">        -v /etc/localtime:/etc/localtime \</span><br><span class="line">        -v /nexus-data:/nexus-data \</span><br><span class="line">        sonatype/nexus3:3.18.1</span><br></pre></td></tr></table></figure>
           <div class="read-more">
             <a href="/2019/08/06/nexus-docker-registry/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/05/22/depoly-tornado-dev/">部署 Tornado 开发环境</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-05-22
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/Python/">Python</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p><code>Tornado</code>：<a href="http://www.tornadoweb.org/en/stable/" target="_blank" rel="noopener">Tornado</a> 是 Python 编写出来的一个极轻量级、高可伸缩性和非阻塞IO的Web服务器软件，例如前 Friendfeed 网站。</p>
-<p><code>Supervisor</code>：一个服务（进程）管理工具，主要用于监控服务器上的服务，并且在出现问题时自动重启。</p>
-<p><code>Nginx</code>：在这里作为反向代理。</p>
-          <div class="read-more">
-            <a href="/2018/05/22/depoly-tornado-dev/" class="read-more-link">Read more..</a>
           </div>
         
       
