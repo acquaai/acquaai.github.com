@@ -44,7 +44,7 @@ $ grep key /etc/ceph/ceph.client.qemu.keyring | awk '{printf "%s", $NF}' | base6
 `NOTE`: This base64 key is generated on one of the Ceph MON nodes using the **ceph auth get-key client.admin | base64** command, then copying the output and pasting it as the secret key’s value.
 
 
-## Create StorageClass(`Dynamic Volume Provisioning`) using Ceph RBD:
+## Create StorageClass(`Dynamic Volume Provisioning`) using Ceph RBD
 
 ```yaml
 apiVersion: v1
@@ -88,11 +88,22 @@ parameters:
   fsType: ext4
   imageFormat: "2"
   imageFeatures: "layering"
+---
+# StatefulSet
+......
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      labels:
+        app: elasticsearch
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+      storageClassName: ceph-rbd    
 ```
 
-```zsh
-$ kubectl apply -f elastic-sc.yaml
-```
 
 **[bug & fix](
 https://github.com/kubernetes/kubernetes/issues/38923#issuecomment-315255075)**:
@@ -101,6 +112,66 @@ https://github.com/kubernetes/kubernetes/issues/38923#issuecomment-315255075)**:
 Warning ProvisioningFailed 31s (x16 over 19m) persistentvolume-controller Failed to provision volume with StorageClass "ceph-elk": failed to create rbd image: executable file not found in $PATH, command output:
 ```
 
-**Ref**
 
-+ [静态PV](https://acquaai.github.io/2018/03/23/sonar/#持久卷-pv)
+## Create Static PV using Ceph RBD
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: elk
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ceph-secret-qemu
+  namespace: elk
+data:
+  key: QVFCNldYTmRtZ29iREJBQSt4dXorNHp0Wi33RWluR1J4U1hWcnc9PQ==
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ceph-elk-pv0
+  namespace: elk
+spec:
+  capacity:
+    storage: 64Gi
+  # The 'accessModes' are used as labels to match a PV and a PVC. They currently do not define any form of access control. All block storage is defined to be single user (non-
+shared storage).
+  accessModes:
+    - ReadWriteOnce
+  rbd:
+    monitors:
+    - 192.168.0.2:6789
+    - 192.168.0.3:6789
+    pool: rbd
+    # The 'vmd0' must be created on the Ceph cluster.
+    image: vmd0
+    user: admin
+    secretRef:
+      name: ceph-secret-qemu
+    fsType: ext4
+    readOnly: false
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ceph-elk-claim0
+  namespace: elk
+spec:
+  # The 'accessModes' do not enforce access rights but instead act as labels to match a PV to a PVC.
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 64Gi
+---
+# pod
+......
+    volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: ceph-elk-claim0      
+```
