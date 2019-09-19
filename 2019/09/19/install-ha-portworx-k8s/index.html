@@ -211,6 +211,8 @@
 <li><strong><a href="https://docs.portworx.com/portworx-install-with-kubernetes/on-premise/other/#" target="_blank" rel="noopener">Generating the Portworx specs</a></strong></li>
 <li><strong><a href="https://github.com/acquaai/Kubernetes/blob/master/CSI/Portworx/spec.yaml" target="_blank" rel="noopener">My spec</a></strong></li>
 </ul>
+<p>Get Kubernetes Version:</p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl version --short | awk -Fv <span class="string">'/Server Version: / &#123;print $3&#125;'</span></span><br></pre></td></tr></table></figure>
 <p>Portworx will create and manage an internal key-value store (kvdb) cluster.</p>
 <p>You can restrict the nodes that will run the key-value store by labelling your nodes with the label px/metadata-node=true. Only the nodes with the label will participate in the kvdb cluster. This allows you to use nodes with dedicated hardware for the key-value store.</p>
 <p><strong>For example</strong>:</p>
