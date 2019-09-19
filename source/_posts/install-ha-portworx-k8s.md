@@ -22,12 +22,18 @@ sdb                                 8:16   0  3.3T  0 disk
 
 Note the storage device sdb, which will be used by PX as one of it's raw block disks. All the nodes in this setup have the sdb device.
 
-<!---more--->
+<!-- more -->
 
 ## Generate the specs
 
 + **[Generating the Portworx specs](https://docs.portworx.com/portworx-install-with-kubernetes/on-premise/other/#)**
  + **[My spec](https://github.com/acquaai/Kubernetes/blob/master/CSI/Portworx/spec.yaml)**
+
+Get Kubernetes Version:
+
+```zsh
+kubectl version --short | awk -Fv '/Server Version: / {print $3}'
+```
 
 Portworx will create and manage an internal key-value store (kvdb) cluster.
 

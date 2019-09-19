@@ -112,6 +112,15 @@ https://github.com/kubernetes/kubernetes/issues/38923#issuecomment-315255075)**:
 Warning ProvisioningFailed 31s (x16 over 19m) persistentvolume-controller Failed to provision volume with StorageClass "ceph-elk": failed to create rbd image: executable file not found in $PATH, command output:
 ```
 
+Please check that `rbac/deployment.yaml` **quay.io/external_storage/rbd-provisioner:latest** image has the same Ceph version installed as your Ceph cluster. You can check it like this on any machine running docker:
+
+```zsh
+ceph-cluster:~$ ceph version
+ceph version 12.2.12 (1436006594665279fe734b4c15d7e08c13ebd777) luminous (stable)
+
+$ docker history quay.io/external_storage/rbd-provisioner:v1.0.0-k8s1.10 | grep CEPH_VERSION
+<missing>           15 months ago       /bin/sh -c #(nop)  ENV CEPH_VERSION=luminous    0B
+```
 
 ## Create Static PV using Ceph RBD
 
