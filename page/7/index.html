@@ -175,6 +175,60 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/01/27/docker-consul/">Consul服务发现</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-01-27
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <blockquote>
+<p>服务发现允许某个组件在想要与其它组件交互时，自动找到对方。由于这些应用本身是分布式的，服务发现机制也需要是分布式的。且服务发现作为分布式应用不同组件之间的&quot;胶水&quot;，其本身还需要足够动态、可靠、适应性强，而且可以快速且一致的共享关于这些服务数据。</p>
+</blockquote>
+<h2 id="consul"><a class="markdownIt-Anchor" href="#consul"></a> Consul</h2>
+<p>Consul 是使用<code>Raft</code>一致性算法来提供确定的写入机制的特殊数据存储器。Consul暴露了键值存储系统和服务分类系统，并提供高可用、高容错能力，保证强一致性。服务可以将自己注册到Consul，并以高可用且分布式的方式共享这些信息。</p>
+          <div class="read-more">
+            <a href="/2018/01/27/docker-consul/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/01/26/docker-app2/">构建Docker多容器应用</a>
         
       </h1>
@@ -336,60 +390,6 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$ cat Dockerfile </span><br><span class="line"></span><br><span class="line">FROM ubuntu:14.04</span><br><span class="line">MAINTAINER Acqua Young <span class="string">"acqua@gmail.com"</span></span><br><span class="line">ENV REFRESHED_AT 2018-01-20</span><br><span class="line"></span><br><span class="line">RUN apt-get update</span><br><span class="line">RUN apt-get -y install redis-server redis-tools</span><br><span class="line"></span><br><span class="line">EXPOSE 6379</span><br><span class="line">ENTRYPOINT [<span class="string">"/usr/bin/redis-server"</span>]</span><br><span class="line">CMD []</span><br><span class="line"></span><br><span class="line">$ docker build -t acqua/redis .</span><br><span class="line">$ docker run -d -p 6379 --name redis acqua/redis</span><br><span class="line"></span><br><span class="line">Docker默认会把公开的端口绑定到所有的网络接口上，localhost或127.0.0.1来访问。</span><br></pre></td></tr></table></figure>
           <div class="read-more">
             <a href="/2018/01/25/docker-app1/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/01/24/docker-essential/">Docker基础学习</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-01-24
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="install"><a class="markdownIt-Anchor" href="#install"></a> Install</h2>
-<p><a href="https://docs.docker.com/engine/installation/linux/docker-ce/centos/" target="_blank" rel="noopener">Docker CE</a></p>
-<h2 id="commonly-commands"><a class="markdownIt-Anchor" href="#commonly-commands"></a> Commonly Commands</h2>
-<p><code>$ docker run -ti --name ubuntu /bin/bash</code><br>
-基于ubuntu镜像启动一个新的new_C容器，并在容器中启动Bash Shell。</p>
-          <div class="read-more">
-            <a href="/2018/01/24/docker-essential/" class="read-more-link">Read more..</a>
           </div>
         
       

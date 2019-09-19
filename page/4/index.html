@@ -175,6 +175,73 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/03/23/sonar/">SonarQube on Kubernetes</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-23
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <blockquote>
+<p>本文中PostgreSQL使用 Ceph RBD 作为持久卷，SonarQube使用 NFS 作为持久卷。</p>
+</blockquote>
+<h2 id="requirements"><a class="markdownIt-Anchor" href="#requirements"></a> Requirements</h2>
+<ul>
+<li>Ceph 客户端</li>
+<li><code>kubernetes all Nodes</code>（尤其是 master 节点）上依然需要安装 。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ yum -y install ceph-common</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Kubernetes 使用 ceph 存储需要用到如下配置：</li>
+<li>Monitors: Ceph montors 列表</li>
+<li>Path：作为挂载的根路径，默认是 /</li>
+<li>User：RADOS用户名，默认是 admin</li>
+<li>secretFile：keyring 文件路径，默认是 /etc/ceph/keyring，Ceph 集群提供的文件是 ceph.client.admin.keyring</li>
+<li>secretRef：Ceph 认证 secret 的引用，如果配置了将会覆盖 secretFile。</li>
+<li>readOnly：该文件系统是否只读。</li>
+</ul>
+          <div class="read-more">
+            <a href="/2018/03/23/sonar/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/03/13/ceph-cluster/">Ceph Distributed Storage System</a>
         
       </h1>
@@ -324,56 +391,6 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ setsebool -P virt_use_nfs 1 (OR SELinux status: disabled)</span><br><span class="line">$ yum -y install nfs-utils libnfsidmap</span><br><span class="line">$ systemctl <span class="built_in">enable</span> rpcbind nfs-server</span><br><span class="line">$ systemctl start rpcbind nfs-server rpc-statd nfs-idmapd</span><br><span class="line"></span><br><span class="line">$ cat /etc/expots</span><br><span class="line">/nfs/sonar/conf 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line">/nfs/sonar/data 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line">/nfs/sonar/extensions 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line">/nfs/sonar/logs 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line"></span><br><span class="line">$ chmod -R 777 /nfs</span><br><span class="line">$ exportfs -r</span><br></pre></td></tr></table></figure>
           <div class="read-more">
             <a href="/2018/03/10/nfs/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/03/10/vnc/">VNC Server</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-03-10
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ yum -y install tigervnc-server</span><br><span class="line">$ su - acqua</span><br><span class="line">$ vncpasswd</span><br><span class="line">$ cp /lib/systemd/system/vncserver@.service  /etc/systemd/system/vncserver@:1.service</span><br><span class="line"></span><br><span class="line"><span class="comment"># port 5900+display</span></span><br><span class="line">$ vi /etc/systemd/system/vncserver@\:1.service</span><br><span class="line"></span><br><span class="line"><span class="comment"># Quick HowTo:</span></span><br><span class="line"><span class="comment"># 1. Copy this file to /etc/systemd/system/vncserver@.service</span></span><br><span class="line"><span class="comment"># 2. Replace &lt;USER&gt; with the actual user name and edit vncserver</span></span><br><span class="line"><span class="comment">#    parameters appropriately</span></span><br><span class="line"><span class="comment">#   ("User=&lt;USER&gt;" and "/home/&lt;USER&gt;/.vnc/%H%i.pid")</span></span><br><span class="line"><span class="comment"># 3. Run `systemctl daemon-reload`</span></span><br><span class="line"><span class="comment"># 4. Run `systemctl enable vncserver@:&lt;display&gt;.service`</span></span><br></pre></td></tr></table></figure>
-          <div class="read-more">
-            <a href="/2018/03/10/vnc/" class="read-more-link">Read more..</a>
           </div>
         
       

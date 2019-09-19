@@ -175,6 +175,68 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/04/02/helm/">Helm on Kubernetes</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-04-02
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="helm"><a class="markdownIt-Anchor" href="#helm"></a> Helm</h2>
+<p><a href="https://helm.sh" target="_blank" rel="noopener">Helm</a> 作为 Kubernetes 的包管理平台，类似 CentOS 的 yum 或 Ubuntu 的 apt-get 来部署管理 k8s 的应用。Helm Charts 能够帮你定义、安装、升级最复杂的 Kubernetes 应用集合，它容易创建，做版本化，共享和发布。在K8s上部署一些通用应用（组件）时，利用 Helm 可以获得业界统一的<code>最佳实践</code>的配置，从而减少时间成本。</p>
+<p>Helm Dictionary (概念):</p>
+<ul>
+<li>chart: a package; bundle of Kubernetes <a href="https://github.com/kubernetes/charts" target="_blank" rel="noopener">resources</a> (能够描述最复杂的应用，提供可重复，幂等性的安装，以及提供统一的认证中心服务。)</li>
+<li>Release: a chart instance is loaded into Kubernetes (提供实时的镜像升级，以及自定义 webhook，解决镜像升级的痛点。)
+<ul>
+<li>same chart can be installed several times into the same cluster; each will have it’s own Release</li>
+</ul>
+</li>
+<li>Repository: a repository of published Charts (版本化、共享、Heml 私有仓库。)</li>
+<li>Template: a Kubernetes configuration file mixed with Go/Sprig template</li>
+</ul>
+          <div class="read-more">
+            <a href="/2018/04/02/helm/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/03/29/spark-k8s/">Spark on Kubernetes</a>
         
       </h1>
@@ -312,73 +374,6 @@
           <p><img src="http://p564fpez5.bkt.clouddn.com/image/linuxlinux_perf_tools_full.png" alt></p>
           <div class="read-more">
             <a href="/2018/03/26/linuxperf/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/03/23/sonar/">SonarQube on Kubernetes</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-03-23
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <blockquote>
-<p>本文中PostgreSQL使用 Ceph RBD 作为持久卷，SonarQube使用 NFS 作为持久卷。</p>
-</blockquote>
-<h2 id="requirements"><a class="markdownIt-Anchor" href="#requirements"></a> Requirements</h2>
-<ul>
-<li>Ceph 客户端</li>
-<li><code>kubernetes all Nodes</code>（尤其是 master 节点）上依然需要安装 。</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ yum -y install ceph-common</span><br></pre></td></tr></table></figure>
-<ul>
-<li>Kubernetes 使用 ceph 存储需要用到如下配置：</li>
-<li>Monitors: Ceph montors 列表</li>
-<li>Path：作为挂载的根路径，默认是 /</li>
-<li>User：RADOS用户名，默认是 admin</li>
-<li>secretFile：keyring 文件路径，默认是 /etc/ceph/keyring，Ceph 集群提供的文件是 ceph.client.admin.keyring</li>
-<li>secretRef：Ceph 认证 secret 的引用，如果配置了将会覆盖 secretFile。</li>
-<li>readOnly：该文件系统是否只读。</li>
-</ul>
-          <div class="read-more">
-            <a href="/2018/03/23/sonar/" class="read-more-link">Read more..</a>
           </div>
         
       

@@ -175,6 +175,54 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2019/09/19/install-ha-portworx-k8s/">Install Portworx Cluster on Kubernetes(on-premise)</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-09-19
+        </span>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="prepare-hosts-with-storage"><a class="markdownIt-Anchor" href="#prepare-hosts-with-storage"></a> Prepare hosts with storage</h2>
+<p>Portworx (PX) requires at least some nodes in the cluster to have dedicated storage for Portworx to use. PX will then carve out virtual volumes from these storage pools. In this example, we use a 3.3T block device that exists on each node.</p>
+<p>List block devices on worker nodes</p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ lsblk</span><br><span class="line">NAME                              MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda                                 8:0    0  1.1T  0 disk </span><br><span class="line">├─sda1                              8:1    0  512M  0 part /boot/efi</span><br><span class="line">└─sda2                              8:2    0  1.1T  0 part </span><br><span class="line">  ├─w--192--31--16--16--vg-root   253:0    0  1.1T  0 lvm  /</span><br><span class="line">  └─w--192--31--16--16--vg-swap_1 253:1    0  976M  0 lvm  </span><br><span class="line">sdb                                 8:16   0  3.3T  0 disk</span><br></pre></td></tr></table></figure>
+<p>Note the storage device sdb, which will be used by PX as one of it’s raw block disks. All the nodes in this setup have the sdb device.</p>
+          <div class="read-more">
+            <a href="/2019/09/19/install-ha-portworx-k8s/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2019/09/16/using-ceph-rbd-persistent-storage/">Using Ceph RBD for persistent storage</a>
         
       </h1>
@@ -318,59 +366,6 @@
 <figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://storage.googleapis.com/harbor-releases/release-1.8.0/harbor-offline-installer-v1.8.2.tgz</span><br><span class="line">$ sudo tar xzvf harbor-offline-installer-v1.8.2.tgz  -C /</span><br></pre></td></tr></table></figure>
           <div class="read-more">
             <a href="/2019/08/06/harbor/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2019/08/06/nexus-docker-registry/">Nexus Docker Registry</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2019-08-06
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p>Sonatype Nexus OSS 3 开始支持 Docker 镜像仓库，当拉取的 images 在 docker(hosted) 仓库中不存在时，会自动从配置的 docker(proxy) 仓库中拉取。</p>
-<h2 id="deploy-nexus"><a class="markdownIt-Anchor" href="#deploy-nexus"></a> Deploy Nexus</h2>
-<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo mkdir /nexus-data</span><br><span class="line">$ sudo chmod -Rv 200 /nexus-data/</span><br></pre></td></tr></table></figure>
-<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -dti \</span><br><span class="line">        --net=host \</span><br><span class="line">        --name=nexus \</span><br><span class="line">        --privileged=<span class="literal">true</span> \</span><br><span class="line">        --restart=always \</span><br><span class="line">        -e INSTALL4J_ADD_VM_PARAMS=<span class="string">"-Xms16g -Xmx16g -XX:MaxDirectMemorySize=24g"</span> \</span><br><span class="line">        -v /etc/localtime:/etc/localtime \</span><br><span class="line">        -v /nexus-data:/nexus-data \</span><br><span class="line">        sonatype/nexus3:3.18.1</span><br></pre></td></tr></table></figure>
-          <div class="read-more">
-            <a href="/2019/08/06/nexus-docker-registry/" class="read-more-link">Read more..</a>
           </div>
         
       

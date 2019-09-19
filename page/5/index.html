@@ -175,6 +175,56 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/03/10/vnc/">VNC Server</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-10
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ yum -y install tigervnc-server</span><br><span class="line">$ su - acqua</span><br><span class="line">$ vncpasswd</span><br><span class="line">$ cp /lib/systemd/system/vncserver@.service  /etc/systemd/system/vncserver@:1.service</span><br><span class="line"></span><br><span class="line"><span class="comment"># port 5900+display</span></span><br><span class="line">$ vi /etc/systemd/system/vncserver@\:1.service</span><br><span class="line"></span><br><span class="line"><span class="comment"># Quick HowTo:</span></span><br><span class="line"><span class="comment"># 1. Copy this file to /etc/systemd/system/vncserver@.service</span></span><br><span class="line"><span class="comment"># 2. Replace &lt;USER&gt; with the actual user name and edit vncserver</span></span><br><span class="line"><span class="comment">#    parameters appropriately</span></span><br><span class="line"><span class="comment">#   ("User=&lt;USER&gt;" and "/home/&lt;USER&gt;/.vnc/%H%i.pid")</span></span><br><span class="line"><span class="comment"># 3. Run `systemctl daemon-reload`</span></span><br><span class="line"><span class="comment"># 4. Run `systemctl enable vncserver@:&lt;display&gt;.service`</span></span><br></pre></td></tr></table></figure>
+          <div class="read-more">
+            <a href="/2018/03/10/vnc/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/02/09/k8s-cluster/">K8S集群部署</a>
         
       </h1>
@@ -331,57 +381,6 @@
 </ul>
           <div class="read-more">
             <a href="/2018/02/03/ci-cd/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/02/01/inception/">Inception</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-02-01
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/MySQL/">MySQL</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="安装inception"><a class="markdownIt-Anchor" href="#安装inception"></a> 安装Inception</h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$ yum install bison cmake ncurses-devel openssl-devel libgcc gcc gcc-c++ git   **/ http://ftp.gnu.org/gnu/bison/</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/mysql-inception/inception.git</span><br><span class="line">$ <span class="built_in">cd</span> inception &amp;&amp; mkdir debug</span><br><span class="line">$ <span class="built_in">cd</span> debug</span><br><span class="line">$ cmake .. -DWITH_DEBUG=OFF \</span><br><span class="line"> 	-DWITH_ZLIB=system \</span><br><span class="line"> 	-DCMAKE_INSTALL_PREFIX=/var/inception \</span><br><span class="line"> 	-DWITH_SSL=bundled \</span><br><span class="line"> 	-DCMAKE_BUILD_TYPE=RELEASE \</span><br><span class="line"> 	-DWITH_ZLIB=bundled</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">-- Generating <span class="keyword">done</span></span><br><span class="line">-- Build files have been written to: /root/inception/debug</span><br><span class="line"></span><br><span class="line">$ make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-          <div class="read-more">
-            <a href="/2018/02/01/inception/" class="read-more-link">Read more..</a>
           </div>
         
       

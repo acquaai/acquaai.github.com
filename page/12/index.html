@@ -175,6 +175,58 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2017/11/11/SLB6/">Install LVS + Keepalived</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-11
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="preconfiguration-setup"><a class="markdownIt-Anchor" href="#preconfiguration-setup"></a> Preconfiguration setup</h2>
+<p><strong>略</strong></p>
+<h2 id="install-lvs"><a class="markdownIt-Anchor" href="#install-lvs"></a> Install LVS</h2>
+          <div class="read-more">
+            <a href="/2017/11/11/SLB6/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2017/11/11/SLB5/">HAProxy + Keepalived Configuration Examples(3)</a>
         
       </h1>
@@ -311,68 +363,6 @@
 <h3 id="haproxy-configure"><a class="markdownIt-Anchor" href="#haproxy-configure"></a> HAProxy Configure</h3>
           <div class="read-more">
             <a href="/2017/11/11/SLB3/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/11/11/SLB2/">Install HAProxy + Keepalived</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-11-11
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="preconfiguration-setup"><a class="markdownIt-Anchor" href="#preconfiguration-setup"></a> Preconfiguration setup</h2>
-<ul>
-<li>关闭防火墙</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ sudo cat /etc/redhat-release </span><br><span class="line">  CentOS Linux release 7.3.1611 (Core)</span><br><span class="line"></span><br><span class="line">$ sudo systemctl stop firewalld</span><br><span class="line">$ sudo systemctl <span class="built_in">disable</span> firewalld</span><br><span class="line">$ sudo sed -i <span class="string">'s#^SELINUX=.*#SELINUX=disabled#'</span> /etc/sysconfig/selinux</span><br><span class="line">$ sudo setenfore 0</span><br></pre></td></tr></table></figure>
-<ul>
-<li>修改主机名</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo hostnamectl</span><br><span class="line">$ sudo yum install -y ntp</span><br></pre></td></tr></table></figure>
-<ul>
-<li>配置NTP服务</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo systemctl start ntpd</span><br></pre></td></tr></table></figure>
-          <div class="read-more">
-            <a href="/2017/11/11/SLB2/" class="read-more-link">Read more..</a>
           </div>
         
       

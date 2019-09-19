@@ -175,6 +175,57 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/02/01/inception/">Inception</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-02-01
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/MySQL/">MySQL</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="安装inception"><a class="markdownIt-Anchor" href="#安装inception"></a> 安装Inception</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$ yum install bison cmake ncurses-devel openssl-devel libgcc gcc gcc-c++ git   **/ http://ftp.gnu.org/gnu/bison/</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/mysql-inception/inception.git</span><br><span class="line">$ <span class="built_in">cd</span> inception &amp;&amp; mkdir debug</span><br><span class="line">$ <span class="built_in">cd</span> debug</span><br><span class="line">$ cmake .. -DWITH_DEBUG=OFF \</span><br><span class="line"> 	-DWITH_ZLIB=system \</span><br><span class="line"> 	-DCMAKE_INSTALL_PREFIX=/var/inception \</span><br><span class="line"> 	-DWITH_SSL=bundled \</span><br><span class="line"> 	-DCMAKE_BUILD_TYPE=RELEASE \</span><br><span class="line"> 	-DWITH_ZLIB=bundled</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">-- Generating <span class="keyword">done</span></span><br><span class="line">-- Build files have been written to: /root/inception/debug</span><br><span class="line"></span><br><span class="line">$ make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+          <div class="read-more">
+            <a href="/2018/02/01/inception/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/01/31/xtrabackup/">Percona XtraBackup</a>
         
       </h1>
@@ -336,60 +387,6 @@
 <p>自动故障切换过程中，MHA尝试从故障主服务器上保存二进制日志，最大程度保证数据不丢失，但这并不总是可行。如，当主服务器硬件故障或无法通过SSH访问，MHA无法保存二进制日志，只进行故障转移而丢失了部分最新数据。使用MySQL的半同步复制，可在很大程度上降低数据丢失的风险。MHA与半同步复制结合，只要有一个slave已经收到最新的二进制日志，MHA可以将最新的二进制日志应用于其它所有的slave服务器上，以此保证所有节点数据一致性。</p>
           <div class="read-more">
             <a href="/2018/01/30/masterha/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/01/27/docker-consul/">Consul服务发现</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-01-27
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <blockquote>
-<p>服务发现允许某个组件在想要与其它组件交互时，自动找到对方。由于这些应用本身是分布式的，服务发现机制也需要是分布式的。且服务发现作为分布式应用不同组件之间的&quot;胶水&quot;，其本身还需要足够动态、可靠、适应性强，而且可以快速且一致的共享关于这些服务数据。</p>
-</blockquote>
-<h2 id="consul"><a class="markdownIt-Anchor" href="#consul"></a> Consul</h2>
-<p>Consul 是使用<code>Raft</code>一致性算法来提供确定的写入机制的特殊数据存储器。Consul暴露了键值存储系统和服务分类系统，并提供高可用、高容错能力，保证强一致性。服务可以将自己注册到Consul，并以高可用且分布式的方式共享这些信息。</p>
-          <div class="read-more">
-            <a href="/2018/01/27/docker-consul/" class="read-more-link">Read more..</a>
           </div>
         
       

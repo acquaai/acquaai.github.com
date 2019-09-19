@@ -175,6 +175,68 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2017/11/11/SLB2/">Install HAProxy + Keepalived</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-11
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="preconfiguration-setup"><a class="markdownIt-Anchor" href="#preconfiguration-setup"></a> Preconfiguration setup</h2>
+<ul>
+<li>关闭防火墙</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ sudo cat /etc/redhat-release </span><br><span class="line">  CentOS Linux release 7.3.1611 (Core)</span><br><span class="line"></span><br><span class="line">$ sudo systemctl stop firewalld</span><br><span class="line">$ sudo systemctl <span class="built_in">disable</span> firewalld</span><br><span class="line">$ sudo sed -i <span class="string">'s#^SELINUX=.*#SELINUX=disabled#'</span> /etc/sysconfig/selinux</span><br><span class="line">$ sudo setenfore 0</span><br></pre></td></tr></table></figure>
+<ul>
+<li>修改主机名</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo hostnamectl</span><br><span class="line">$ sudo yum install -y ntp</span><br></pre></td></tr></table></figure>
+<ul>
+<li>配置NTP服务</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo systemctl start ntpd</span><br></pre></td></tr></table></figure>
+          <div class="read-more">
+            <a href="/2017/11/11/SLB2/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2017/11/11/SLB1/">Server Load Balancer</a>
         
       </h1>
@@ -339,61 +401,6 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum install cmake libaio-devel libffi-devel glib2 glib2-devel</span><br><span class="line">$ sduo yum install Percona-Server-shared-56</span><br></pre></td></tr></table></figure>
           <div class="read-more">
             <a href="/2017/10/28/SQLAdvisor/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/10/28/ntpd-vs-ntpdate/">ntpd vs ntpdate</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-10-28
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <blockquote>
-<p>10月16日<a href="https://pingcap.com" target="_blank" rel="noopener">PingCAP</a>正式发布了TiDB 1.0版本，作为数据库的爱好者第一时间感受一下。在部署8节点的TiDB时，TiDB会precheck所有节点的时钟同步，而precheck的方式是<strong>only ntpd</strong>，由于OS来源于克隆模板，模板中采用了crontab的ntpdate &amp; hwclock -w方式来同步时间，so the question is coming, which one and why?</p>
-</blockquote>
-<p>The ntpd program is an operating system daemon which sets and maintains the system time of day in synchronism with Internet standard time servers. NTP provides a <code>smooth</code> time correction.</p>
-<p>ntpdate does not keep any state to perform this service for you so will not provide the same kind of accuracy. ntpdate corrects the system time <code>instantaneously</code>, which can cause problems with some software (<strong>Especially similar to database transactions, the time can’t jump back</strong>). ntpdate can be run manually as necessary to set the host clock, or it can be run from the host startup script to set the clock at boot time. It is also possible to run ntpdate from a cron script.</p>
-<p>NTP daemon uses sophisticated algorithms to maximize accuracy and reliability while minimizing resource use. Finally, since ntpdate does not discipline the host clock frequency as does ntpd, the accuracy using ntpdate is limited.</p>
-          <div class="read-more">
-            <a href="/2017/10/28/ntpd-vs-ntpdate/" class="read-more-link">Read more..</a>
           </div>
         
       

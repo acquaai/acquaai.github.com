@@ -175,6 +175,59 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2019/08/06/nexus-docker-registry/">Nexus Docker Registry</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-08-06
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p>Sonatype Nexus OSS 3 开始支持 Docker 镜像仓库，当拉取的 images 在 docker(hosted) 仓库中不存在时，会自动从配置的 docker(proxy) 仓库中拉取。</p>
+<h2 id="deploy-nexus"><a class="markdownIt-Anchor" href="#deploy-nexus"></a> Deploy Nexus</h2>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo mkdir /nexus-data</span><br><span class="line">$ sudo chmod -Rv 200 /nexus-data/</span><br></pre></td></tr></table></figure>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -dti \</span><br><span class="line">        --net=host \</span><br><span class="line">        --name=nexus \</span><br><span class="line">        --privileged=<span class="literal">true</span> \</span><br><span class="line">        --restart=always \</span><br><span class="line">        -e INSTALL4J_ADD_VM_PARAMS=<span class="string">"-Xms16g -Xmx16g -XX:MaxDirectMemorySize=24g"</span> \</span><br><span class="line">        -v /etc/localtime:/etc/localtime \</span><br><span class="line">        -v /nexus-data:/nexus-data \</span><br><span class="line">        sonatype/nexus3:3.18.1</span><br></pre></td></tr></table></figure>
+          <div class="read-more">
+            <a href="/2019/08/06/nexus-docker-registry/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/05/22/depoly-tornado-dev/">部署 Tornado 开发环境</a>
         
       </h1>
@@ -311,68 +364,6 @@
 </blockquote>
           <div class="read-more">
             <a href="/2018/04/04/helm-tidb-k8s/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/04/02/helm/">Helm on Kubernetes</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-04-02
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="helm"><a class="markdownIt-Anchor" href="#helm"></a> Helm</h2>
-<p><a href="https://helm.sh" target="_blank" rel="noopener">Helm</a> 作为 Kubernetes 的包管理平台，类似 CentOS 的 yum 或 Ubuntu 的 apt-get 来部署管理 k8s 的应用。Helm Charts 能够帮你定义、安装、升级最复杂的 Kubernetes 应用集合，它容易创建，做版本化，共享和发布。在K8s上部署一些通用应用（组件）时，利用 Helm 可以获得业界统一的<code>最佳实践</code>的配置，从而减少时间成本。</p>
-<p>Helm Dictionary (概念):</p>
-<ul>
-<li>chart: a package; bundle of Kubernetes <a href="https://github.com/kubernetes/charts" target="_blank" rel="noopener">resources</a> (能够描述最复杂的应用，提供可重复，幂等性的安装，以及提供统一的认证中心服务。)</li>
-<li>Release: a chart instance is loaded into Kubernetes (提供实时的镜像升级，以及自定义 webhook，解决镜像升级的痛点。)
-<ul>
-<li>same chart can be installed several times into the same cluster; each will have it’s own Release</li>
-</ul>
-</li>
-<li>Repository: a repository of published Charts (版本化、共享、Heml 私有仓库。)</li>
-<li>Template: a Kubernetes configuration file mixed with Go/Sprig template</li>
-</ul>
-          <div class="read-more">
-            <a href="/2018/04/02/helm/" class="read-more-link">Read more..</a>
           </div>
         
       

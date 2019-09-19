@@ -175,6 +175,60 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2017/12/02/binlog-rep/">Binlog - MySQL Classic Replication</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-12-02
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/MySQL/">MySQL</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p>GTID replication is <a href="https://acquaai.github.io/2017/12/03/gtid-rep/">here</a>.</p>
+<h2 id="install-mysql"><a class="markdownIt-Anchor" href="#install-mysql"></a> Install MySQL</h2>
+<p><a href="https://dev.mysql.com/downloads/repo/yum/" target="_blank" rel="noopener">Download MySQL Yum Repository</a><br>
+<a href="https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/" target="_blank" rel="noopener">Using the MySQL Yum Repository</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ yum update</span><br><span class="line">$ yum install -y net-tools yum-utils</span><br><span class="line">$ rpm -ivh mysql57-community-release-el7-11.noarch.rpm</span><br><span class="line">$ yum-config-manager --enable mysql57-community</span><br><span class="line">$ yum repolist enabled | grep mysql</span><br><span class="line">$ yum install mysql-community-server</span><br><span class="line">$ systemctl start mysqld</span><br><span class="line">$ grep &quot;temporary password&quot; /var/log/mysqld.log</span><br><span class="line">$ mysql -uroot -p</span><br><span class="line"></span><br><span class="line">mysql&gt; alter user &apos;root&apos;@&apos;localhost&apos; identified by &apos;Acqua@107&apos;;</span><br><span class="line">mysql&gt; flush privileges;</span><br><span class="line"></span><br><span class="line">$ mysql_secure_installation</span><br></pre></td></tr></table></figure>
+          <div class="read-more">
+            <a href="/2017/12/02/binlog-rep/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2017/11/29/golang/">Golang</a>
         
       </h1>
@@ -330,222 +384,6 @@
           <div class="read-more">
             <a href="/2017/11/29/Consistent-Network-Device-Naming/" class="read-more-link">Read more..</a>
           </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/11/23/git/">Daily use of git command</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-11-23
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-
-        
-          <table>
-<thead>
-<tr>
-<th>git 命令</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>git config --global <a href="http://user.name" target="_blank" rel="noopener">user.name</a> “xxx”</td>
-<td></td>
-</tr>
-<tr>
-<td>git config --global user.email “<a href="mailto:xxx@xxx.com" target="_blank" rel="noopener">xxx@xxx.com</a>”</td>
-<td></td>
-</tr>
-<tr>
-<td>git config <a href="http://user.name" target="_blank" rel="noopener">user.name</a></td>
-<td></td>
-</tr>
-<tr>
-<td>git config user.email</td>
-<td></td>
-</tr>
-<tr>
-<td>git init</td>
-<td></td>
-</tr>
-<tr>
-<td>git status [-s]</td>
-<td></td>
-</tr>
-<tr>
-<td>git add .</td>
-<td></td>
-</tr>
-<tr>
-<td>git commit -m “xxx”</td>
-<td></td>
-</tr>
-<tr>
-<td>git commit -am “xxx”</td>
-<td>已在管理库中的文件</td>
-</tr>
-<tr>
-<td>git log [–oneline] [–stat]</td>
-<td></td>
-</tr>
-<tr>
-<td>git diff [–cached]</td>
-<td></td>
-</tr>
-<tr>
-<td>git diff HEAD</td>
-<td></td>
-</tr>
-<tr>
-<td>git commit --amend --no-edit</td>
-<td>合并到上一次提交</td>
-</tr>
-<tr>
-<td>git reset file</td>
-<td></td>
-</tr>
-<tr>
-<td>git reset --hard HEAD</td>
-<td>移动指针</td>
-</tr>
-<tr>
-<td>git reset --hard HEAD^^ [=HEAD~2]</td>
-<td></td>
-</tr>
-<tr>
-<td>git reset --hard <code>id</code></td>
-<td></td>
-</tr>
-<tr>
-<td>git reflog [–hard <code>id</code>]</td>
-<td></td>
-</tr>
-<tr>
-<td>git reset --hard HEAD@{3}</td>
-<td></td>
-</tr>
-<tr>
-<td>git checkout <code>id</code> – file</td>
-<td></td>
-</tr>
-<tr>
-<td>git log --oneline --graph</td>
-<td></td>
-</tr>
-<tr>
-<td>git branch dev</td>
-<td></td>
-</tr>
-<tr>
-<td>git branch [-a][-r]</td>
-<td></td>
-</tr>
-<tr>
-<td>git checkout dev</td>
-<td></td>
-</tr>
-<tr>
-<td>git checkout -b dev</td>
-<td></td>
-</tr>
-<tr>
-<td>git branch master</td>
-<td></td>
-</tr>
-<tr>
-<td>git branch -d[D] dev</td>
-<td></td>
-</tr>
-<tr>
-<td>git branch --merged</td>
-<td>显示所有已合并到当前分支的分支</td>
-</tr>
-<tr>
-<td>git branch --no-merged</td>
-<td>显示所有未合并到当前分支的分支</td>
-</tr>
-<tr>
-<td>git branch -m master master_copy</td>
-<td>本地分支改名</td>
-</tr>
-<tr>
-<td>git merge --no-ff -m “keep merge info” dev</td>
-<td></td>
-</tr>
-<tr>
-<td>git rebase dev</td>
-<td></td>
-</tr>
-<tr>
-<td>git rebase [–continue][ ][ ]</td>
-<td></td>
-</tr>
-<tr>
-<td>git stash</td>
-<td></td>
-</tr>
-<tr>
-<td>git stash pop</td>
-<td></td>
-</tr>
-<tr>
-<td>git show master@{yesterday}</td>
-<td>显示master分支昨天的状态</td>
-</tr>
-<tr>
-<td>git stash</td>
-<td>暂存当前修改，将所有至为HEAD状态</td>
-</tr>
-<tr>
-<td>git stash list</td>
-<td>查看所有暂存</td>
-</tr>
-<tr>
-<td>git stash show -p stash@{0}</td>
-<td>参考第一次暂存</td>
-</tr>
-<tr>
-<td>git stash apply stash@{0}</td>
-<td>应用第一次暂存</td>
-</tr>
-</tbody>
-</table>
-<p><a href="https://git-scm.com/docs" target="_blank" rel="noopener">Reference <code>git</code></a></p>
-
         
       
     </div>

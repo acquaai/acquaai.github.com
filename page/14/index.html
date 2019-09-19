@@ -175,6 +175,61 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2017/10/28/ntpd-vs-ntpdate/">ntpd vs ntpdate</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-10-28
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <blockquote>
+<p>10月16日<a href="https://pingcap.com" target="_blank" rel="noopener">PingCAP</a>正式发布了TiDB 1.0版本，作为数据库的爱好者第一时间感受一下。在部署8节点的TiDB时，TiDB会precheck所有节点的时钟同步，而precheck的方式是<strong>only ntpd</strong>，由于OS来源于克隆模板，模板中采用了crontab的ntpdate &amp; hwclock -w方式来同步时间，so the question is coming, which one and why?</p>
+</blockquote>
+<p>The ntpd program is an operating system daemon which sets and maintains the system time of day in synchronism with Internet standard time servers. NTP provides a <code>smooth</code> time correction.</p>
+<p>ntpdate does not keep any state to perform this service for you so will not provide the same kind of accuracy. ntpdate corrects the system time <code>instantaneously</code>, which can cause problems with some software (<strong>Especially similar to database transactions, the time can’t jump back</strong>). ntpdate can be run manually as necessary to set the host clock, or it can be run from the host startup script to set the clock at boot time. It is also possible to run ntpdate from a cron script.</p>
+<p>NTP daemon uses sophisticated algorithms to maximize accuracy and reliability while minimizing resource use. Finally, since ntpdate does not discipline the host clock frequency as does ntpd, the accuracy using ntpdate is limited.</p>
+          <div class="read-more">
+            <a href="/2017/10/28/ntpd-vs-ntpdate/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2017/10/24/hello-world/">Hello World</a>
         
       </h1>

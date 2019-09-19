@@ -175,6 +175,60 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/01/24/docker-essential/">Docker基础学习</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-01-24
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="install"><a class="markdownIt-Anchor" href="#install"></a> Install</h2>
+<p><a href="https://docs.docker.com/engine/installation/linux/docker-ce/centos/" target="_blank" rel="noopener">Docker CE</a></p>
+<h2 id="commonly-commands"><a class="markdownIt-Anchor" href="#commonly-commands"></a> Commonly Commands</h2>
+<p><code>$ docker run -ti --name ubuntu /bin/bash</code><br>
+基于ubuntu镜像启动一个新的new_C容器，并在容器中启动Bash Shell。</p>
+          <div class="read-more">
+            <a href="/2018/01/24/docker-essential/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2017/12/28/prometheus-alertmanager/">Prometheus Alerting</a>
         
       </h1>
@@ -319,62 +373,6 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">mysql01:</span><br><span class="line">mysql&gt; install plugin group_replication soname "group_replication.so";</span><br><span class="line">mysql&gt; show plugins;</span><br><span class="line">mysql&gt; set global group_replication_group_name = "a7b884ed-5d97-466a-b676-8ca0466063fd";</span><br><span class="line">mysql&gt; set global group_replication_local_address = "10.0.88.171:24901";</span><br><span class="line"></span><br><span class="line">mysql&gt; set sql_log_bin = 0;</span><br><span class="line">mysql&gt; create user 'rpl_user'@'%' identified by 'rpl_password';</span><br><span class="line">mysql&gt; grant replication slave on *.* to rpl_user@'%' identified by 'rpl_password';</span><br><span class="line">mysql&gt; change master to master_user = 'rpl_user',master_password = 'rpl_password'</span><br><span class="line">	for channel 'group_replication_recovery';</span><br><span class="line">mysql&gt; set sql_log_bin = 1;</span><br><span class="line"></span><br><span class="line">mysql&gt; set global group_replication_bootstrap_group = on;</span><br><span class="line">mysql&gt; start group replication;</span><br><span class="line">mysql&gt; set global group_replication_bootstrap_group = off;</span><br></pre></td></tr></table></figure>
           <div class="read-more">
             <a href="/2017/12/17/mgr-single-m-example/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/12/16/mgr-single-m/">MGR单主复制配置流程</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-12-16
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/MySQL/">MySQL</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="mysql的参数设置"><a class="markdownIt-Anchor" href="#mysql的参数设置"></a> MySQL的参数设置</h2>
-<p><code>修改MySQL参数文件---/etc/my.cnf</code></p>
-<h3 id="开启binlog和relaylog功能"><a class="markdownIt-Anchor" href="#开启binlog和relaylog功能"></a> 开启Binlog和Relaylog功能</h3>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">server_id = 1</span><br><span class="line">log_bin = binlog</span><br><span class="line">log_slave_updates = ON</span><br><span class="line">relay_log = relay-log</span><br></pre></td></tr></table></figure>
-<h3 id="开启gtid功能"><a class="markdownIt-Anchor" href="#开启gtid功能"></a> 开启GTID功能</h3>
-<p>Group Replication必须使用GTID功能。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gtid_mode = ON</span><br><span class="line">enforce_gtid_consistency = ON</span><br></pre></td></tr></table></figure>
-          <div class="read-more">
-            <a href="/2017/12/16/mgr-single-m/" class="read-more-link">Read more..</a>
           </div>
         
       
