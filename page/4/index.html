@@ -206,23 +206,11 @@
 
         
           <blockquote>
-<p>本文中PostgreSQL使用 Ceph RBD 作为持久卷，SonarQube使用 NFS 作为持久卷。</p>
+<p>本文中PostgreSQL使用 <a href="https://acquaai.github.io/2019/09/16/using-ceph-rbd-persistent-storage/">Ceph RBD</a> 作为持久卷，SonarQube使用 NFS 作为持久卷。</p>
 </blockquote>
-<h2 id="requirements"><a class="markdownIt-Anchor" href="#requirements"></a> Requirements</h2>
-<ul>
-<li>Ceph 客户端</li>
-<li><code>kubernetes all Nodes</code>（尤其是 master 节点）上依然需要安装 。</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ yum -y install ceph-common</span><br></pre></td></tr></table></figure>
-<ul>
-<li>Kubernetes 使用 ceph 存储需要用到如下配置：</li>
-<li>Monitors: Ceph montors 列表</li>
-<li>Path：作为挂载的根路径，默认是 /</li>
-<li>User：RADOS用户名，默认是 admin</li>
-<li>secretFile：keyring 文件路径，默认是 /etc/ceph/keyring，Ceph 集群提供的文件是 ceph.client.admin.keyring</li>
-<li>secretRef：Ceph 认证 secret 的引用，如果配置了将会覆盖 secretFile。</li>
-<li>readOnly：该文件系统是否只读。</li>
-</ul>
+<h2 id="安装-postgresql"><a class="markdownIt-Anchor" href="#安装-postgresql"></a> 安装 PostgreSQL</h2>
+<h3 id="创建-postgresql-secret"><a class="markdownIt-Anchor" href="#创建-postgresql-secret"></a> 创建 PostgreSQL Secret</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> -n sonar | base64</span><br><span class="line">c29uYXI=</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">echo</span> -n Passw0rd | base64</span><br><span class="line">UGFzc3cwcmQ=</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">echo</span> -n sonardb | base64</span><br><span class="line">c29uYXJkYg==</span><br><span class="line"></span><br><span class="line"><span class="comment">#与 echo -n 作用相同</span></span><br><span class="line">$ tr --delete <span class="string">'\n'</span> &lt; mysql-root-pwd.txt &gt; .strippedmysql-root-pwd.txt &amp;&amp; mv .strippedmysql-root-pwd.txt mysql-root-pwd.txt</span><br><span class="line"></span><br><span class="line">OR</span><br><span class="line">$ kubectl create secret generic mysql-secrets --from-literal=root-user=root --from-literal=root-password=Passw0rd --from-literal=mysql-database=sonardb --from-literal=mysql-user=sonar --from-literal=mysql-password=sonar -n sonar</span><br><span class="line"></span><br><span class="line">OR</span><br><span class="line">$ kubectl create secret generic mysql-root-pwd --from-file=mysql-root-pwd.txt -n sonar</span><br></pre></td></tr></table></figure>
           <div class="read-more">
             <a href="/2018/03/23/sonar/" class="read-more-link">Read more..</a>
           </div>

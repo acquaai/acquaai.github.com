@@ -184,6 +184,12 @@
           2019-09-19
         </span>
         
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
         
       </div>
     </header>
@@ -216,7 +222,7 @@
 <p>Portworx will create and manage an internal key-value store (kvdb) cluster.</p>
 <p>You can restrict the nodes that will run the key-value store by labelling your nodes with the label px/metadata-node=true. Only the nodes with the label will participate in the kvdb cluster. This allows you to use nodes with dedicated hardware for the key-value store.</p>
 <p><strong>For example</strong>:</p>
-<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl label nodes node1 node2 node3 px/metadata-node=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl label nodes node1 node2 node3 px/metadata-node=<span class="literal">true</span>   (labeled)</span><br><span class="line"></span><br><span class="line">kubectl label nodes node1 node2 node3 px/metadata-node-   (remove label)</span><br></pre></td></tr></table></figure>
 <h2 id="apply-the-specs"><a class="markdownIt-Anchor" href="#apply-the-specs"></a> Apply the specs</h2>
 <figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl create secret generic registrykey --from-file=.dockerconfigjson=.docker/config.json --<span class="built_in">type</span>=kubernetes.io/dockerconfigjson -n kube-system</span><br><span class="line">kubectl apply -f spec.yaml</span><br></pre></td></tr></table></figure>
 <p><code>NOTE</code>: <strong>portworx/px-enterprise:2.1.5</strong> image is need to  be.</p>
