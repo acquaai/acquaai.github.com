@@ -14,7 +14,7 @@ Persistent Storage Using Ceph Rados Block Device provides an explanation of pers
 
 <!-- more -->
 
-* Install the latest ceph-common package:
+* Install the ceph-common package same as ceph-cluster.
 
 ```yaml
     - name: update apt cache
@@ -74,7 +74,6 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: ceph-rbd
-  namespace: elk
 provisioner: ceph.com/rbd
 parameters:
   monitors: 192.168.0.2:6789,192.168.0.3:6789
@@ -123,6 +122,10 @@ $ docker history quay.io/external_storage/rbd-provisioner:v1.0.0-k8s1.10 | grep 
 ```
 
 ## Create Static PV using Ceph RBD
+
+```zsh
+ceph-cluster:~$ rbd create vmd0 -s 64G
+```
 
 ```yaml
 apiVersion: v1

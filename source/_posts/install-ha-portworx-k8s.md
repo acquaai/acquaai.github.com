@@ -1,7 +1,7 @@
 ---
 title: Install Portworx Cluster on Kubernetes(on-premise)
 date: 2019-09-19 22:22:13
-catagory: DevOps
+categories: DevOps
 ---
 ## Prepare hosts with storage
 
@@ -42,7 +42,9 @@ You can restrict the nodes that will run the key-value store by labelling your n
 **For example**:
 
 ```zsh
-kubectl label nodes node1 node2 node3 px/metadata-node=true
+kubectl label nodes node1 node2 node3 px/metadata-node=true   (labeled)
+
+kubectl label nodes node1 node2 node3 px/metadata-node-   (remove label)
 ```
 
 
