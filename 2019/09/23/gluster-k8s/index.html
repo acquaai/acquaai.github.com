@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="GlusterFS Native Storage Service for Kubernetes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2019/09/23/gluster-k8s/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> GlusterFS Native Storage Service for Kubernetes - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          GlusterFS Native Storage Service for Kubernetes
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-09-23
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#configuring-glusterfs"><span class="toc-text"> Configuring GlusterFS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#deploy-heketi-and-glusterfs"><span class="toc-text"> Deploy heketi and GlusterFS</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="configuring-glusterfs"><a class="markdownIt-Anchor" href="#configuring-glusterfs"></a> Configuring GlusterFS</h2>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/gluster/gluster-kubernetes.git</span><br></pre></td></tr></table></figure>
+<p>Copy the <code>deploy/</code> directory to the master node of the Kubernetes cluster.</p>
+<p>You will have to provide your own topology file. A sample topology file is included in the <code>deploy/</code> directory (default location that gk-deploy expects) which can be used as the topology for the vagrant libvirt setup. When creating your own topology file:</p>
+<ul>
+<li>Make sure the topology file only lists block devices intended for heketi’s use. heketi needs access to whole block devices (e.g. /dev/sdb, /dev/vdb) which it will partition and format.</li>
+<li>The <code>hostnames</code> array is a bit misleading. <code>manage</code> should be a list of hostnames for the node, but <code>storage</code> should be a list of IP addresses on the node for backend storage communications.</li>
+</ul>
+<a id="more"></a>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">$ cat topology.json</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"clusters"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"nodes"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="string">"node"</span>: &#123;</span><br><span class="line">            <span class="string">"hostnames"</span>: &#123;</span><br><span class="line">              <span class="string">"manage"</span>: [</span><br><span class="line">                <span class="string">"w-192-168-16-14"</span></span><br><span class="line">              ],</span><br><span class="line">              <span class="string">"storage"</span>: [</span><br><span class="line">                <span class="string">"192.168.16.14"</span></span><br><span class="line">              ]</span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="string">"zone"</span>: 1</span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="string">"devices"</span>: [</span><br><span class="line">            <span class="string">"/dev/sdb"</span></span><br><span class="line">          ]</span><br><span class="line">        &#125;,</span><br><span class="line">        ......</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Installing gluster client on related worker nodes</strong></p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install -y glusterfs-client</span><br></pre></td></tr></table></figure>
+<h2 id="deploy-heketi-and-glusterfs"><a class="markdownIt-Anchor" href="#deploy-heketi-and-glusterfs"></a> Deploy heketi and GlusterFS</h2>
+<p>Verify the Kubernetes installation by making sure all nodes are Ready:</p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get cs,nodes</span><br></pre></td></tr></table></figure>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./gk-deploy -g --admin-key &lt;key&gt; --user-key &lt;key&gt;</span><br></pre></td></tr></table></figure>
+<p><code>NOTE:</code></p>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">Welcome to the deployment tool for GlusterFS on Kubernetes and OpenShift.</span><br><span class="line"></span><br><span class="line">Before getting started, this script has some requirements of the execution</span><br><span class="line">environment and of the container platform that you should verify.</span><br><span class="line"></span><br><span class="line">The client machine that will run this script must have:</span><br><span class="line"> * Administrative access to an existing Kubernetes or OpenShift cluster</span><br><span class="line"> * Access to a python interpreter 'python'</span><br><span class="line"></span><br><span class="line">Each of the nodes that will host GlusterFS must also have appropriate firewall</span><br><span class="line">rules for the required GlusterFS ports:</span><br><span class="line"> * 2222  - sshd (if running GlusterFS in a pod)</span><br><span class="line"> * 24007 - GlusterFS Management</span><br><span class="line"> * 24008 - GlusterFS RDMA</span><br><span class="line"> * 49152 to 49251 - Each brick for every volume on the host requires its own</span><br><span class="line">   port. For every new brick, one new port will be used starting at 49152. We</span><br><span class="line">   recommend a default range of 49152-49251 on each host, though you can adjust</span><br><span class="line">   this to fit your needs.</span><br><span class="line"></span><br><span class="line">The following kernel modules must be loaded:</span><br><span class="line"> * dm_snapshot</span><br><span class="line"> * dm_mirror</span><br><span class="line"> * dm_thin_pool</span><br><span class="line"></span><br><span class="line">For systems with SELinux, the following settings need to be considered:</span><br><span class="line"> * virt_sandbox_use_fusefs should be enabled on each node to allow writing to</span><br><span class="line">   remote GlusterFS volumes</span><br><span class="line"></span><br><span class="line">In addition, for an OpenShift deployment you must:</span><br><span class="line"> * Have 'cluster_admin' role on the administrative account doing the deployment</span><br><span class="line"> * Add the 'default' and 'router' Service Accounts to the 'privileged' SCC</span><br><span class="line"> * Have a router deployed that is configured to allow apps to access services</span><br><span class="line">   running in the cluster</span><br><span class="line"></span><br><span class="line">Do you wish to proceed with deployment?</span><br><span class="line"></span><br><span class="line">[Y]es, [N]o? [Default: Y]:</span><br></pre></td></tr></table></figure>
+<p>A few minutes later, you may will get some resources like this:</p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get pod</span><br><span class="line">NAME                      READY   STATUS    RESTARTS   AGE</span><br><span class="line">glusterfs-gmx44           1/1     Running   0          31m</span><br><span class="line">glusterfs-gzpvg           1/1     Running   0          31m</span><br><span class="line">glusterfs-rb7t7           1/1     Running   0          31m</span><br><span class="line">heketi-8658674597-bztc8   1/1     Running   0          16m</span><br><span class="line"></span><br><span class="line">$ kubectl get endpoints</span><br><span class="line">NAME                       ENDPOINTS                                                  AGE</span><br><span class="line">heketi                     10.244.84.58:8080                                          17m</span><br><span class="line">heketi-storage-endpoints   192.168.16.14:1,192.168.16.15:1,192.168.16.16:1            16m</span><br><span class="line">kubernetes                 192.168.16.11:6443,192.168.16.12:6443,192.168.16.13:6443   31d</span><br><span class="line"></span><br><span class="line">$ kubectl get svc</span><br><span class="line">NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE</span><br><span class="line">heketi                     ClusterIP   10.100.236.131   &lt;none&gt;        8080/TCP   17m</span><br><span class="line">heketi-storage-endpoints   ClusterIP   10.109.192.23    &lt;none&gt;        1/TCP      18m</span><br><span class="line">kubernetes                 ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP    31d</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">export</span> HEKETI_CLI_SERVER=$(kubectl get svc/heketi --template <span class="string">'http://&#123;&#123;.spec.clusterIP&#125;&#125;:&#123;&#123;(index .spec.ports 0).port&#125;&#125;'</span>)</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">echo</span> <span class="variable">$HEKETI_CLI_SERVER</span></span><br><span class="line">http://10.100.236.131:8080</span><br><span class="line"></span><br><span class="line">$ kubectl create -f gluster-storage-class.yaml</span><br><span class="line">apiVersion: storage.k8s.io/v1beta1</span><br><span class="line">kind: StorageClass</span><br><span class="line">metadata:</span><br><span class="line">  name: gluster-heketi</span><br><span class="line">provisioner: kubernetes.io/glusterfs</span><br><span class="line">parameters:</span><br><span class="line">  resturl: <span class="string">"http://10.100.236.131:8080"</span></span><br><span class="line">  restuser: <span class="string">"admin"</span></span><br><span class="line">  restuserkey: <span class="string">"&lt;--key--&gt;"</span></span><br><span class="line">  </span><br><span class="line">$ kubectl create -f gluster-pvc.yaml </span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">metadata:</span><br><span class="line"> name: gluster1</span><br><span class="line"> annotations:</span><br><span class="line">   volume.beta.kubernetes.io/storage-class: gluster-heketi</span><br><span class="line">spec:</span><br><span class="line"> accessModes:</span><br><span class="line">  - ReadWriteOnce</span><br><span class="line"> resources:</span><br><span class="line">   requests:</span><br><span class="line">     storage: 5Gi</span><br><span class="line">     </span><br><span class="line">$ kubectl get pvc</span><br><span class="line">NAME       STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS     AGE</span><br><span class="line">gluster1   Bound    pvc-012cdd87-0fe6-4dcc-9279-f07c853069f7   5Gi        RWO            gluster-heketi   11s</span><br><span class="line"></span><br><span class="line">$ kubectl get pv</span><br><span class="line">NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM              STORAGECLASS     REASON   AGE</span><br><span class="line">pvc-012cdd87-0fe6-4dcc-9279-f07c853069f7   5Gi        RWO            Delete           Bound    default/gluster1   gluster-heketi            39s</span><br></pre></td></tr></table></figure>
+<p><strong>Question</strong>:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">......</span></span><br><span class="line"><span class="string">Controlled</span> <span class="attr">By:</span>  <span class="string">Job/heketi-storage-copy-job</span></span><br><span class="line"><span class="attr">Containers:</span></span><br><span class="line"><span class="attr">  heketi:</span></span><br><span class="line">    <span class="string">Container</span> <span class="attr">ID:</span>  </span><br><span class="line"><span class="attr">    Image:</span>         <span class="string">heketi/heketi:dev</span> <span class="comment"># where to modify?</span></span><br><span class="line"><span class="string">......</span></span><br></pre></td></tr></table></figure>
+<p><strong>Ref</strong></p>
+<ul>
+<li><a href="https://github.com/gluster/gluster-kubernetes" target="_blank" rel="noopener">Gluster-Kubernetes</a></li>
+<li><a href="https://github.com/gluster/gluster-kubernetes/blob/master/docs/examples/hello_world/README.md" target="_blank" rel="noopener">GlusterFS Dynamic Provisioning</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2019/09/23/gluster-k8s/">https://acquaai.github.io/2019/09/23/gluster-k8s/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2019/09/19/install-ha-portworx-k8s/">
+        <span class="next-text nav-default">Install Portworx Cluster on Kubernetes(on-premise)</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2019/09/23/gluster-k8s/';
+        this.page.identifier = '2019/09/23/gluster-k8s/';
+        this.page.title = 'GlusterFS Native Storage Service for Kubernetes';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

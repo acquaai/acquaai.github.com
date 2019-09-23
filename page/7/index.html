@@ -175,6 +175,68 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/01/30/masterha/">MHA - MySQL High Available</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-01-30
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/MySQL/">MySQL</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="masterha"><a class="markdownIt-Anchor" href="#masterha"></a> MasterHA</h2>
+<ol>
+<li>MHA是一个免费的开源软件。</li>
+<li>在已启用<code>MySQL复制</code>的系统中，无需改变系统和重新设计数据库即可使用MHA。</li>
+<li>MHA易于实施，使用简单。</li>
+</ol>
+<p>MHA benefits:</p>
+<ul>
+<li>Automatic fail-over</li>
+<li>Fast online master switching</li>
+</ul>
+<p>MHA（Master High Availability）是MySQL的高可用解决方案，故障切换0~30s完成，并在最大程度上保证数据一致性。MHA由管理节点（Manager）和数据节点（Node）组成。Manager可以单独部署在一台独立的主机上管理多个master-slave(Application)集群<code>[推荐]</code>，也可以部署在一台slave节点上。Node运行在所有MySQL服务器上，Manager定时probe集群中的Master节点，当master故障时，它自动将最新数据的slave提升为新的master，然后所有其它slave重新指向新的master，整个故障切换过程对应用程序完全透明。</p>
+<p>自动故障切换过程中，MHA尝试从故障主服务器上保存二进制日志，最大程度保证数据不丢失，但这并不总是可行。如，当主服务器硬件故障或无法通过SSH访问，MHA无法保存二进制日志，只进行故障转移而丢失了部分最新数据。使用MySQL的半同步复制，可在很大程度上降低数据丢失的风险。MHA与半同步复制结合，只要有一个slave已经收到最新的二进制日志，MHA可以将最新的二进制日志应用于其它所有的slave服务器上，以此保证所有节点数据一致性。</p>
+          <div class="read-more">
+            <a href="/2018/01/30/masterha/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/01/27/docker-consul/">Consul服务发现</a>
         
       </h1>
@@ -339,57 +401,6 @@
 图片来源Google</p>
           <div class="read-more">
             <a href="/2018/01/25/docker-ci/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/01/25/docker-app1/">构建Docker容器应用</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-01-25
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="redis容器应用"><a class="markdownIt-Anchor" href="#redis容器应用"></a> Redis容器应用</h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$ cat Dockerfile </span><br><span class="line"></span><br><span class="line">FROM ubuntu:14.04</span><br><span class="line">MAINTAINER Acqua Young <span class="string">"acqua@gmail.com"</span></span><br><span class="line">ENV REFRESHED_AT 2018-01-20</span><br><span class="line"></span><br><span class="line">RUN apt-get update</span><br><span class="line">RUN apt-get -y install redis-server redis-tools</span><br><span class="line"></span><br><span class="line">EXPOSE 6379</span><br><span class="line">ENTRYPOINT [<span class="string">"/usr/bin/redis-server"</span>]</span><br><span class="line">CMD []</span><br><span class="line"></span><br><span class="line">$ docker build -t acqua/redis .</span><br><span class="line">$ docker run -d -p 6379 --name redis acqua/redis</span><br><span class="line"></span><br><span class="line">Docker默认会把公开的端口绑定到所有的网络接口上，localhost或127.0.0.1来访问。</span><br></pre></td></tr></table></figure>
-          <div class="read-more">
-            <a href="/2018/01/25/docker-app1/" class="read-more-link">Read more..</a>
           </div>
         
       

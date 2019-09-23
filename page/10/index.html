@@ -175,6 +175,84 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2017/12/03/xfs-resizing/">XFS filesystem resizing</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-12-03
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="shrink"><a class="markdownIt-Anchor" href="#shrink"></a> Shrink</h2>
+<p><a href="http://xfs.org/" target="_blank" rel="noopener">XFS</a>由硅谷图形开发，支持在线碎片整理和扩容，截至到2017年8月，暂不支持在线收缩，只能dump, mkfs and restore。</p>
+<ul>
+<li>
+<p>Backup home<br>
+<code>$ yum install xfsdump</code><br>
+<code>$ xfsdump -f /tmp/home.dump /home</code></p>
+</li>
+<li>
+<p>umount home<br>
+<code>$ umount /home</code></p>
+</li>
+<li>
+<p>Resize<br>
+<code>lvreduce -L 40G /dev/cl/home</code></p>
+</li>
+<li>
+<p>Recreate xfs filesystem<br>
+<code>$ mkfs.xfs -f /dev/cl/home</code></p>
+</li>
+<li>
+<p>mount home<br>
+<code>$ mount /dev/mapper/cl-home /home</code></p>
+</li>
+<li>
+<p>Restore home<br>
+<code>$ xfsrestore -f /tmp/home.dump /home</code></p>
+</li>
+</ul>
+          <div class="read-more">
+            <a href="/2017/12/03/xfs-resizing/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2017/12/02/binlog-rep/">Binlog - MySQL Classic Replication</a>
         
       </h1>
@@ -327,62 +405,6 @@
 </ul>
           <div class="read-more">
             <a href="/2017/11/29/Prometheus-Monitoring/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/11/29/Consistent-Network-Device-Naming/">Consistent Network Device Naming</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-11-29
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/ch-consistent_network_device_naming#sec-Naming_Schemes_Hierarchy" target="_blank" rel="noopener">Naming Schemes Hierarchy</a></p>
-<ul>
-<li>Add “net.ifnames=0” and “biosdevname=0” as kernel arguments to grub</li>
-<li>In ‘/etc/sysconfig/network-scripts/’ Change your configured NIC config file to ‘ifcfg-ethX’</li>
-<li>If you have multiple interfaces and want to control naming of each device rather than letting the kernel do in its own way, /etc/udev/rules.d/60-net.rules seems necessary to override /usr/lib/udev/rules.d/60-net.rules.</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/default/grub</span><br><span class="line">...</span><br><span class="line">GRUB_CMDLINE_LINUX=<span class="string">"XXX quiet net.ifnames=0 biosdevname=0"</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">$ grub2-mkconfig -o /boot/grub2/grub.cfg</span><br></pre></td></tr></table></figure>
-          <div class="read-more">
-            <a href="/2017/11/29/Consistent-Network-Device-Naming/" class="read-more-link">Read more..</a>
           </div>
         
       

@@ -175,6 +175,57 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/03/10/nfs/">NFS Share</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-10
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="server"><a class="markdownIt-Anchor" href="#server"></a> Server</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ setsebool -P virt_use_nfs 1 (OR SELinux status: disabled)</span><br><span class="line">$ yum -y install nfs-utils libnfsidmap</span><br><span class="line">$ systemctl <span class="built_in">enable</span> rpcbind nfs-server</span><br><span class="line">$ systemctl start rpcbind nfs-server rpc-statd nfs-idmapd</span><br><span class="line"></span><br><span class="line">$ cat /etc/expots</span><br><span class="line">/nfs/sonar/conf 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line">/nfs/sonar/data 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line">/nfs/sonar/extensions 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line">/nfs/sonar/logs 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line"></span><br><span class="line">$ chmod -R 777 /nfs</span><br><span class="line">$ exportfs -r</span><br></pre></td></tr></table></figure>
+          <div class="read-more">
+            <a href="/2018/03/10/nfs/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/03/10/vnc/">VNC Server</a>
         
       </h1>
@@ -321,66 +372,6 @@
 </ul>
           <div class="read-more">
             <a href="/2018/02/09/k8s-sec1/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/02/03/ci-cd/">CI/CDs</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-02-03
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <ul>
-<li>
-<p>持续集成（Continuous Integration）的目的是让产品可以快速迭代，同时还能保持高质量。核心措施是代码集成到主干之前，必须通过自动化测试。只要有一个测试用例失败，就不能集成。优点就是能快速发现错误，防止分支大幅偏离主干。</p>
-</li>
-<li>
-<p>持续交付（Continuous Delivery）是指频繁的将软件的新版本交付给 QA或用户 以供评审。如果评审通过，代码就进入生产阶段。持续交付可以看作持续集成的下一步。它强调的是，不管怎么更新软件是随时随地可以交付的。</p>
-</li>
-<li>
-<p>持续部署（Continuous Deployment）是持续交付的下一步，指的是代码通过评审以后，自动部署到生产环境。持续部署的目标是，代码在任何时刻都是可部署的，可以进入生产阶段。持续部署的前提是能自动化完成测试、构建、部署等步骤。</p>
-</li>
-</ul>
-          <div class="read-more">
-            <a href="/2018/02/03/ci-cd/" class="read-more-link">Read more..</a>
           </div>
         
       

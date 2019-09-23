@@ -175,6 +175,57 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2017/11/11/SLB3/">HAProxy + Keepalived Configuration Examples(1)</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-11-11
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="haproxy-keepalived-configure"><a class="markdownIt-Anchor" href="#haproxy-keepalived-configure"></a> HAProxy + Keepalived Configure</h2>
+<h3 id="haproxy-configure"><a class="markdownIt-Anchor" href="#haproxy-configure"></a> HAProxy Configure</h3>
+          <div class="read-more">
+            <a href="/2017/11/11/SLB3/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2017/11/11/SLB2/">Install HAProxy + Keepalived</a>
         
       </h1>
@@ -344,63 +395,6 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ cat /etc/redhat-release </span><br><span class="line">  CentOS Linux release 7.3.1611 (Core)</span><br><span class="line">  </span><br><span class="line">$ yum install cmake gcc gcc-c++ bison libaio-devel ncurses-devel openssl openssl-devel</span><br><span class="line">$ groupadd mysql</span><br><span class="line">$ useradd -r -g mysql -s /bin/<span class="literal">false</span> mysql</span><br></pre></td></tr></table></figure>
           <div class="read-more">
             <a href="/2017/11/07/Install-MySQL-5-7-from-Source/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/10/28/SQLAdvisor/">SQLAdvisor</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-10-28
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/MySQL/">MySQL</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <blockquote>
-<p>感谢美团点评DBA团队开源了<a href="https://github.com/meituan-dianping/sqladvisor" target="_blank" rel="noopener">SQLAdvisor</a>。SQLAdvisor是基于MySQL原生态词法解析，结合分析SQL中的where条件、聚合条件、多表Join关系给出索引优化建议的调优工具。</p>
-</blockquote>
-<h2 id="安装sqladvisor"><a class="markdownIt-Anchor" href="#安装sqladvisor"></a> 安装SQLAdvisor</h2>
-<h3 id="clone源代码"><a class="markdownIt-Anchor" href="#clone源代码"></a> Clone源代码</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/meituan-dianping/sqladvisor.git</span><br></pre></td></tr></table></figure>
-<h3 id="安装依赖包"><a class="markdownIt-Anchor" href="#安装依赖包"></a> 安装依赖包</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum install cmake libaio-devel libffi-devel glib2 glib2-devel</span><br><span class="line">$ sduo yum install Percona-Server-shared-56</span><br></pre></td></tr></table></figure>
-          <div class="read-more">
-            <a href="/2017/10/28/SQLAdvisor/" class="read-more-link">Read more..</a>
           </div>
         
       

@@ -175,6 +175,56 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/03/26/linuxperf/">Linux性能分析</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-26
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p><img src="http://p564fpez5.bkt.clouddn.com/image/linuxlinux_perf_tools_full.png" alt></p>
+          <div class="read-more">
+            <a href="/2018/03/26/linuxperf/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/03/23/sonar/">SonarQube on Kubernetes</a>
         
       </h1>
@@ -328,57 +378,6 @@
 <p>PV作为集群中的一项资源，PVC消费PV资源，也作为对资源的消费检查。</p>
           <div class="read-more">
             <a href="/2018/03/10/k8s-pv/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/03/10/nfs/">NFS Share</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-03-10
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="server"><a class="markdownIt-Anchor" href="#server"></a> Server</h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ setsebool -P virt_use_nfs 1 (OR SELinux status: disabled)</span><br><span class="line">$ yum -y install nfs-utils libnfsidmap</span><br><span class="line">$ systemctl <span class="built_in">enable</span> rpcbind nfs-server</span><br><span class="line">$ systemctl start rpcbind nfs-server rpc-statd nfs-idmapd</span><br><span class="line"></span><br><span class="line">$ cat /etc/expots</span><br><span class="line">/nfs/sonar/conf 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line">/nfs/sonar/data 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line">/nfs/sonar/extensions 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line">/nfs/sonar/logs 10.0.77.0/27(rw,sync,no_root_squash)</span><br><span class="line"></span><br><span class="line">$ chmod -R 777 /nfs</span><br><span class="line">$ exportfs -r</span><br></pre></td></tr></table></figure>
-          <div class="read-more">
-            <a href="/2018/03/10/nfs/" class="read-more-link">Read more..</a>
           </div>
         
       

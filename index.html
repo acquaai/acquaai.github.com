@@ -175,6 +175,63 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2019/09/23/gluster-k8s/">GlusterFS Native Storage Service for Kubernetes</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-09-23
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="configuring-glusterfs"><a class="markdownIt-Anchor" href="#configuring-glusterfs"></a> Configuring GlusterFS</h2>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/gluster/gluster-kubernetes.git</span><br></pre></td></tr></table></figure>
+<p>Copy the <code>deploy/</code> directory to the master node of the Kubernetes cluster.</p>
+<p>You will have to provide your own topology file. A sample topology file is included in the <code>deploy/</code> directory (default location that gk-deploy expects) which can be used as the topology for the vagrant libvirt setup. When creating your own topology file:</p>
+<ul>
+<li>Make sure the topology file only lists block devices intended for heketi’s use. heketi needs access to whole block devices (e.g. /dev/sdb, /dev/vdb) which it will partition and format.</li>
+<li>The <code>hostnames</code> array is a bit misleading. <code>manage</code> should be a list of hostnames for the node, but <code>storage</code> should be a list of IP addresses on the node for backend storage communications.</li>
+</ul>
+          <div class="read-more">
+            <a href="/2019/09/23/gluster-k8s/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2019/09/19/install-ha-portworx-k8s/">Install Portworx Cluster on Kubernetes(on-premise)</a>
         
       </h1>
@@ -316,63 +373,6 @@
 <li><a href="https://github.com/acquaai/Kubernetes" target="_blank" rel="noopener">Creating HA cluster 1.15 with kubeadm on Ubuntu 18.04 LTS</a></li>
 </ul>
 
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2019/08/06/harbor/">Harbor (Updated)</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2019-08-06
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p>Harbor是由VMware公司开源的基于Docker的企业级容器注册服务器，它包括权限管理(RBAC)、LDAP、日志审核、管理界面、自我注册、镜像复制和中文支持等功能。</p>
-<h2 id="install-docker"><a class="markdownIt-Anchor" href="#install-docker"></a> Install Docker</h2>
-<p><strong>Pass it over</strong>.</p>
-<h2 id="install-docker-compose"><a class="markdownIt-Anchor" href="#install-docker-compose"></a> <a href="https://docs.docker.com/compose/install/#install-compose" target="_blank" rel="noopener">Install Docker Compose</a></h2>
-<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo curl -L <span class="string">"https://github.com/docker/compose/releases/download/1.24.1/docker-compose-<span class="variable">$(uname -s)</span>-<span class="variable">$(uname -m)</span>"</span> -o /usr/<span class="built_in">local</span>/bin/docker-compose</span><br><span class="line">$ sudo chmod +x /usr/<span class="built_in">local</span>/bin/docker-compose</span><br><span class="line">$ docker-compose --version</span><br><span class="line">docker-compose version 1.24.1, build 4667896b</span><br></pre></td></tr></table></figure>
-<h2 id="install-harbor-with-https"><a class="markdownIt-Anchor" href="#install-harbor-with-https"></a> Install Harbor with https</h2>
-<p><a href="http://github.com/vmware/harbor" target="_blank" rel="noopener">Prerequisites for the Harbor</a></p>
-<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://storage.googleapis.com/harbor-releases/release-1.8.0/harbor-offline-installer-v1.8.2.tgz</span><br><span class="line">$ sudo tar xzvf harbor-offline-installer-v1.8.2.tgz  -C /</span><br></pre></td></tr></table></figure>
-          <div class="read-more">
-            <a href="/2019/08/06/harbor/" class="read-more-link">Read more..</a>
-          </div>
         
       
     </div>
