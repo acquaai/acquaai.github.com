@@ -43,6 +43,11 @@ $ grep key /etc/ceph/ceph.client.qemu.keyring | awk '{printf "%s", $NF}' | base6
 
 `NOTE`: This base64 key is generated on one of the Ceph MON nodes using the **ceph auth get-key client.admin | base64** command, then copying the output and pasting it as the secret key’s value.
 
+* Checked userId and secret key in userSecretName: **(On client Node)**
+
+```zsh
+$ rbd ls -m <ceph-monitor-addrs> -p <your-pool> --id <userId> --key=<ceph secret key of userId>
+```
 
 ## Create StorageClass(`Dynamic Volume Provisioning`) using Ceph RBD
 
@@ -84,25 +89,44 @@ parameters:
   userId: qemu
   userSecretName: ceph-secret-qemu
   userSecretNamespace: elk
-  fsType: ext4
-  imageFormat: "2"
-  imageFeatures: "layering"
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
 ---
 # StatefulSet
 ......
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-      labels:
-        app: elasticsearch
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 10Gi
-      storageClassName: ceph-rbd    
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ceph-pvc
+  labels:
+    usage: elk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ceph-rbd    
 ```
 
+**Set default class**:
+
+```zsh
+$ kubectl patch storageclass ceph-rbd -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+$ kubectl get sc
+NAME                 PROVISIONER               AGE
+ceph-rbd (default)   ceph.com/rbd              10m
+```
+
+**Update a single key in a secret**:
+
+```zsh
+echo -n 'Password' | base64
+UGFzc3cwcmQ=
+
+kubectl patch secret test-secret -p='{"data":{"foo": "UGFzc3cwcmQ="}}' -v=1
+```
 
 **[bug & fix](
 https://github.com/kubernetes/kubernetes/issues/38923#issuecomment-315255075)**:

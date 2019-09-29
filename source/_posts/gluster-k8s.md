@@ -47,6 +47,8 @@ $ cat topology.json
 }
 ```
 
+[My gk-deploy scripts is here](https://github.com/acquaai/Kubernetes/tree/master/CSI/GlusterFS).
+
 **Installing gluster client on related worker nodes**
 
 ```zsh
@@ -62,7 +64,7 @@ $ kubectl get cs,nodes
 ```
 
 ```zsh
-$ ./gk-deploy -g --admin-key <key> --user-key <key>
+$ ./gk-deploy -g --admin-key <key> --user-key <key> -n <NAMESPACE>
 ```
 
 `NOTE:`
