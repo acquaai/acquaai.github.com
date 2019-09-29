@@ -175,6 +175,110 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/03/29/spark-k8s/">Spark on Kubernetes</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-29
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <blockquote>
+<p>Apache Spark™ is a fast and general engine for large-scale data processing.</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">gcr.io/google_containers/spark:1.5.2_v1</span><br><span class="line">---&gt;</span><br><span class="line">10.0.77.16/library/spark:1.5.2_v1</span><br><span class="line"></span><br><span class="line">elsonrodriguez/spark-ui-proxy:1.0</span><br><span class="line">---&gt;</span><br><span class="line">10.0.77.16/library/spark-ui-proxy:1.0</span><br><span class="line"></span><br><span class="line">gcr.io/google_containers/zeppelin:v0.5.6_v1</span><br><span class="line">---&gt;</span><br><span class="line">10.0.77.16/library/zeppelin:v0.5.6_v1</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/acquaai/K8S/tree/master/yaml/Spark-K8s" target="_blank" rel="noopener">YAML Files</a></p>
+          <div class="read-more">
+            <a href="/2018/03/29/spark-k8s/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2018/03/28/jenkins-k8s/">Jenkins on Kubernetes</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-03-28
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p><img src="/images/jenkinsonk8s1.png" alt></p>
+          <div class="read-more">
+            <a href="/2018/03/28/jenkins-k8s/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/03/26/linuxperf/">Linux性能分析</a>
         
       </h1>
@@ -263,121 +367,6 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> -n sonar | base64</span><br><span class="line">c29uYXI=</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">echo</span> -n Passw0rd | base64</span><br><span class="line">UGFzc3cwcmQ=</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">echo</span> -n sonardb | base64</span><br><span class="line">c29uYXJkYg==</span><br><span class="line"></span><br><span class="line"><span class="comment">#与 echo -n 作用相同</span></span><br><span class="line">$ tr --delete <span class="string">'\n'</span> &lt; mysql-root-pwd.txt &gt; .strippedmysql-root-pwd.txt &amp;&amp; mv .strippedmysql-root-pwd.txt mysql-root-pwd.txt</span><br><span class="line"></span><br><span class="line">OR</span><br><span class="line">$ kubectl create secret generic mysql-secrets --from-literal=root-user=root --from-literal=root-password=Passw0rd --from-literal=mysql-database=sonardb --from-literal=mysql-user=sonar --from-literal=mysql-password=sonar -n sonar</span><br><span class="line"></span><br><span class="line">OR</span><br><span class="line">$ kubectl create secret generic mysql-root-pwd --from-file=mysql-root-pwd.txt -n sonar</span><br></pre></td></tr></table></figure>
           <div class="read-more">
             <a href="/2018/03/23/sonar/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/03/13/ceph-cluster/">Ceph Distributed Storage System</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-03-13
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="ceph-介绍"><a class="markdownIt-Anchor" href="#ceph-介绍"></a> Ceph 介绍</h2>
-<p>Ceph 是一个符合 POSIX 的开源分布式存储系统，能提供 Ceph Object、Ceph RBD 和 Ceph FS 的存储能力。Ceph Cluster至少需要一个<code>Ceph Monitor</code> 和两个<code>OSD Daemon</code>，当运行 Ceph 文件系统客户端时，还必须要有元数据服务器（MDS）。</p>
-<p>Components:</p>
-<ul>
-<li>Monitors: 基于 PAXOS 算法维护集群状态的各种图表，包括监视器图、OSD图、PG图、CRUSH图。Ceph 保存( <code>epoch</code> )发生在 Monitor、OSD 和 PG 上的每一次状态变更的历史信息。</li>
-<li>OSDs: 存储数据，处理数据的复制、恢复、回填、再均衡，并通过检查其它 OSD 守护进程的心跳来向 Monitors 提供监控信息。当存储集群设定为 2个副本 时，至少需要 2个OSD守护进程，集群才能达到<code>active + clean</code>的状态，Ceph 默认为 3副本。</li>
-<li>MDSs: 存储 Ceph FS 元数据。（针对 Object/RBD 存储不需要 MDS）MDS也可以在多节点部署实现冗余。MDS守护进程可以被配置为活跃或者被动状态，活跃的MDS为主MDS，其他的MDS处于备用状态，当主MDS节点故障时，备用MDS节点会接管其工作并被提升为主节点。</li>
-</ul>
-          <div class="read-more">
-            <a href="/2018/03/13/ceph-cluster/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/03/10/k8s-pv/">K8S持久化卷</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-03-10
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <blockquote>
-<p>声明：本文来自<a href="https://jimmysong.io/posts/kubernetes-persistent-volume/" target="_blank" rel="noopener">jimmysong</a>的文章，整理记录在此仅为加深对 K8S PV 学习和理解。</p>
-</blockquote>
-<p>在 K8S 中没有使用<strong>持久化卷</strong>是不完整的，PV作为子系统为管理员和用户提供了API。</p>
-<h2 id="apis"><a class="markdownIt-Anchor" href="#apis"></a> APIs</h2>
-<p><code>PersistentVolume</code>（PV）管理员配置的存储，作为 K8S 群集的一部分。类似节点是集群中的资源一样，PV 也是集群中的资源。 PV 是 Volume 之类的卷插件，具有独立于 使用PV的Pod 的生命周期。卷的生命比 Pod 中的所有容器都长，当容器重启时数据仍然得以保存。只有当 Pod 消亡时，卷将不复存在。Kubernetes 支持多种类型的卷，Pod 可以同时使用任意数量的卷。该API对象包含存储实现的细节，即 NFS、RBD 或云厂商的存储系统。</p>
-<p><code>PersistentVolumeClaim</code>（PVC）用户对存储的请求，与 Pod 类似。Pod 消耗节点资源，PVC 消耗 PV 资源。PVC 请求特定的大小和访问模式。</p>
-<h2 id="卷和声明claim的生命周期"><a class="markdownIt-Anchor" href="#卷和声明claim的生命周期"></a> 卷和声明(claim)的生命周期</h2>
-<p>PV作为集群中的一项资源，PVC消费PV资源，也作为对资源的消费检查。</p>
-          <div class="read-more">
-            <a href="/2018/03/10/k8s-pv/" class="read-more-link">Read more..</a>
           </div>
         
       

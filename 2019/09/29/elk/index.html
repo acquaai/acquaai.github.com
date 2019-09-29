@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="ELK Stack 7 on Kubernetes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="https://acquaai.github.io/atom.xml" title="Acqua">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0">
+
+
+
+<link rel="canonical" href="https://acquaai.github.io/2019/09/29/elk/">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0">
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> ELK Stack 7 on Kubernetes - Acqua </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="mobile-header-logo">
+    <a href="/." class="logo">Acqua</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Acqua</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          ELK Stack 7 on Kubernetes
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-09-29
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#what-is-the-elk-stack"><span class="toc-text"> What is the ELK Stack?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tips"><span class="toc-text"> Tips</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#deploying"><span class="toc-text"> Deploying</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#verifying"><span class="toc-text"> Verifying</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#elk-index-template-for-nginx"><span class="toc-text"> ELK index template for Nginx</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#customized-logstash-image"><span class="toc-text"> Customized Logstash Image</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#curator"><span class="toc-text"> Curator</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="what-is-the-elk-stack"><a class="markdownIt-Anchor" href="#what-is-the-elk-stack"></a> What is the ELK Stack?</h2>
+<p>“ELK” is the acronym for three open source projects: Elasticsearch, Logstash, and Kibana. Elasticsearch is a search and analytics engine. Logstash is a server‑side data processing pipeline that ingests data from multiple sources simultaneously, transforms it, and then sends it to a “stash” like Elasticsearch. Kibana lets users visualize data with charts and graphs in Elasticsearch.</p>
+<h2 id="tips"><a class="markdownIt-Anchor" href="#tips"></a> Tips</h2>
+<p>This post reference to the <a href="https://flywzj.com/blog/es/" target="_blank" rel="noopener">doc</a>. But <strong>Pod memory resource limit</strong> like:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">......</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">ES_JAVA_OPTS</span></span><br><span class="line"><span class="attr">    value:</span> <span class="string">"-Xms2g -Xmx2g"</span></span><br><span class="line"><span class="attr">resources:</span></span><br><span class="line"><span class="attr">  limits:</span></span><br><span class="line"><span class="attr">    cpu:</span> <span class="string">'1'</span></span><br><span class="line"><span class="attr">    memory:</span> <span class="number">2</span><span class="string">Gi</span></span><br><span class="line"><span class="attr">  requests:</span></span><br><span class="line"><span class="attr">    cpu:</span> <span class="string">'1'</span></span><br><span class="line"><span class="attr">    memory:</span> <span class="number">2</span><span class="string">Gi</span></span><br><span class="line"><span class="string">......</span></span><br></pre></td></tr></table></figure>
+<p>You have to: resources:<code>limits:memory: 2Gi</code> &gt; <code>value: &quot;-Xms2g -Xmx2g&quot;</code>, or <code>OOM</code>.</p>
+<h2 id="deploying"><a class="markdownIt-Anchor" href="#deploying"></a> Deploying</h2>
+<a id="more"></a>
+<p>The complete file is <a href="https://github.com/acquaai/ELK-Stack/tree/master/yaml" target="_blank" rel="noopener">here</a>. Run in sequence,</p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f ns-kafka.yaml</span><br><span class="line"></span><br><span class="line">kubectl apply -f es-master-config.yaml</span><br><span class="line">kubectl apply -f es-master-service.yaml</span><br><span class="line">kubectl apply -f es-master.yaml</span><br><span class="line"></span><br><span class="line">kubectl apply -f es-data-config.yaml</span><br><span class="line">kubectl apply -f es-data-service.yaml</span><br><span class="line">kubectl apply -f es-data.yaml</span><br><span class="line"></span><br><span class="line">kubectl apply -f es-ingest-config.yaml</span><br><span class="line">kubectl apply -f es-ingest-service.yaml</span><br><span class="line">kubectl apply -f es-ingest.yaml</span><br><span class="line"></span><br><span class="line">kubectl apply -f logstash-pipeline-config.yaml</span><br><span class="line">kubectl apply -f logstash.yaml</span><br><span class="line">kubectl apply -f logstash-service.yaml</span><br><span class="line"></span><br><span class="line">kubectl apply -f kibana-config.yaml</span><br><span class="line">kubectl apply -f kibana-service.yaml</span><br><span class="line">kubectl apply -f kibana.yaml</span><br><span class="line">kubectl apply -f kibana-ingress.yaml</span><br><span class="line"></span><br><span class="line">kubectl apply -f curator-config.yaml</span><br><span class="line">kubectl apply -f curator.yaml</span><br></pre></td></tr></table></figure>
+<h2 id="verifying"><a class="markdownIt-Anchor" href="#verifying"></a> Verifying</h2>
+<ul>
+<li>elk pod</li>
+</ul>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get pod -n kafka</span><br><span class="line">NAME          READY   STATUS    RESTARTS   AGE</span><br><span class="line">es-data-0     1/1     Running   0          4m6s</span><br><span class="line">es-data-1     1/1     Running   0          3m47s</span><br><span class="line">es-data-2     1/1     Running   0          3m28s</span><br><span class="line">es-ingest-0   1/1     Running   0          52s</span><br><span class="line">es-ingest-1   1/1     Running   0          47s</span><br><span class="line">es-ingest-2   1/1     Running   0          42s</span><br><span class="line">es-master-0   1/1     Running   0          6m29s</span><br><span class="line">es-master-1   1/1     Running   0          6m25s</span><br><span class="line">es-master-2   1/1     Running   0          6m22s</span><br></pre></td></tr></table></figure>
+<ul>
+<li>service</li>
+</ul>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get svc -n kafka | grep es</span><br><span class="line">es-data          ClusterIP      None             &lt;none&gt;        9300/TCP         3d5h</span><br><span class="line">es-ingest        LoadBalancer   10.98.208.109    &lt;pending&gt;     9200:30982/TCP   3d5h</span><br><span class="line">es-master        ClusterIP      None             &lt;none&gt;        9300/TCP         3d5h</span><br></pre></td></tr></table></figure>
+<ul>
+<li>elk information</li>
+</ul>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">$ curl http://172.31.16.11:30982</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span> : <span class="string">"es-ingest-2"</span>,</span><br><span class="line">  <span class="string">"cluster_name"</span> : <span class="string">"es-kafka"</span>,</span><br><span class="line">  <span class="string">"cluster_uuid"</span> : <span class="string">"8R8FUTggQWmBwI2PKMFl2w"</span>,</span><br><span class="line">  <span class="string">"version"</span> : &#123;</span><br><span class="line">    <span class="string">"number"</span> : <span class="string">"7.3.2"</span>,</span><br><span class="line">    <span class="string">"build_flavor"</span> : <span class="string">"default"</span>,</span><br><span class="line">    <span class="string">"build_type"</span> : <span class="string">"docker"</span>,</span><br><span class="line">    <span class="string">"build_hash"</span> : <span class="string">"1c1faf1"</span>,</span><br><span class="line">    <span class="string">"build_date"</span> : <span class="string">"2019-09-06T14:40:30.409026Z"</span>,</span><br><span class="line">    <span class="string">"build_snapshot"</span> : <span class="literal">false</span>,</span><br><span class="line">    <span class="string">"lucene_version"</span> : <span class="string">"8.1.0"</span>,</span><br><span class="line">    <span class="string">"minimum_wire_compatibility_version"</span> : <span class="string">"6.8.0"</span>,</span><br><span class="line">    <span class="string">"minimum_index_compatibility_version"</span> : <span class="string">"6.0.0-beta1"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"tagline"</span> : <span class="string">"You Know, for Search"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>elk nodes</li>
+</ul>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ curl http://172.31.16.11:30982/_cat/nodes?v</span><br><span class="line">ip            heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name</span><br><span class="line">10.244.83.116            1           8   2    0.22    0.39     0.32 i         -      es-ingest-1</span><br><span class="line">10.244.244.20            8           9   4    0.47    0.75     0.69 m         *      es-master-0</span><br><span class="line">10.244.83.115            3           8   3    0.22    0.39     0.32 d         -      es-data-1</span><br><span class="line">10.244.244.21            1           9   3    0.47    0.75     0.69 i         -      es-ingest-0</span><br><span class="line">10.244.84.27             6           9   4    0.15    0.47     0.67 m         -      es-master-1</span><br><span class="line">10.244.83.114            6           8   3    0.22    0.39     0.32 m         -      es-master-2</span><br><span class="line">10.244.84.26             4           9   3    0.15    0.47     0.67 d         -      es-data-2</span><br><span class="line">10.244.244.19            2           9   3    0.47    0.75     0.69 d         -      es-data-0</span><br><span class="line">10.244.84.31             1           9   2    0.15    0.47     0.67 i         -      es-ingest-2</span><br></pre></td></tr></table></figure>
+<ul>
+<li>elk indices</li>
+</ul>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$ curl http://172.31.16.11:30982/_cat/indices?v</span><br><span class="line">health status index                   uuid                   pri rep docs.count docs.deleted store.size pri.store.size</span><br><span class="line">green  open   .kibana_task_manager    DGLMxRtcQJWl_FTcSsOwJg   1   1          2            0     59.6kb         29.8kb</span><br><span class="line">green  open   .kibana_1               XzaoAq0CQXmvwfGuesZCUg   1   1         10            3    108.5kb         54.2kb</span><br><span class="line">green  open   nginx-access-2019.09.27 HzoYMc11QI68DDBtAmNU3g   1   1    3304714            0      4.1gb          1.9gb</span><br><span class="line">green  open   nginx-access-2019.09.16 hj229YYbQXWWVzPS5cWp8A   2   1     269961            0    337.2mb        168.1mb</span><br><span class="line">green  open   nginx-access-2019.09.28 VhVuxXQvSR-1GLWjKgTJsA   1   1   37900045            0     31.2gb           17gb</span><br><span class="line">green  open   nginx-access-2019.09.17 zsqJ4RcWQ5u7n59fcSiDww   2   1     534824            0    693.3mb        342.6mb</span><br><span class="line">green  open   nginx-access-2019.09.29 jrJqOpZTQ_C3jd3oD50oRQ   2   1    6986701            0      4.6gb          2.2gb</span><br><span class="line">green  open   nginx-access-2019.09.18 xvdO_S_5S4Kf30FexhjcMA   2   1     835914            0        1gb          531mb</span><br><span class="line">green  open   nginx-access-2019.09.19 LW45Dw6FRZ-PCRIPH1eO8g   2   1     805261            0        1gb        524.9mb</span><br><span class="line">green  open   nginx-access-2019.09.23 KkXMoqHhQ3iv9XOsDu5C5A   2   1     823928            0        1gb        523.4mb</span><br><span class="line">green  open   nginx-access-2019.09.24 9MM-wjLVTrm3UVQlfdCT4w   2   1     815697            0        1gb        527.3mb</span><br><span class="line">green  open   nginx-access-2019.09.25 uZU7v_kZQ3ObKXa3XWN1tg   2   1     808426            0        1gb        522.6mb</span><br><span class="line">green  open   nginx-access-2019.09.15 Ma8h8GmPQ7O8e6rXmfNGVg   2   1     521880            0    625.2mb        318.2mb</span><br><span class="line">green  open   nginx-access-2019.09.20 iRIpy6dJQCagViSf-uxwWw   2   1     843735            0        1gb        525.3mb</span><br><span class="line">green  open   nginx-access-2019.09.21 BvKQ8fsfTRm6nd2MzD7YFQ   2   1     208548            0    277.7mb        138.9mb</span><br></pre></td></tr></table></figure>
+<ul>
+<li>elk health</li>
+</ul>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ curl http://172.31.16.11:30982/_cat/health?v</span><br><span class="line">epoch      timestamp cluster  status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent</span><br><span class="line">1569726860 03:14:20  es-kafka green           9         3     52  26    0    0        0             0                  -                100.0%</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get pod -n kafka | egrep &quot;es|logstash|kibana&quot;</span><br><span class="line">es-data-0                   1/1     Running   0          4h</span><br><span class="line">es-data-1                   1/1     Running   0          4h</span><br><span class="line">es-data-2                   1/1     Running   0          3h59m</span><br><span class="line">es-ingest-0                 1/1     Running   0          3h57m</span><br><span class="line">es-ingest-1                 1/1     Running   0          3h57m</span><br><span class="line">es-ingest-2                 1/1     Running   0          3h57m</span><br><span class="line">es-master-0                 1/1     Running   0          4h2m</span><br><span class="line">es-master-1                 1/1     Running   0          4h2m</span><br><span class="line">es-master-2                 1/1     Running   0          4h2m</span><br><span class="line">kibana-856dcb8975-948c9     1/1     Running   0          25m</span><br><span class="line">logstash-6856879649-5gzq4   1/1     Running   0          62m</span><br></pre></td></tr></table></figure>
+<h2 id="elk-index-template-for-nginx"><a class="markdownIt-Anchor" href="#elk-index-template-for-nginx"></a> ELK index template for Nginx</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PUT _template/nginx</span><br><span class="line">&#123;</span><br><span class="line">......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="customized-logstash-image"><a class="markdownIt-Anchor" href="#customized-logstash-image"></a> Customized Logstash Image</h2>
+<p>Add <code>GeoLite2-City.mmdb</code> to image.</p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cat Dockerfile </span><br><span class="line">FROM registry.xxx.com/library/logstash:7.3.2</span><br><span class="line">COPY --chown=1000:root GeoLite2-City.mmdb /usr/share/GeoIP2/</span><br></pre></td></tr></table></figure>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ docker build . --no-cache -t registry.xxx.com/library/logstash-geoip:7.3.2</span><br><span class="line">Sending build context to Docker daemon  53.74MB</span><br><span class="line">Step 1/2 : FROM registry.xxx.com/library/logstash:7.3.2</span><br><span class="line"> ---&gt; ed2f8442f606</span><br><span class="line">Step 2/2 : COPY --chown=1000:root GeoLite2-City.mmdb /usr/share/GeoIP2/</span><br><span class="line"> ---&gt; 5900fad8a37a</span><br><span class="line">Successfully built 5900fad8a37a</span><br><span class="line">Successfully tagged registry.xxx.com/library/logstash-geoip:7.3.2</span><br></pre></td></tr></table></figure>
+<h2 id="curator"><a class="markdownIt-Anchor" href="#curator"></a> Curator</h2>
+<p>Elasticsearch Curator helps you curator, or manage, your Elasticsearch indices and snapshots.</p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">kubectl get cronjob -n kafka</span><br><span class="line">NAME      SCHEDULE    SUSPEND   ACTIVE   LAST SCHEDULE   AGE</span><br><span class="line">curator   0 1 * * *   False     0        11h             2d2h</span><br><span class="line"></span><br><span class="line">$ kubectl get <span class="built_in">jobs</span> -n kafka</span><br><span class="line">NAME                 COMPLETIONS   DURATION   AGE</span><br><span class="line">curator-1569643200   1/1           3m11s      23h</span><br><span class="line">curator-1569651300   1/1           3m20s      21h</span><br><span class="line">curator-1569684600   1/1           64s        11h</span><br></pre></td></tr></table></figure>
+<p><strong>Ref</strong></p>
+<ul>
+<li><a href="https://portworx.com/run-ha-elasticsearch-elk-google-kubernetes-engine/" target="_blank" rel="noopener">Kubernetes ELK: How to Run HA Elasticsearch (ELK) on Google Kubernetes Engine</a></li>
+<li><a href="https://medium.com/@tharangarajapaksha/elk-stack-in-k8s-cluster-13bb509185e0" target="_blank" rel="noopener">ELK stack in k8s cluster</a></li>
+<li><a href="https://hackernoon.com/deployment-of-full-scale-elk-stack-to-kubernetes-6f38f6c57c55" target="_blank" rel="noopener">Deployment of full-scale ELK stack to Kubernetes</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://acquaai.github.io">Acqua</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://acquaai.github.io/2019/09/29/elk/">https://acquaai.github.io/2019/09/29/elk/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2019/09/29/heketi-mgt/">
+        <span class="next-text nav-default">Heketi Management</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:acqua.young@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/acquaai" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="https://acquaai.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Acqua</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://acquaai.github.io/2019/09/29/elk/';
+        this.page.identifier = '2019/09/29/elk/';
+        this.page.title = 'ELK Stack 7 on Kubernetes';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//acquaai.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  </body>
+</html>

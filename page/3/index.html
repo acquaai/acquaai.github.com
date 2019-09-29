@@ -175,6 +175,104 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/05/22/depoly-tornado-dev/">部署 Tornado 开发环境</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-05-22
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/Python/">Python</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p><code>Tornado</code>：<a href="http://www.tornadoweb.org/en/stable/" target="_blank" rel="noopener">Tornado</a> 是 Python 编写出来的一个极轻量级、高可伸缩性和非阻塞IO的Web服务器软件，例如前 Friendfeed 网站。</p>
+<p><code>Supervisor</code>：一个服务（进程）管理工具，主要用于监控服务器上的服务，并且在出现问题时自动重启。</p>
+<p><code>Nginx</code>：在这里作为反向代理。</p>
+          <div class="read-more">
+            <a href="/2018/05/22/depoly-tornado-dev/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2018/05/04/bootable-usb/">Create a bootable USB using macOS</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-05-04
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+
+        
+          <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ ls CentOS-7*</span><br><span class="line">CentOS-7-x86_64-DVD-1708.iso</span><br><span class="line"></span><br><span class="line">➜  ~ hdiutil convert -format UDRW -o CentOS74.img CentOS-7-x86_64-DVD-1708.iso</span><br><span class="line"></span><br><span class="line">➜  ~ diskutil list</span><br><span class="line">/dev/disk0 (internal, physical):</span><br><span class="line">   #:      TYPE NAME                   SIZE       IDENTIFIER</span><br><span class="line">   0:      GUID_partition_scheme        *1.0 TB   disk0</span><br><span class="line">   1:      EFI EFI                     209.7 MB   disk0s1</span><br><span class="line">   2:      Apple_HFS Macintosh HD      999.3 GB   disk0s2</span><br><span class="line">   3:      Apple_Boot Recovery HD      650.0 MB   disk0s3</span><br><span class="line"></span><br><span class="line">/dev/disk1 (external, physical):</span><br><span class="line">   #:      TYPE NAME                     SIZE       IDENTIFIER</span><br><span class="line">   0:      GUID_partition_scheme         *15.5 GB   disk1</span><br><span class="line">   1:      EFI EFI                       209.7 MB   disk1s1</span><br><span class="line">   2:      Microsoft Basic Data KINGSTON  15.3 GB   disk1s2</span><br><span class="line">   </span><br><span class="line">➜  ~ diskutil unmountDisk /dev/disk1</span><br><span class="line">Unmount of all volumes on disk1 was successful</span><br><span class="line"></span><br><span class="line">➜  ~ sudo dd if=CentOS74.img.dmg of=/dev/disk1 bs=1m</span><br></pre></td></tr></table></figure>
+
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/04/04/helm-tidb-k8s/">Helm deploy TiDB on Kubernetes</a>
         
       </h1>
@@ -275,110 +373,6 @@
 </ul>
           <div class="read-more">
             <a href="/2018/04/02/helm/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/03/29/spark-k8s/">Spark on Kubernetes</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-03-29
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <blockquote>
-<p>Apache Spark™ is a fast and general engine for large-scale data processing.</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">gcr.io/google_containers/spark:1.5.2_v1</span><br><span class="line">---&gt;</span><br><span class="line">10.0.77.16/library/spark:1.5.2_v1</span><br><span class="line"></span><br><span class="line">elsonrodriguez/spark-ui-proxy:1.0</span><br><span class="line">---&gt;</span><br><span class="line">10.0.77.16/library/spark-ui-proxy:1.0</span><br><span class="line"></span><br><span class="line">gcr.io/google_containers/zeppelin:v0.5.6_v1</span><br><span class="line">---&gt;</span><br><span class="line">10.0.77.16/library/zeppelin:v0.5.6_v1</span><br></pre></td></tr></table></figure>
-<p><a href="https://github.com/acquaai/K8S/tree/master/yaml/Spark-K8s" target="_blank" rel="noopener">YAML Files</a></p>
-          <div class="read-more">
-            <a href="/2018/03/29/spark-k8s/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/03/28/jenkins-k8s/">Jenkins on Kubernetes</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-03-28
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p><img src="/images/jenkinsonk8s1.png" alt></p>
-          <div class="read-more">
-            <a href="/2018/03/28/jenkins-k8s/" class="read-more-link">Read more..</a>
           </div>
         
       

@@ -175,6 +175,112 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2017/12/28/prometheus-alertmanager/">Prometheus Alerting</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-12-28
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p><a href="https://acquaai.github.io/2017/11/29/Prometheus-Monitoring/">Prometheus基本安装、配置参考</a><br>
+<a href="https://prometheus.io/docs/alerting/alertmanager/" target="_blank" rel="noopener">官方参考</a></p>
+<h2 id="开启prometheus告警规则"><a class="markdownIt-Anchor" href="#开启prometheus告警规则"></a> 开启prometheus告警规则</h2>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">$</span> <span class="string">vi</span> <span class="string">prometheus.yml</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="attr">rule_files:</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">/var/prometheus/prometheus-1.7.1.linux-amd64/alert.rules</span></span><br><span class="line"><span class="string">...</span></span><br></pre></td></tr></table></figure>
+          <div class="read-more">
+            <a href="/2017/12/28/prometheus-alertmanager/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2017/12/21/mysql-router/">MySQL Router</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-12-21
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/MySQL/">MySQL</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <blockquote>
+<p>MySQL Router是轻量级的中间件，提供数据库访问的Load Balance（负载均衡）、Failover（故障切换）、读写分离等高可用性服务。Router自身的高可用需要借助类Keepalived来实现。</p>
+</blockquote>
+<p><img src="/images/router_arch.png" alt></p>
+          <div class="read-more">
+            <a href="/2017/12/21/mysql-router/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2017/12/17/mgr-single-m-example/">MGR单主复制配置实例</a>
         
       </h1>
@@ -269,153 +375,6 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gtid_mode = ON</span><br><span class="line">enforce_gtid_consistency = ON</span><br></pre></td></tr></table></figure>
           <div class="read-more">
             <a href="/2017/12/16/mgr-single-m/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/12/15/mysql-log-maintenance/">MySQL log maintenance</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-12-15
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/MySQL/">MySQL</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p>我们可以手动将日志文件中的数据刷到磁盘上，这一动作将触发MySQL服务器使用一个新的日志文件。过程如下：</p>
-<ul>
-<li>
-<p>If general query logging or slow query logging to a log file is enabled, the server <code>closes and reopens</code> the general query log file or slow query log file.</p>
-</li>
-<li>
-<p>If binary logging is enabled, the server closes the current binary log file and opens a new log file with the next sequence number.</p>
-</li>
-<li>
-<p>If the server was started with the --log-error option to cause the error log to be written to a file, the server closes and reopens the log file.</p>
-</li>
-</ul>
-<p>The server creates a new binary log file when you flush the logs. However, it just closes and reopens the general and slow query log files. To cause new files to be created on Unix, rename the current log files before flushing them. At flush time, the server opens new log files with the original names. For example, if the general and slow query log files are named mysql.log and mysql-slow.log, you can use a series of commands like this:</p>
-          <div class="read-more">
-            <a href="/2017/12/15/mysql-log-maintenance/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/12/03/gtid-rep/">GTID - MySQL Replication</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-12-03
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/MySQL/">MySQL</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p>Binlog replication is <a href="https://acquaai.github.io/2017/12/02/binlog-rep/">here</a>.</p>
-<h2 id="mysql-gtid"><a class="markdownIt-Anchor" href="#mysql-gtid"></a> MySQL GTID</h2>
-<p>MySQL <code>5.6.6</code>开始支持GTID的新特性，但是需要离线配置，从<code>5.7.6</code>开始支持在线。</p>
-<h3 id="enable-gtid-conditions"><a class="markdownIt-Anchor" href="#enable-gtid-conditions"></a> Enable GTID conditions</h3>
-<ul>
-<li>
-<p>MySQL 5.6</p>
-</li>
-<li>
-<p>gtid_mode = ON (required)</p>
-</li>
-<li>
-<p>enforce_gtid_consistency = ON (required)</p>
-</li>
-<li>
-<p>log_bin = ON (required)</p>
-</li>
-<li>
-<p>log_slave_updates = ON (required)</p>
-</li>
-<li>
-<p>MySQL 5.7.13 or higher</p>
-</li>
-<li>
-<p>gtid_mode = ON (required)</p>
-</li>
-<li>
-<p>enforce_gtid_consistency = ON (required)</p>
-</li>
-<li>
-<p>log_bin = ON (option – 高可用切换)</p>
-</li>
-<li>
-<p>log_slave_updates = ON (option – 高可用切换)</p>
-</li>
-</ul>
-          <div class="read-more">
-            <a href="/2017/12/03/gtid-rep/" class="read-more-link">Read more..</a>
           </div>
         
       

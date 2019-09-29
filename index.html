@@ -175,6 +175,119 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2019/09/29/elk/">ELK Stack 7 on Kubernetes</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-09-29
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="what-is-the-elk-stack"><a class="markdownIt-Anchor" href="#what-is-the-elk-stack"></a> What is the ELK Stack?</h2>
+<p>“ELK” is the acronym for three open source projects: Elasticsearch, Logstash, and Kibana. Elasticsearch is a search and analytics engine. Logstash is a server‑side data processing pipeline that ingests data from multiple sources simultaneously, transforms it, and then sends it to a “stash” like Elasticsearch. Kibana lets users visualize data with charts and graphs in Elasticsearch.</p>
+<h2 id="tips"><a class="markdownIt-Anchor" href="#tips"></a> Tips</h2>
+<p>This post reference to the <a href="https://flywzj.com/blog/es/" target="_blank" rel="noopener">doc</a>. But <strong>Pod memory resource limit</strong> like:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">......</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">ES_JAVA_OPTS</span></span><br><span class="line"><span class="attr">    value:</span> <span class="string">"-Xms2g -Xmx2g"</span></span><br><span class="line"><span class="attr">resources:</span></span><br><span class="line"><span class="attr">  limits:</span></span><br><span class="line"><span class="attr">    cpu:</span> <span class="string">'1'</span></span><br><span class="line"><span class="attr">    memory:</span> <span class="number">2</span><span class="string">Gi</span></span><br><span class="line"><span class="attr">  requests:</span></span><br><span class="line"><span class="attr">    cpu:</span> <span class="string">'1'</span></span><br><span class="line"><span class="attr">    memory:</span> <span class="number">2</span><span class="string">Gi</span></span><br><span class="line"><span class="string">......</span></span><br></pre></td></tr></table></figure>
+<p>You have to: resources:<code>limits:memory: 2Gi</code> &gt; <code>value: &quot;-Xms2g -Xmx2g&quot;</code>, or <code>OOM</code>.</p>
+<h2 id="deploying"><a class="markdownIt-Anchor" href="#deploying"></a> Deploying</h2>
+          <div class="read-more">
+            <a href="/2019/09/29/elk/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2019/09/29/heketi-mgt/">Heketi Management</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-09-29
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/DevOps/">DevOps</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p>Heketi provides a RESTful management interface which can be used to manage the life cycle of GlusterFS volumes. With Heketi, cloud services like OpenStack Manila, Kubernetes, and Openshift can dynamically provision GlusterFS volumes.</p>
+<p>If Heketi is not setup with authentication, then use curl to verify the configuration:</p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl http://&lt;server:port&gt;/hello</span><br><span class="line">Hello from Heketi</span><br></pre></td></tr></table></figure>
+<p>You can also verify the configuration using the heketi-cli when authentication is enabled:</p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">heketi-cli -server http://&lt;server:port&gt; -user &lt;user&gt; -secret &lt;key&gt; cluster list</span><br></pre></td></tr></table></figure>
+<p><strong>Get heketi secret name</strong></p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get secret</span><br><span class="line">NAME                                 TYPE                                  DATA   AGE</span><br><span class="line">heketi-config-secret                 Opaque                                3      17h</span><br></pre></td></tr></table></figure>
+<p><strong>Get heketi secret for Admin access in order to use API as Admin</strong></p>
+          <div class="read-more">
+            <a href="/2019/09/29/heketi-mgt/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2019/09/23/gluster-k8s/">GlusterFS Native Storage Service for Kubernetes</a>
         
       </h1>
@@ -270,109 +383,6 @@
           <div class="read-more">
             <a href="/2019/09/19/install-ha-portworx-k8s/" class="read-more-link">Read more..</a>
           </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2019/09/16/using-ceph-rbd-persistent-storage/">Using Ceph RBD for persistent storage</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2019-09-16
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="overview"><a class="markdownIt-Anchor" href="#overview"></a> Overview</h2>
-<p>This topic provides a complete example of using an existing Ceph cluster for OKD persistent storage. It is assumed that a working Ceph cluster is already set up. If not, consult the <a href="https://access.redhat.com/products/red-hat-ceph-storage" target="_blank" rel="noopener">Overview of Red Hat Ceph Storage</a>.</p>
-<p>Persistent Storage Using Ceph Rados Block Device provides an explanation of persistent volumes (PVs), persistent volume claims (PVCs), and using Ceph RBD as persistent storage.</p>
-<h2 id="using-an-existing-ceph-cluster-for-persistent-storage"><a class="markdownIt-Anchor" href="#using-an-existing-ceph-cluster-for-persistent-storage"></a> Using an existing Ceph cluster for persistent storage</h2>
-          <div class="read-more">
-            <a href="/2019/09/16/using-ceph-rbd-persistent-storage/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2019/08/28/k8s-ha-with-kubeadm/">Creating Kubernetes HA cluster with kubeadm</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2019-08-28
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/DevOps/">DevOps</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-
-        
-          <h1 id="tldr"><a class="markdownIt-Anchor" href="#tldr"></a> tl;dr</h1>
-<p><strong>here to view full document</strong>:</p>
-<ul>
-<li><a href="https://github.com/acquaai/Kubernetes" target="_blank" rel="noopener">Creating HA cluster 1.15 with kubeadm on Ubuntu 18.04 LTS</a></li>
-</ul>
-
         
       
     </div>
