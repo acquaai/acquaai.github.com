@@ -5,10 +5,9 @@ categories: DevOps
 ---
 ## Overview
 
-This topic provides a complete example of using an existing Ceph cluster for OKD persistent storage. It is assumed that a working Ceph cluster is already set up. If not, consult the [Overview of Red Hat Ceph Storage](https://access.redhat.com/products/red-hat-ceph-storage).
+Ceph CSI plugins implement an interface between CSI enabled Container Orchestrator (CO) and Ceph cluster. It allows dynamically provisioning Ceph volumes and attaching them to workloads.
 
-Persistent Storage Using Ceph Rados Block Device provides an explanation of persistent volumes (PVs), persistent volume claims (PVCs), and using Ceph RBD as persistent storage.
-
+**[Ceph-CSI](https://github.com/ceph/ceph-csi)** features and available versions.
 
 ## Using an existing Ceph cluster for persistent storage
 

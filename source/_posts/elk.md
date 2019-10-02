@@ -94,7 +94,7 @@ es-master        ClusterIP      None             <none>        9300/TCP         
 + elk information
 
 ```zsh
-$ curl http://172.31.16.11:30982
+$ curl http://192.168.16.11:30982
 {
   "name" : "es-ingest-2",
   "cluster_name" : "es-kafka",
@@ -117,7 +117,7 @@ $ curl http://172.31.16.11:30982
 + elk nodes
 
 ```zsh
-$ curl http://172.31.16.11:30982/_cat/nodes?v
+$ curl http://192.168.16.11:30982/_cat/nodes?v
 ip            heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name
 10.244.83.116            1           8   2    0.22    0.39     0.32 i         -      es-ingest-1
 10.244.244.20            8           9   4    0.47    0.75     0.69 m         *      es-master-0
@@ -133,7 +133,7 @@ ip            heap.percent ram.percent cpu load_1m load_5m load_15m node.role ma
 + elk indices
 
 ```zsh
-$ curl http://172.31.16.11:30982/_cat/indices?v
+$ curl http://192.168.16.11:30982/_cat/indices?v
 health status index                   uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 green  open   .kibana_task_manager    DGLMxRtcQJWl_FTcSsOwJg   1   1          2            0     59.6kb         29.8kb
 green  open   .kibana_1               XzaoAq0CQXmvwfGuesZCUg   1   1         10            3    108.5kb         54.2kb
@@ -155,7 +155,7 @@ green  open   nginx-access-2019.09.21 BvKQ8fsfTRm6nd2MzD7YFQ   2   1     208548 
 + elk health 
 
 ```zsh
-$ curl http://172.31.16.11:30982/_cat/health?v
+$ curl http://192.168.16.11:30982/_cat/health?v
 epoch      timestamp cluster  status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent
 1569726860 03:14:20  es-kafka green           9         3     52  26    0    0        0             0                  -                100.0%
 ```

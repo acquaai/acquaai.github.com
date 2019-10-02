@@ -86,12 +86,20 @@ glusterfs-gmx44           1/1     Running   0          18h
 glusterfs-gzpvg           1/1     Running   0          18h
 glusterfs-rb7t7           1/1     Running   0          18h
 heketi-8658674597-bztc8   1/1     Running   0          18h
+```
 
-$ kubectl exec -it heketi-8658674597-bztc8 -- heketi-cli --insecure-tls --user admin --secret QVFEQUNWWmRmTUxBSkJBQXlSV88rUm11RzJSb0J2Tk9SVllSaGc9PQ== cluster list
+```zsh
+$ kubectl exec -it heketi-8658674597-bztc8 -- heketi-cli \ 
+--insecure-tls --user admin --secret QVFEQUNWWmRmTUxBSkJBQXlSV88rUm11RzJSb0J2Tk9SVllSaGc9PQ== \ 
+cluster list
+
 Clusters:
 Id:30058720288f89c7cf3c2016bdc905b8 [file][block]
 
-$ kubectl exec -it heketi-8658674597-bztc8 -- heketi-cli --user admin --secret QVFEQUNWWmRmTUxBSkJBQXlSV88rUm11RzJSb0J2Tk9SVllSaGc9PQ== cluster info 30058720288f89c7cf3c2016bdc905b8
+$ kubectl exec -it heketi-8658674597-bztc8 -- heketi-cli \ 
+--user admin --secret QVFEQUNWWmRmTUxBSkJBQXlSV88rUm11RzJSb0J2Tk9SVllSaGc9PQ== \ 
+cluster info 30058720288f89c7cf3c2016bdc905b8
+
 Cluster id: 30058720288f89c7cf3c2016bdc905b8
 Nodes:
 3aa460b30b825f44fab97737ca01ee1f
@@ -105,8 +113,13 @@ f4bcd5ba2474caae96c45a2a5c77d28c
 Block: true
 
 File: true
+```
 
-$ kubectl exec -it heketi-8658674597-bztc8 -- heketi-cli --user admin --secret QVFEQUNWWmRmTUxBSkJBQXlSV88rUm11RzJSb0J2Tk9SVllSaGc9PQ== node info 3aa460b30b825f44fab97737ca01ee1f
+```zsh
+$ kubectl exec -it heketi-8658674597-bztc8 -- heketi-cli \ 
+--user admin --secret QVFEQUNWWmRmTUxBSkJBQXlSV88rUm11RzJSb0J2Tk9SVllSaGc9PQ== \ 
+node info 3aa460b30b825f44fab97737ca01ee1f
+
 Node Id: 3aa460b30b825f44fab97737ca01ee1f
 State: online
 Cluster Id: 30058720288f89c7cf3c2016bdc905b8
@@ -116,7 +129,10 @@ Storage Hostname: 192.168.16.16
 Devices:
 Id:37b799f5d213aacac0a46f94d53b359b   Name:/dev/sdb            State:online    Size (GiB):3351    Used (GiB):906     Free (GiB):2445    Bricks:4      
 
-$ kubectl exec -it heketi-8658674597-bztc8 -- heketi-cli --user admin --secret QVFEQUNWWmRmTUxBSkJBQXlSV88rUm11RzJSb0J2Tk9SVllSaGc9PQ== device info 37b799f5d213aacac0a46f94d53b359b
+$ kubectl exec -it heketi-8658674597-bztc8 -- heketi-cli \ 
+--user admin --secret QVFEQUNWWmRmTUxBSkJBQXlSV88rUm11RzJSb0J2Tk9SVllSaGc9PQ== \ 
+device info 37b799f5d213aacac0a46f94d53b359b
+
 Device Id: 37b799f5d213aacac0a46f94d53b359b
 State: online
 Size (GiB): 3351
@@ -130,14 +146,17 @@ Id:0d98000f85540d0854b0db455706c2ae   Size (GiB):300     Path: /var/lib/heketi/m
 Id:2fad4ddf0a59da0763c5f083c15f4ad6   Size (GiB):300     Path: /var/lib/heketi/mounts/vg_37b799f5d213aacac0a46f94d53b359b/brick_2fad4ddf0a59da0763c5f083c15f4ad6/brick
 Id:7d63092c9cb72c28af6fbcc8e920f52d   Size (GiB):300     Path: /var/lib/heketi/mounts/vg_37b799f5d213aacac0a46f94d53b359b/brick_7d63092c9cb72c28af6fbcc8e920f52d/brick
 Id:ec52206e5ca0aeec17dea6caa33eb9ab   Size (GiB):2       Path: /var/lib/heketi/mounts/vg_37b799f5d213aacac0a46f94d53b359b/brick_ec52206e5ca0aeec17dea6caa33eb9ab/brick
+```
 
+```zsh
 $  kubectl exec -it glusterfs-gmx44 -- gluster volume list
 heketidbstorage
 vol_7c7d1aa2d2a6afaaf4c3f008b2ff6c9f
 vol_a2514cec343f8e324488e057c9fd7358
 vol_f4bcd5ba2474caae96c45a2a5c77d28c
 
-$ kubectl exec -it glusterfs-gmx44 -- gluster volume info vol_a2514cec343f8e324488e057c9fd7358
+$ kubectl exec -it glusterfs-gmx44 -- gluster volume \ 
+info vol_a2514cec343f8e324488e057c9fd7358
  
 Volume Name: vol_a2514cec343f8e324488e057c9fd7358
 Type: Replicate
